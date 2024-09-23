@@ -3,7 +3,6 @@ import react from "@vitejs/plugin-react-swc";
 import tsconfigPaths from "vite-tsconfig-paths";
 import tailwindcss from "tailwindcss";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -11,5 +10,8 @@ export default defineConfig({
     //@ts-ignore
     tailwindcss(),
   ],
+  server: {
+    port: 8080,  // 서버 포트를 8080으로 설정
+    strictPort: true,
+  },
 });
-// 플러그인에 tailwindcss()을 내용을 추가해줍니다

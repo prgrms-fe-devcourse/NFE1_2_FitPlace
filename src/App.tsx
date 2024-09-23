@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import KakaoMap from './KakaoMap'; // KakaoMap 컴포넌트 임포트 관련
 
 const App = () => {
   const [abc, setAbc] = useState();
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md">
+    <div className="h-screen flex flex-col justify-center items-center bg-gray-100">
+      {/* 로그인 폼 */}
+      <div className="bg-white p-8 rounded-lg shadow-md mb-8">
         <h1 className="text-2xl font-bold mb-4">로그인</h1>
         <form>
           <div className="mb-4">
@@ -40,6 +42,12 @@ const App = () => {
             </a>
           </div>
         </form>
+      </div>
+
+      
+      {/* Kakao 지도 관련 */}
+      <div className="w-full flex justify-center">
+        <KakaoMap />
       </div>
     </div>
   );
