@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import KakaoMap from './KakaoMap'; // KakaoMap 컴포넌트 임포트 관련
+import KakaoMap from './KakaoMap'; // KakaoMap 컴포넌트 임포트 관련 코드
 
 const App = () => {
   const [abc, setAbc] = useState();

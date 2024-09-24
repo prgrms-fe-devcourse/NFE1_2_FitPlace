@@ -1,4 +1,4 @@
-// 카카오 지도 관련 코드
+// 카카오 지도 맵 관련 코드
 import React, { useEffect, useRef } from 'react';
 
 declare global {
