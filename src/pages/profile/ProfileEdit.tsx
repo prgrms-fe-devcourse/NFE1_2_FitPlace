@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Button from '../../components/Button';
 
 const ProfileEdit = () => {
   return (
@@ -37,6 +38,18 @@ const ProfileEdit = () => {
             <img src="/src/assets/LinkIcon.svg" alt="지역 선택 수정하기" />
           </div>
         </Link>
+      </div>
+
+      {/* 프로필 수정 하단 */}
+      {/* 가입 할 때 전용 */}
+      <div className='text-center mt-12'>
+        <Button
+          label='시작하기'
+          size='full'
+          color='green'
+        />
+        
+        <p className='mt-8 text-lg text-placeholder'>건너뛰기</p>
       </div>
     </div>
   );
