@@ -1,9 +1,9 @@
 import React from "react";
 // Props 타입 정의
 interface ButtonProps {
-  label: string;
-  size?: "small" | "mid" | "full";
-  color?: "green" | "line" | "grey";
+    label: string;
+    size?: "small" | "mid" | "full";
+    color?: "green" | "line" | "grey";
 }
 // 크기와 색상에 대한 타입 정의
 type SizeClass = "small" | "mid" | "full";

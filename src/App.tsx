@@ -3,6 +3,9 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Mainpage from "./pages/Mainpage";
 import Header from "./components/Header";
+import Login from './pages/register/Login';
+import Register from './pages/register/Register';
+
 
 const App = () => {
   return (
@@ -10,7 +13,9 @@ const App = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Mainpage />} />
-      </Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes> 
     </div>
   );
 };
