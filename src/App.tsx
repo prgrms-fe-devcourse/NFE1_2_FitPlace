@@ -5,6 +5,7 @@ import Login from "./pages/register/Login";
 import Register from "./pages/register/Register";
 import Ranking_page from "./pages/Ranking_page";
 import Location from "./pages/LocationSetting";
+import ProfileTemplate from "./pages/profile/ProfileTemplate";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/" element={<Mainpage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<ProfileTemplate />} />
         <Route path="/ranking" element={<Ranking_page />} />
         <Route path="/map" element={<Location />} />
       </Routes>

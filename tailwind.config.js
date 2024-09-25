@@ -16,6 +16,7 @@ export default {
           DEFAULT: "#2bca43",
         },
         'placeholder': '#656565',
+        'containerColor': '#f6f6f6'
       },
       lineHeight: {
         button: '1.11111em',
