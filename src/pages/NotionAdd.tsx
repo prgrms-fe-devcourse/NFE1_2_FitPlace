@@ -1,4 +1,5 @@
 import React from 'react';
+import arrowforward from "../assets/arrowforward.svg";
 
 
 const NotionAdd = () => {
@@ -36,10 +37,12 @@ const NotionAdd = () => {
         </div>
         <div>
           <p className='font-bold text-xl mt-6'>운동장소</p>
-          <div className='mt-2.5 border-2 border-solid border-[#e8e8e8] w-[600px] '>
+          <form action='/map' className='mt-2.5 border-2 border-solid border-[#e8e8e8] w-[600px] flex justify-between'>
             <label htmlFor="selectLocation" className='text-[#656565] pl-2.5'>위치 선택</label>
-            <button id='selectLocation'></button>
-          </div>
+            <button id='selectLocation'>
+              <img src={arrowforward} alt="arrowforward" />
+            </button>
+          </form>
         </div>
         <div>
           <label htmlFor="meetImg" className='flex font-bold text-xl mt-6'>사진 등록</label>
