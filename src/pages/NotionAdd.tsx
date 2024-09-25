@@ -10,11 +10,11 @@ const NotionAdd = () => {
       <form action="#" className='m-5'>
         <div >
           <label htmlFor="meetName" className='flex font-bold text-xl'>모임 이름</label>
-          <input type="text" id='meetName' placeholder='모임 이름을 입력해주세요.' className='border-2 border-solid border-[#e8e8e8] w-[600px] mt-2.5 text-lg pl-2.5'/>
+          <input type="text" id='meetName' placeholder='모임 이름을 입력해주세요.' className='border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5'/>
         </div>
         <div>
           <label htmlFor="meetPersonnel" className='flex font-bold text-xl mt-6'>모임 인원</label>
-          <input type="text" id='meetPersonnel' placeholder='모임 인원을 입력해주세요' className='border-2 border-solid border-[#e8e8e8] w-[600px] mt-2.5 text-lg pl-2.5'/>
+          <input type="text" id='meetPersonnel' placeholder='모임 인원을 입력해주세요' className='border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5'/>
         </div>
         <div>
           <h3 className='font-bold text-xl mt-6'>운동 종목</h3>
@@ -32,13 +32,13 @@ const NotionAdd = () => {
           </div>
         </div>
         <div>
-          <label htmlFor="meetexposition" className='flex font-bold text-xl mt-6'>모임 설명</label>
-          <input type="text" id='meetexposition' placeholder='모임에 대한 설명을 입력해주세요.' className='border-2 border-solid border-[#e8e8e8] w-[600px] h-32 mt-2.5 text-lg pl-2.5'/>
+          <label htmlFor="meetexposition" className='flex font-bold text-xl mt-6 '>모임 설명</label>
+          <input type="text" id='meetexposition' placeholder='모임에 대한 설명을 입력해주세요.' className='border-2 border-solid border-[#e8e8e8] w-[600px]  h-32 mt-2.5 text-lg pl-2.5'/>
         </div>
         <div>
           <p className='font-bold text-xl mt-6'>운동장소</p>
-          <form action='/map' className='mt-2.5 border-2 border-solid border-[#e8e8e8] w-[600px] flex justify-between'>
-            <label htmlFor="selectLocation" className='text-[#656565] pl-2.5'>위치 선택</label>
+          <form action='/map' className='mt-2.5 border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] flex justify-between'>
+            <label htmlFor="selectLocation" className='text-[#9BA3AF] p-2.5 '>위치 선택</label>
             <button id='selectLocation'>
               <img src={arrowforward} alt="arrowforward" />
             </button>
