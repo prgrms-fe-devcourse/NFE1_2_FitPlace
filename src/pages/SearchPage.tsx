@@ -17,7 +17,7 @@ const SearchPage = () => {
         <>
             <Header />
             <div className="w-140 min-h-screen bg-white p-3">
-                <section className="mb-6">
+                <section className="mb-10">
                     <Search_bar placeholder="검색어를 입력해주세요." />
                 </section>
                 <div className="mb-4 flex">
