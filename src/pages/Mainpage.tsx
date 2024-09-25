@@ -8,7 +8,7 @@ const Mainpage = () => {
     return (
         <div className="w-140 min-h-screen bg-white p-3">
             {/* 검색창 */}
-            <Search_bar />
+            <Search_bar placeholder="검색" />
             <section className="mt-11">
                 <p className="font-bold mt-11 text-xl mb-3">인기종목</p>
                 <div className="flex">
