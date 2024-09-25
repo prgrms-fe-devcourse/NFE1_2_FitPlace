@@ -3,7 +3,7 @@ import KakaoMap from "../pages/KakaoMap"; // KakaoMap 컴포넌트 임포트
 
 const LocationSetting = () => {
   return (
-    <div className="w-140 h-full border-solid border-2 border-neutral-400 mx-auto bg-white">
+    <div className="w-140 h-full mx-auto bg-white">
       {/* 상단 제목 */}
       <div className="pt-8 p-4">
         <h2 className="text-xl font-bold">장소를 선택해주세요.</h2>
