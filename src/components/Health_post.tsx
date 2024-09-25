@@ -2,7 +2,7 @@ import React from "react";
 
 const Health_post = ({ title }) => {
   return (
-    <div className="bg-gray-100 h-32 w-full rounded-md shadow-lg mb-5 p-5 flex flex-col">
+    <button className="bg-gray-100 h-32 w-full rounded-md shadow-lg mb-5 p-5 flex flex-col transition-transform duration-300 ease-in-out hover:bg-gray-200  hover:shadow-xl">
       <p className="font-bold text-lg mb-3">{title}</p>
       <div className="mb-2 text-sm flex">
         <p className="text-lime-400 font-bold">모집 중!</p>
@@ -16,7 +16,7 @@ const Health_post = ({ title }) => {
         <span className="mx-3 opacity-5">|</span>
         러닝
       </div>
-    </div>
+    </button>
   );
 };
 
