@@ -1,4 +1,3 @@
-import KakaoMap from "./KakaoMap"; // KakaoMap 컴포넌트 임포트 관련 코드
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Mainpage from "./pages/Mainpage";
