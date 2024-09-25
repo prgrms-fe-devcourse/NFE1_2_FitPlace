@@ -1,5 +1,4 @@
 import RegisterInput from "../../components/RegisterInput";
-import RegisterBtn from '../../components/RegisterBtn';
 import { Link } from "react-router-dom";
 import Button from "../../components/Button";
 
