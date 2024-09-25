@@ -18,7 +18,7 @@ const NotionAdd = () => {
         <div>
           <h3 className='font-bold text-xl mt-6'>운동 종목</h3>
           <div className='mt-2.5 flex gap-4'>
-            <label htmlFor="baseball" className='w-20 h-10 bg-[#F6F6F6] checked:bg-black rounded text-lg flex justify-center items-center relative '>야구</label>
+            <label htmlFor="baseball" className='w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center relative '>야구</label>
             <input type='radio' name='sports' id='baseball' value='야구' className='absolute opacity-0'/>
             <label htmlFor="soccer" className='w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center relative'>축구</label>
             <input type='radio' name='sports' id='soccer' value='축구' className='absolute opacity-0'/>
