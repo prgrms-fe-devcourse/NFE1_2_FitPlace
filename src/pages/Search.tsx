@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Button from "../components/Button";
 import Search_bar from "../components/Search_bar";
-import SearchResult from "../components/SearchResult";
+import SearchPost from "../components/SearchPost";
 
 const Search = () => {
-    const buttons = ["포스트", "사용자"];
-    const [activeButton, setActiveButton] = useState(buttons[0]);
+    const searchCategory = ["포스트", "사용자"];
+    const [activeButton, setActiveButton] = useState(searchCategory[0]);
 
     const handleButtonClick = (item: string) => {
         setActiveButton(item);
@@ -17,18 +17,18 @@ const Search = () => {
                 <Search_bar placeholder="검색어를 입력해주세요." />
             </section>
             <div className="mb-4 flex">
-                {buttons.map((button, index) => (
+                {searchCategory.map((category, index) => (
                     <Button
                         key={index}
-                        label={button}
-                        color={activeButton === button ? "green" : "grey"}
+                        label={category}
+                        color={activeButton === category ? "green" : "grey"}
                         size="mid"
                         margin="btnMr"
-                        onClick={() => handleButtonClick(button)}
+                        onClick={() => handleButtonClick(category)}
                     />
                 ))}
             </div>
-            <SearchResult />
+            <SearchPost />
         </div>
     );
 };

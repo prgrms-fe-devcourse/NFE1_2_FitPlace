@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import Health_post from "../components/Health_post";
 import Button from "../components/Button";
 
-const SearchResult = () => {
+const SearchPost = () => {
     const exerciseList = ["전체", "축구", "야구", "러닝", "자전거"];
     const [activeButton, setActiveButton] = useState("전체");
 
     const handleButtonClick = (item: string) => {
         setActiveButton(item);
     };
-
     return (
         <div>
             <div className="mb-10">
@@ -38,4 +37,4 @@ const SearchResult = () => {
     );
 };
 
-export default SearchResult;
+export default SearchPost;

@@ -1,7 +1,7 @@
 import React from "react";
 import Search from "../assets/Search.svg";
 interface SearchBarProps {
-    placeholder: string;
+    placeholder?: string;
 }
 const Search_bar: React.FC<SearchBarProps> = ({ placeholder }) => {
     return (
