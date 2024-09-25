@@ -6,13 +6,9 @@ const NotionAdd = () => {
   return (
     
     <div className='bg-white w-[640px] h-full' >
-      <header>
-        <button><i></i></button>
-        <h1>모임 만들기</h1>
-      </header>
       <form action="#" className='m-5'>
         <div >
-          <label htmlFor="meetName" className='flex font-bold text-xl mt-20'>모임 이름</label>
+          <label htmlFor="meetName" className='flex font-bold text-xl'>모임 이름</label>
           <input type="text" id='meetName' placeholder='모임 이름을 입력해주세요.' className='border-2 border-solid border-[#e8e8e8] w-[600px] mt-2.5 text-lg pl-2.5'/>
         </div>
         <div>
@@ -21,17 +17,17 @@ const NotionAdd = () => {
         </div>
         <div>
           <h3 className='font-bold text-xl mt-6'>운동 종목</h3>
-          <div className='mt-2.5 flex'>
-            <label htmlFor="baseball" className='w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center'>야구</label>
-            <input type='radio' name='sports' id='baseball' value='야구'/>
-            <label htmlFor="soccer" className='w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center'>축구</label>
-            <input type='radio' name='sports' id='soccer' value='축구'/>
-            <label htmlFor="tennis" className='w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center'>테니스</label>
-            <input type='radio' name='sports' id='tennis' value='테니스'/>
-            <label htmlFor="basketball" className='w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center'>농구</label>
-            <input type='radio' name='sports' id='basketball' value='농구'/>
-            <label htmlFor="directInput" className='w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center'>직접 입력</label>
-            <input type='radio' name='sports' id='directInput' value='직접 입력'/>
+          <div className='mt-2.5 flex gap-4'>
+            <label htmlFor="baseball" className='w-20 h-10 bg-[#F6F6F6] checked:bg-black rounded text-lg flex justify-center items-center relative '>야구</label>
+            <input type='radio' name='sports' id='baseball' value='야구' className='absolute opacity-0'/>
+            <label htmlFor="soccer" className='w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center relative'>축구</label>
+            <input type='radio' name='sports' id='soccer' value='축구' className='absolute opacity-0'/>
+            <label htmlFor="tennis" className='w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center relative'>테니스</label>
+            <input type='radio' name='sports' id='tennis' value='테니스' className='absolute opacity-0'/>
+            <label htmlFor="basketball" className='w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center relative'>농구</label>
+            <input type='radio' name='sports' id='basketball' value='농구' className='absolute opacity-0'/>
+            <label htmlFor="directInput" className='w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center relative'>직접 입력</label>
+            <input type='radio' name='sports' id='directInput' value='직접 입력' className='absolute opacity-0'/>
           </div>
         </div>
         <div>

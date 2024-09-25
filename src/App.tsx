@@ -15,7 +15,7 @@ const App = () => {
         <Route path="/" element={<Mainpage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/" element={<NotionAdd />} />
+        <Route path="/notionAdd" element={<NotionAdd />} />
       </Routes> 
     </div>
   );
