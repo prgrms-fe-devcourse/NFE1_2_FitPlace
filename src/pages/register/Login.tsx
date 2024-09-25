@@ -1,11 +1,12 @@
 import RegisterInput from "../../components/RegisterInput";
 import RegisterBtn from '../../components/RegisterBtn';
 import { Link } from "react-router-dom";
+import Button from "../../components/Button";
 
 const Login = () => {
   return (
-    <form className="flex flex-col justify-center items-center w-140 h-full border-solid border-2 border-neutral-400 px-5 bg-white">
-      <h2 className="text-heading mb-36">FitPlace</h2>
+    <div className="flex flex-col justify-center items-stratch w-140 h-full border-solid border-2 border-neutral-400 px-5 bg-white">
+      <h2 className="text-heading mb-36 font-black text-center">FitPlace</h2>
       <RegisterInput 
         type="text"
         placeholder="이메일"
@@ -16,12 +17,13 @@ const Login = () => {
         placeholder="비밀번호"
         margin="mb-4"
       />
-      <RegisterBtn 
-        text="로그인"
-        margin="mb-8"
+      <Button
+        label="로그인"
+        size="full"
+        color="green"
       />
-      <Link to={'/register'} className="text-placeholder">회원가입</Link>
-    </form>
+      <Link to={'/register'} className="text-placeholder mt-6 text-center">회원가입</Link>
+    </div>
   );
 };
 

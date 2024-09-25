@@ -3,6 +3,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Mainpage from "./pages/Mainpage";
 import Login from './pages/register/Login';
+import Register from './pages/register/Register';
 
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Mainpage />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes> 
     </div>
   );

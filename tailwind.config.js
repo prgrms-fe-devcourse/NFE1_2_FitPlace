@@ -13,7 +13,7 @@ export default {
       },
       colors: {
         primary: {
-          DEFAULT: "#AFE327",
+          DEFAULT: "#2bca43",
         },
         'placeholder': '#656565',
       },
