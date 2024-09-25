@@ -1,3 +1,4 @@
+import KakaoMap from "./KakaoMap";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Mainpage from "./pages/Mainpage";
@@ -14,7 +15,7 @@ const App = () => {
         <Route path="/" element={<Mainpage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/ranking" element={<Ranking_page />} />
+        <Route path="/ranking" element={<Ranking />} />
       </Routes>
     </div>
   );

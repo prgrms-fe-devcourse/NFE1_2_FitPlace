@@ -1,5 +1,5 @@
-import React from 'react';
-import KakaoMap from '../KakaoMap';  // KakaoMap 컴포넌트 임포트
+import React from "react";
+import KakaoMap from "../KakaoMap"; // KakaoMap 컴포넌트 임포트
 
 const LocationSetting = () => {
   return (
@@ -32,4 +32,3 @@ const LocationSetting = () => {
 };
 
 export default LocationSetting;
-
