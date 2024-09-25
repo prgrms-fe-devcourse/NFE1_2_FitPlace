@@ -6,7 +6,7 @@ import Search from "./pages/Search";
 
 const App = () => {
     return (
-        <div className="flex justify-center items-center h-screen bg-gray-100">
+        <div className="flex justify-center items-center h-screen bg-white-100">
             <Routes>
                 <Route path="/" element={<Mainpage />} />
                 <Route path="/search" element={<Search />} />

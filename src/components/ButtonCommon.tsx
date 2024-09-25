@@ -11,7 +11,7 @@ interface ButtonProps {
 type SizeClass = "small" | "mid" | "full";
 type ColorClass = "green" | "line" | "grey";
 
-const Button: React.FC<ButtonProps> = ({
+const ButtonCommon: React.FC<ButtonProps> = ({
     label,
     size = "mid",
     color = "green",
@@ -38,4 +38,4 @@ const Button: React.FC<ButtonProps> = ({
     );
 };
 
-export default Button;
+export default ButtonCommon;
