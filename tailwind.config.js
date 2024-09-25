@@ -13,9 +13,14 @@ export default {
       },
       colors: {
         primary: {
-          DEFAULT: "#2bca43",
+          DEFAULT: "#AFE327",
         },
+        'placeholder': '#656565',
       },
+      lineHeight: {
+        button: '1.11111em',
+        input: '1.44444em'
+      }
     },
   },
   plugins: [],
