@@ -1,20 +1,21 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Mainpage from "./pages/Mainpage";
-import Header from "./components/Header";
-import Login from './pages/register/Login';
-import Register from './pages/register/Register';
-
+import Login from "./pages/register/Login";
+import Register from "./pages/register/Register";
+import Ranking_page from "./pages/Ranking_page";
+import Location from "./pages/LocationSetting";
 
 const App = () => {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
-      <Header />
+    <div className="flex flex-col justify-center items-center min-h-screen bg-white">
       <Routes>
         <Route path="/" element={<Mainpage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-      </Routes> 
+        <Route path="/ranking" element={<Ranking_page />} />
+        <Route path="/map" element={<Location />} />
+      </Routes>
     </div>
   );
 };
