@@ -1,5 +1,7 @@
 import React from 'react';
 import arrowforward from "../assets/arrowforward.svg";
+import reactImg from "../assets/react.svg"
+import Button from "../components/Button";
 
 
 const NotionAdd = () => {
@@ -38,16 +40,18 @@ const NotionAdd = () => {
         <div>
           <p className='font-bold text-xl mt-6'>운동장소</p>
           <form action='/map' className='mt-2.5 border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] flex justify-between'>
-            <label htmlFor="selectLocation" className='text-[#9BA3AF] p-2.5 '>위치 선택</label>
+            <label htmlFor="selectLocation" className='text-[#9BA3AF] pl-2.5 pt-1.5 text-lg'>위치 선택</label>
             <button id='selectLocation'>
               <img src={arrowforward} alt="arrowforward" />
             </button>
           </form>
         </div>
-        <div>
-          <label htmlFor="meetImg" className='flex font-bold text-xl mt-6'>사진 등록</label>
-          <input type="file" id='meetImg' className='mt-2.5' />
+        <div className='mb-6'>
+          <p className='font-bold text-xl mt-6'>사진 등록</p>
+          <label   htmlFor='meetImg' className='w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-2.5'>+ 사진 업로드</label>
+          <input type="file" id='meetImg' className='absolute hidden' />
         </div>
+        <Button label="모임 등록" size="full" color="green"/>
       </form>    
     </div>
   );
