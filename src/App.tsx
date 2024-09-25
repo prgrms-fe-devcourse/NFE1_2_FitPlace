@@ -2,6 +2,7 @@ import KakaoMap from './KakaoMap'; // KakaoMap 컴포넌트 임포트 관련 코
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Mainpage from "./pages/Mainpage";
+import Login from './pages/register/Login';
 
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <Routes>
         <Route path="/" element={<Mainpage />} />
+        <Route path="/login" element={<Login />} />
       </Routes> 
     </div>
   );

@@ -8,7 +8,9 @@ export default {
       width: {
         140: "640px",
       },
-
+      fontSize: {
+        heading: '2.375em'
+      },
       colors: {
         primary: {
           DEFAULT: "#2bca43",
