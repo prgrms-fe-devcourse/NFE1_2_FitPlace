@@ -5,6 +5,7 @@ import favorite from '../assets/favorite.svg'
 import message from '../assets/quickreply.svg'
 import NotionItem from '../components/NotionItem';
 import Button from '../components/Button';
+import Header from '../components/Header';
 
 
 
@@ -14,28 +15,28 @@ const NotionPage = () => {
   const modalBackground = useRef();
 
   return (
-    <div className='bg-white w-[640px] h-full'>
-      <div id='container' className='m-5 relative'>
-              {
-                deleteModal &&
-                <div className='flex justify-center absolute w-full h-full backdrop-blur-sm items-center'>
-
-                <div className='w-[400px] h-[200px] flex justify-center items-center border-2 border-solid border-[#000000] rounded-xl bg-white' onClick={e => {
-                  if(e.target === modalBackground.current) {
-                    setDeleteModal(false);
-                  }
-                }} >
-                  
-                  <div>
-                    <p>게시글을 삭제할까요?</p>
-                    <div className='flex gap-5 mt-2'>
-                      <Button label='삭제' size='mid' color='green' />
-                      <Button label='취소' size='mid' color='green' onClick={() => setDeleteModal(false)} />
-                    </div>
+    <>
+     <Header />
+      <div className='bg-white w-[640px] h-full'>
+        <div id='container' className='m-5 relative'>
+          {
+            deleteModal &&
+            <div className='flex justify-center absolute w-full h-full backdrop-blur-sm items-center'>
+              <div className='w-[400px] h-[200px] flex justify-center items-center border-2 border-solid border-[#000000] rounded-xl bg-white' onClick={e => {
+                if(e.target === modalBackground.current) {
+                  setDeleteModal(false);
+                }
+              }} >  
+                <div>
+                  <p>게시글을 삭제할까요?</p>
+                  <div className='flex gap-5 mt-2'>
+                    <Button label='삭제' size='mid' color='green' />
+                    <Button label='취소' size='mid' color='green' onClick={() => setDeleteModal(false)} />
                   </div>
                 </div>
-                </div>
-              }
+              </div>
+          </div>
+            }
      
         <section>
           <div>
@@ -105,6 +106,10 @@ const NotionPage = () => {
         </div>
       </div>
     </div>
+
+
+    </>
+   
   );
 };
 

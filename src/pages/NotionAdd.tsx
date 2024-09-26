@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import arrowforward from "../assets/arrowforward.svg";
 import reactImg from "../assets/react.svg";
 import Button from "../components/Button";
 import Header from "../components/Header";
+import NotionCategory from "../components/NotionCategory";
 
 const NotionAdd = () => {
+
   return (
     <>
       <Header />
@@ -37,72 +39,8 @@ const NotionAdd = () => {
           </div>
           <div>
             <h3 className="font-bold text-xl mt-6">운동 종목</h3>
-            <div className="mt-2.5 flex gap-4">
-              <label
-                htmlFor="baseball"
-                className="w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center relative "
-              >
-                야구
-              </label>
-              <input
-                type="radio"
-                name="sports"
-                id="baseball"
-                value="야구"
-                className="absolute opacity-0"
-              />
-              <label
-                htmlFor="soccer"
-                className="w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center relative"
-              >
-                축구
-              </label>
-              <input
-                type="radio"
-                name="sports"
-                id="soccer"
-                value="축구"
-                className="absolute opacity-0"
-              />
-              <label
-                htmlFor="tennis"
-                className="w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center relative"
-              >
-                테니스
-              </label>
-              <input
-                type="radio"
-                name="sports"
-                id="tennis"
-                value="테니스"
-                className="absolute opacity-0"
-              />
-              <label
-                htmlFor="basketball"
-                className="w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center relative"
-              >
-                농구
-              </label>
-              <input
-                type="radio"
-                name="sports"
-                id="basketball"
-                value="농구"
-                className="absolute opacity-0"
-              />
-              <label
-                htmlFor="directInput"
-                className="w-20 h-10 bg-[#F6F6F6] rounded text-lg flex justify-center items-center relative"
-              >
-                직접 입력
-              </label>
-              <input
-                type="radio"
-                name="sports"
-                id="directInput"
-                value="직접 입력"
-                className="absolute opacity-0"
-              />
+            <div className="mt-2.5">
+            <NotionCategory />
             </div>
           </div>
           <div>
