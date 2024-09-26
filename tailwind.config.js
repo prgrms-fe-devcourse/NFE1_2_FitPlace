@@ -23,6 +23,9 @@ export default {
       lineHeight: {
         button: '1.11111em',
         input: '1.44444em'
+      },
+      padding: {
+        '100P': '100%'
       }
     },
   },
