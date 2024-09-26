@@ -24,7 +24,7 @@ const Button: React.FC<ButtonProps> = ({
   const sizeClasses: Record<SizeClass, string> = {
     small: "inline-block px-2 py-1 text-sm",
     mid: "inline-block px-4 py-2 text-sm",
-    full: "px-4 py-2 text-sm ",
+    full: "flex items-center justify-center w-full px-4 py-2 text-sm",
   };
   const colorClasses: Record<ColorClass, string> = {
     green: " bg-[#AFE327] text-[#333] hover:bg-[#C4F545]",
