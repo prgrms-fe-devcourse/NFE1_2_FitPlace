@@ -6,7 +6,7 @@ import Location from "./pages/LocationSetting";
 import ProfileTemplate from "./pages/profile/ProfileTemplate";
 import ProfileEdit from "./pages/profile/ProfileEdit";
 import ProfileImg from './pages/profile/ProfileImg'
-import ProfileNickname from "./pages/profile/ProfileNickName";
+import ProfileNickname from "./pages/profile/ProfileNickname";
 import ProfileDesc from "./pages/profile/ProfileDesc";
 import ProfileLocation from "./pages/profile/ProfileLocation";
 import SearchPage from "./pages/SearchPage";

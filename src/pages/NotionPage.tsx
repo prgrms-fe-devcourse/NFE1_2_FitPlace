@@ -1,6 +1,8 @@
 import React from 'react';
 import logo from '../assets/FitPlaceLogo.svg'
 import iconUser from '../assets/icon_user_profile.svg'
+import favorite from '../assets/favorite.svg'
+import message from '../assets/quickreply.svg'
 import NotionItem from '../components/NotionItem';
 import Button from '../components/Button';
 
@@ -72,7 +74,8 @@ const NotionPage = () => {
             <Button label="참가 신청하기" size="full" color="green"/>
           </div>
           <div>
-
+            <img src={favorite} alt="좋아요버튼" />
+            <img src={message} alt="메세지버튼" />
           </div>
         </div>
       </div>
