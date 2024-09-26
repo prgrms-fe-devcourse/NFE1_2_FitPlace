@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from '../assets/FitPlaceLogo.svg'
 import iconUser from '../assets/icon_user_profile.svg'
 import favorite from '../assets/favorite.svg'
@@ -9,6 +9,10 @@ import Button from '../components/Button';
 
 
 const NotionPage = () => {
+
+  const [deleteModal, setDeleteModal] = useState(false);
+
+
   return (
     <div className='bg-white w-[640px] h-full'>
       <div id='container' className='m-5'>
@@ -16,11 +20,16 @@ const NotionPage = () => {
           <div>
             <div className='flex justify-between'>
               <p className='text-sm text-[#AFE327]'>모집중!</p>
-              <div className='text-xs text-[#898989]'>
-                <button>수정</button>|<button>삭제</button>
+              <div className='text-xs text-[#898989] flex gap-2'>
+                <button>수정</button>|<button onClick={()=> setDeleteModal(true)}>삭제</button>
               </div>            
             </div>
-            
+            <div className='w-full h-full fixed flex justify-center items-center bg-black opacity-50'>
+              {
+                deleteModal &&
+                <div></div>
+              }
+            </div>
             <h3 className='text-2xl font-bold'>풋살 4 vs 4 모집</h3>
             <p className='text-lg text-[#666666] pt-2.5'>풋살</p>
           </div>
@@ -69,13 +78,13 @@ const NotionPage = () => {
             {/* 지도 자리 */}
           </div>
         </section>
-        <div className='mt-5'>
-          <div className='w-9/12'>
+        <div className='mt-5 flex justify-between'>
+          <div className='w-10/12'>
             <Button label="참가 신청하기" size="full" color="green"/>
           </div>
-          <div>
-            <img src={favorite} alt="좋아요버튼" />
-            <img src={message} alt="메세지버튼" />
+          <div className='flex gap-2.5'>
+            <button><img src={favorite} alt="좋아요버튼" /></button>
+            <button><img src={message} alt="메세지버튼" /></button>
           </div>
         </div>
       </div>
