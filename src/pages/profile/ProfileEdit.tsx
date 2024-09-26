@@ -3,7 +3,7 @@ import Button from '../../components/Button';
 
 const ProfileEdit = () => {
   return (
-    <div className="w-140 min-h-screen bg-white p-3 border flex flex-col justify-center">
+    <div className="w-140 min-h-screen bg-white p-3 flex flex-col justify-center">
       {/* 프로필 수정 링크 상단 */}
       <div className='flex flex-col justify-center items-stretch gap-6'>
         {/* 닉네임 수정 */}
@@ -23,7 +23,7 @@ const ProfileEdit = () => {
         </Link>
 
         {/* 프로필 소개글 수정 */}
-        <Link to={'./description'}>
+        <Link to={'./desc'}>
           <div className='flex justify-between items-center px-3 py-2.5 border border-profileBorder rounded'>
             <p className='text-placeholder text-lg'>소개글</p>
             <img src="/src/assets/LinkIcon.svg" alt="소개글 수정하기" />

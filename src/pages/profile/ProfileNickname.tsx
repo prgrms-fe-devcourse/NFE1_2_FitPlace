@@ -2,7 +2,7 @@ import Button from "../../components/Button";
 
 const ProfileNickname = () => {
   return (
-    <div className="w-140 min-h-screen bg-white p-3 border flex flex-col justify-start relative">
+    <div className="w-140 min-h-screen bg-white p-3 flex flex-col justify-start relative">
       {/* 상단 안내문구 */}
       <div className="edit__head-top">
         <p className="font-bold text-xl">닉네임을 입력해주세요.</p>

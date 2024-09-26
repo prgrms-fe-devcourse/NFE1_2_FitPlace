@@ -6,7 +6,7 @@ const ProfileDesc = () => {
   const [textValue, setTextValue] = useState('')
 
   return (
-    <div className="w-140 min-h-screen bg-white p-3 border flex flex-col justify-start relative">
+    <div className="w-140 min-h-screen bg-white p-3 flex flex-col justify-start relative">
       {/* 상단 안내문구 */}
       <div className="edit__head-top">
         <p className="font-bold text-xl">소개글을 작성해주세요.</p>

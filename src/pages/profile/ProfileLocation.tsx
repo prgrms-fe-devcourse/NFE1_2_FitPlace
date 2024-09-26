@@ -16,14 +16,14 @@ const ProfileLocation = () => {
   }
 
   return (
-    <div className="w-140 min-h-screen bg-white p-3 border flex flex-col justify-start relative">
+    <div className="w-140 min-h-screen bg-white p-3 flex flex-col justify-start relative">
       {/* 상단 안내문구 */}
       <div className="edit__head-top">
         <p className="font-bold text-xl">살고 있는 지역을 선택해주세요.</p>
       </div>
 
       {/* 하단 입력 영역 */}
-      <div className="edit__head-btm mt-6 h-[calc(68vh)] bg-gray-100 py-6">
+      <div className="edit__head-btm mt-6 h-[calc(68vh)] bg-gray-100">
         <ul className="flex justify-center items-start h-full">
           {/* 광역시, 도 선택 */}
           <li className="w-full text-center text-xl text-locationColor h-full overflow-scroll" style={{scrollbarWidth: "none"}}>
