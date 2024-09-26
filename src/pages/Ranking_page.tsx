@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import Ranking_Title from "../assets/Ranking/Ranking_title.svg";
 import TestImg from "../assets/Ranking/Testimg.svg";
 import Bg from "../assets/Ranking/Ranking_bg.jpg";
+import Button from "../components/Button";
 
 const Ranking_page = () => {
   return (
