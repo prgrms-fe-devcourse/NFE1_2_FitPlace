@@ -3,7 +3,8 @@ import Header from "../components/Header";
 import Ranking_Title from "../assets/Ranking/Ranking_title.svg";
 import TestImg from "../assets/Ranking/Testimg.svg";
 import Bg from "../assets/Ranking/Ranking_bg.jpg";
-import Button from "../components/Button";
+import Rank from "../components/Rank";
+import profile from "../assets/icon_user_profile.svg";
 
 const Ranking_page = () => {
   return (
@@ -40,9 +41,14 @@ const Ranking_page = () => {
             <p className="text-sm">운동횟수</p>
           </div>
         </section>
-        <section>
-          <div className="w-full border-4 border-gray-200 bg-white h-200 my-10 rounded-3xl shadow-2xl"></div>
-        </section>
+
+        <div className="w-[600px] border-4 border-gray-200 bg-white h-[780px] my-10 rounded-3xl shadow-2xl p-5 m-auto">
+          <Rank name={"추원호"} img={profile} count="10" />
+          <Rank name={"한승철"} img={profile} count="9" />
+          <Rank name={"강선영"} img={profile} count="9" />
+          <Rank name={"한지원"} img={profile} count="8" />
+          <Rank name={"차주영"} img={profile} count="7" />
+        </div>
       </div>
     </div>
   );

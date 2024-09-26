@@ -11,9 +11,7 @@ export default {
       width: {
         140: "640px",
       },
-      height: {
-        200: "750px",
-      },
+
       fontSize: {
         heading: "2.375em",
       },
