@@ -10,12 +10,11 @@ import ProfileNickname from "./pages/profile/ProfileNickName";
 import ProfileDesc from "./pages/profile/ProfileDesc";
 import ProfileLocation from "./pages/profile/ProfileLocation";
 import SearchPage from "./pages/SearchPage";
-import Header from "./components/Header";
-import Login from './pages/register/Login';
+import NotificationPage from "./pages/NotificationPage"; 
+import Header from "./components/Header"; 
+import Login from './pages/register/Login'; 
 import Register from './pages/register/Register';
-import NotionAdd from './pages/NotionAdd';
-
-
+import NotionAdd from './pages/NotionAdd'; 
 
 const App = () => {
   return (
@@ -33,7 +32,8 @@ const App = () => {
         <Route path="/ranking" element={<Ranking_page />} />
         <Route path="/map" element={<Location />} />
         <Route path="/search" element={<SearchPage />} />
-        <Route path="/notionAdd" element={<NotionAdd />} />
+        <Route path="/notifications" element={<NotificationPage />} /> 
+        <Route path="/notionAdd" element={<NotionAdd />} /> 
       </Routes> 
     </div>
   );
