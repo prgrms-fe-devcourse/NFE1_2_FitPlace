@@ -16,7 +16,7 @@ export default {
           DEFAULT: "#2bca43",
         },
         'placeholder': '#656565',
-        'containerColor': '#f6f6f6',
+        // 'containerColor': '#f6f6f6',
         'profileBorder': '#e8e8e8'
       },
       lineHeight: {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../../components/Button';
 
@@ -49,6 +48,7 @@ const ProfileEdit = () => {
           color='green'
         />
         
+        {/* 추후 기능 추가할거라 일단 LINK안넣고 p태그로 했어요 */}
         <p className='mt-8 text-lg text-placeholder'>건너뛰기</p>
       </div>
     </div>
