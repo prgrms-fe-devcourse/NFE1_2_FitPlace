@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import logo from '../assets/FitPlaceLogo.svg'
 import iconUser from '../assets/icon_user_profile.svg'
 import favorite from '../assets/favorite.svg'
-import message from '../assets/quickreply.svg'
+import commentIcon from '../assets/commentIcon.svg'
 import NotionItem from '../components/NotionItem';
 import Button from '../components/Button';
 import Header from '../components/Header';
@@ -100,8 +100,12 @@ const NotionPage = () => {
             <Button label="참가 신청하기" size="full" color="green"/>
           </div>
           <div className='flex gap-2.5'>
-            <button><img src={favorite} alt="좋아요버튼" /></button>
-            <button><img src={message} alt="메세지버튼" /></button>
+            <div className='w-8'>
+              <button><img src={favorite} alt="좋아요버튼" /></button>
+            </div>
+            <div className='w-8'>
+              <button><img src={commentIcon} alt="메세지버튼" /></button>
+            </div>
           </div>
         </div>
       </div>
