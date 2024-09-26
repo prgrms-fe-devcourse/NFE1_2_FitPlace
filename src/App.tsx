@@ -6,6 +6,7 @@ import Register from "./pages/register/Register";
 import Ranking_page from "./pages/Ranking_page";
 import Location from "./pages/LocationSetting";
 import SearchPage from "./pages/SearchPage";
+import NotificationPage from "./pages/NotificationPage"; 
 
 const App = () => {
     return (
@@ -17,6 +18,8 @@ const App = () => {
                 <Route path="/ranking" element={<Ranking_page />} />
                 <Route path="/map" element={<Location />} />
                 <Route path="/search" element={<SearchPage />} />
+                <Route path="/location" element={<Location />} />
+                <Route path="/notifications" element={<NotificationPage />} />
             </Routes>
         </div>
     );
