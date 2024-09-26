@@ -40,7 +40,9 @@ const CommentPage = (): JSX.Element => {
         <>
             <div className="relative bg-white w-140 mx-auto min-h-screen flex flex-col">
                 <div className="flex-grow p-3">
-                    <div className="text-sm text-gray-400 mb-1">모집중!</div>
+                    <div className="text-sm text-[#AFE327] mb-1 font-bold">
+                        모집중!
+                    </div>
                     <div className="text-xl font-bold mb-4">
                         풋살 4 vs 4 모집 ⚽
                     </div>
