@@ -5,36 +5,18 @@ const ProfileNickname = () => {
     <div className="w-140 min-h-screen bg-white p-3 border flex flex-col justify-start relative">
       {/* 상단 안내문구 */}
       <div className="edit__head-top">
-        <p className="font-bold text-xl">프로필 사진을 등록해주세요.</p>
-        <p className="font-normal text-sm mt-2">
-          최대 2장까지 등록할 수 있어요.
-        </p>
+        <p className="font-bold text-xl">닉네임을 입력해주세요.</p>
       </div>
 
       {/* 하단 입력 영역 */}
       <div className="edit__head-btm mt-6">
-        <ul className="flex justify-start items-start flex-wrap gap-4">
-          {/* 이미지 업로드 예시 */}
-          <li className="w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P">
-            <img src="/src/assets/defaultProfileImg.svg" alt="예시이미지" className="w-full h-full object-cover absolute" />
-            {/* 삭제...버튼...? */}
-            <p className="absolute top-0 right-0">❌</p>
-          </li>
-          {/* 이미지 업로드 예시 */}
-          <li className="w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P">
-            <img src="/src/assets/defaultProfileImg.svg" alt="예시이미지" className="w-full h-full object-cover absolute" />
-          </li>
-          {/* 이미지 업로드 버튼 */}
-          <li className="bg-gray-100 hover:bg-gray-200 w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P">
-            <label
-              htmlFor="imgUploadInput"
-              className="w-full h-full absolute flex justify-center items-center cursor-pointer"
-            >
-              <p className="text-greenColor font-bold text-xl">+ 사진 업로드</p>
-            </label>
-            <input type="file" name="" id="imgUploadInput" className="hidden" />
-          </li>
-        </ul>
+        <input
+          type="text"
+          name=""
+          id=""
+          placeholder="입력해주세요"
+          className="px-4 py-5 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none rounded-lg shadow w-full font-bold text-xl placeholder:text-greenColor"
+        />
       </div>
 
       {/* 하단 저장 버튼 */}

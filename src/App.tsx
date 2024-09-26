@@ -7,7 +7,8 @@ import Ranking_page from "./pages/Ranking_page";
 import Location from "./pages/LocationSetting";
 import ProfileTemplate from "./pages/profile/ProfileTemplate";
 import ProfileEdit from "./pages/profile/ProfileEdit";
-import ProfileNickname from "./pages/profile/ProfileNickname";
+import ProfileImg from './pages/profile/ProfileImg'
+import ProfileNickname from "./pages/profile/ProfileNickName";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/profile" element={<ProfileTemplate />} />
         <Route path="/profile/edit" element={<ProfileEdit />} />
         <Route path="/profile/edit/nickname" element={<ProfileNickname />} />
+        <Route path="/profile/edit/img" element={<ProfileImg />} />
         <Route path="/ranking" element={<Ranking_page />} />
         <Route path="/map" element={<Location />} />
       </Routes>
