@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import logo from '../assets/FitPlaceLogo.svg'
 import iconUser from '../assets/icon_user_profile.svg'
 import favorite from '../assets/favorite.svg'
@@ -11,11 +11,32 @@ import Button from '../components/Button';
 const NotionPage = () => {
 
   const [deleteModal, setDeleteModal] = useState(false);
-
+  const modalBackground = useRef();
 
   return (
     <div className='bg-white w-[640px] h-full'>
-      <div id='container' className='m-5'>
+      <div id='container' className='m-5 relative'>
+              {
+                deleteModal &&
+                <div className='flex justify-center absolute w-full h-full backdrop-blur-sm items-center'>
+
+                <div className='w-[400px] h-[200px] flex justify-center items-center border-2 border-solid border-[#000000] rounded-xl bg-white' onClick={e => {
+                  if(e.target === modalBackground.current) {
+                    setDeleteModal(false);
+                  }
+                }} >
+                  
+                  <div>
+                    <p>게시글을 삭제할까요?</p>
+                    <div className='flex gap-5 mt-2'>
+                      <Button label='삭제' size='mid' color='green' />
+                      <Button label='취소' size='mid' color='green' onClick={() => setDeleteModal(false)} />
+                    </div>
+                  </div>
+                </div>
+                </div>
+              }
+     
         <section>
           <div>
             <div className='flex justify-between'>
@@ -24,12 +45,7 @@ const NotionPage = () => {
                 <button>수정</button>|<button onClick={()=> setDeleteModal(true)}>삭제</button>
               </div>            
             </div>
-            <div className='w-full h-full fixed flex justify-center items-center bg-black opacity-50'>
-              {
-                deleteModal &&
-                <div></div>
-              }
-            </div>
+            
             <h3 className='text-2xl font-bold'>풋살 4 vs 4 모집</h3>
             <p className='text-lg text-[#666666] pt-2.5'>풋살</p>
           </div>

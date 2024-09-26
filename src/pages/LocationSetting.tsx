@@ -8,7 +8,7 @@ const LocationSetting = () => {
       <Header />
       <div className="w-140 h-full mx-auto bg-white">
         {/* 상단 제목 */}
-        <div className="pt-8 p-4">
+        <div className="pt-5 px-4 pb-2">
           <h2 className="text-xl font-bold">장소를 선택해주세요.</h2>
         </div>
 
