@@ -31,7 +31,7 @@ const ProfileEdit = () => {
         </Link>
 
         {/* 프로필 지역 수정 */}
-        <Link to={'./locate'}>
+        <Link to={'./location'}>
           <div className='flex justify-between items-center px-3 py-2.5 border border-profileBorder rounded'>
             <p className='text-placeholder text-lg'>지역 선택</p>
             <img src="/src/assets/LinkIcon.svg" alt="지역 선택 수정하기" />

@@ -17,6 +17,7 @@ export default {
         },
         'greenColor': '#AFE327',
         'placeholder': '#656565',
+        'locationColor': '#c2c2c2',
         // 'containerColor': '#f6f6f6',
         'profileBorder': '#e8e8e8'
       },

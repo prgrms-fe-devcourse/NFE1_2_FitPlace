@@ -10,6 +10,7 @@ import ProfileEdit from "./pages/profile/ProfileEdit";
 import ProfileImg from './pages/profile/ProfileImg'
 import ProfileNickname from "./pages/profile/ProfileNickName";
 import ProfileDesc from "./pages/profile/ProfileDesc";
+import ProfileLocation from "./pages/profile/ProfileLocation";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/profile/edit/nickname" element={<ProfileNickname />} />
         <Route path="/profile/edit/img" element={<ProfileImg />} />
         <Route path="/profile/edit/desc" element={<ProfileDesc />} />
+        <Route path="/profile/edit/location" element={<ProfileLocation />} />
         <Route path="/ranking" element={<Ranking_page />} />
         <Route path="/map" element={<Location />} />
       </Routes>
