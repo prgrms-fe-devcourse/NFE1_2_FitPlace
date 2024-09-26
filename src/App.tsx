@@ -14,6 +14,8 @@ import Header from "./components/Header";
 import Login from "./pages/register/Login";
 import Register from "./pages/register/Register";
 import NotionAdd from "./pages/NotionAdd";
+import Navbar from "./components/Navbar";
+import NotificationPage from "./pages/NotificationPage";
 import CommentPage from "./pages/CommentPage";
 
 const App = () => {
@@ -38,11 +40,15 @@ const App = () => {
                 <Route path="/ranking" element={<Ranking_page />} />
                 <Route path="/map" element={<Location />} />
                 <Route path="/search" element={<SearchPage />} />
+                <Route path="/notifications" element={<NotificationPage />} />
                 <Route path="/notionAdd" element={<NotionAdd />} />
-
                 <Route path="/notionAdd/comments" element={<CommentPage />} />
-                {/* <Route path="/notionAdd/:postId/comments" element={<CommentPage  />} /> */}
+                {/* 
+                ~ 추후 수정 필요(?) ~ 
+                <Route path="/notionAdd/:postId/comments" element={<CommentPage  />} />   
+                */}
             </Routes>
+            <Navbar />
         </div>
     );
 };

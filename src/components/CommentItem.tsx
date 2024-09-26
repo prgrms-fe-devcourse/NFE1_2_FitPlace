@@ -1,16 +1,28 @@
 import React from "react";
 import iconUser from "../assets/defaultProfileImg.svg";
 
-const CommentItem = () => {
+interface CommentProps {
+    item: {
+        comment: string;
+        author: {
+            fullName?: string; // optional로 변경
+        };
+        post: string;
+    };
+}
+const CommentItem = ({ item }: CommentProps): JSX.Element => {
     return (
-        <div>
-            {" "}
-            <div className="mb-6 w-10 rounded-full overflow-hidden ">
+        <div className="flex items-center w-full">
+            <div className="w-10 mr-4">
                 <img
                     src={iconUser}
                     alt="search-icon"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-full overflow-hidden"
                 />
+            </div>
+            <div className="">
+                <div className="text-sm mb-2">{item.author.fullName}</div>
+                <div className="text-base">{item.comment}</div>
             </div>
         </div>
     );
