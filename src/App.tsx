@@ -5,8 +5,6 @@ import Ranking_page from "./pages/Ranking_page";
 import Location from "./pages/LocationSetting";
 import ProfileTemplate from "./pages/profile/ProfileTemplate";
 import ProfileEdit from "./pages/profile/ProfileEdit";
-import ProfileImg from "./pages/profile/ProfileImg";
-import ProfileNickname from "./pages/profile/ProfileNickname";
 import ProfileDesc from "./pages/profile/ProfileDesc";
 import ProfileLocation from "./pages/profile/ProfileLocation";
 import SearchPage from "./pages/SearchPage";
@@ -16,6 +14,10 @@ import Register from "./pages/register/Register";
 import NotionAdd from "./pages/NotionAdd";
 import Navbar from "./components/Navbar";
 import NotificationPage from "./pages/NotificationPage";
+import NotionPage from "./pages/NotionPage";
+import ProfileNickname from "./pages/profile/ProfileNickname";
+import ProfileImg from "./pages/profile/ProfileImg";
+
 import CommentPage from "./pages/CommentPage";
 
 const App = () => {
@@ -42,13 +44,14 @@ const App = () => {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/notifications" element={<NotificationPage />} />
                 <Route path="/notionAdd" element={<NotionAdd />} />
-                <Route path="/notionAdd/comments" element={<CommentPage />} />
+                <Route path="/notion" element={<NotionPage />} />
+
+                <Route path="/notion/comments" element={<CommentPage />} />
                 {/* 
                 ~ 추후 수정 필요(?) ~ 
-                <Route path="/notionAdd/:postId/comments" element={<CommentPage  />} />   
+                <Route path="/notion/:postId/comments" element={<CommentPage  />} />   
                 */}
             </Routes>
-            <Navbar />
         </div>
     );
 };
