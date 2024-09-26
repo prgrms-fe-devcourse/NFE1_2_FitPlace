@@ -7,6 +7,7 @@ import Ranking_page from "./pages/Ranking_page";
 import Location from "./pages/LocationSetting";
 import ProfileTemplate from "./pages/profile/ProfileTemplate";
 import ProfileEdit from "./pages/profile/ProfileEdit";
+import ProfileNickname from "./pages/profile/ProfileNickname";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<ProfileTemplate />} />
         <Route path="/profile/edit" element={<ProfileEdit />} />
+        <Route path="/profile/edit/nickname" element={<ProfileNickname />} />
         <Route path="/ranking" element={<Ranking_page />} />
         <Route path="/map" element={<Location />} />
       </Routes>

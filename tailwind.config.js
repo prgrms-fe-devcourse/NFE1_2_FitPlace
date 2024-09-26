@@ -15,6 +15,7 @@ export default {
         primary: {
           DEFAULT: "#2bca43",
         },
+        'greenColor': '#AFE327',
         'placeholder': '#656565',
         // 'containerColor': '#f6f6f6',
         'profileBorder': '#e8e8e8'
