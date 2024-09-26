@@ -1,5 +1,5 @@
 import React from "react";
-import iconUser from "../assets/icon_user_profile.svg";
+import iconUser from "../assets/defaultProfileImg.svg";
 
 interface SearchUserItemProps {
     user: string;
