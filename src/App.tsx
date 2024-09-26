@@ -8,6 +8,7 @@ import Header from "./components/Header";
 import Login from "./pages/register/Login";
 import Register from "./pages/register/Register";
 import NotionAdd from "./pages/NotionAdd";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/notionAdd" element={<NotionAdd />} />
       </Routes>
+      <Navbar />
     </div>
   );
 };
