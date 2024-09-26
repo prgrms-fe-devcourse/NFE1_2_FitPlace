@@ -18,14 +18,14 @@ const ProfileImg = () => {
           <li className="w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P">
             <img src="/src/assets/defaultProfileImg.svg" alt="예시이미지" className="w-full h-full object-cover absolute" />
             {/* 삭제...버튼...? */}
-            <p className="absolute top-0 right-0">❌</p>
+            <p className="absolute top-0 right-0 cursor-pointer">❌</p>
           </li>
           
           {/* 이미지 업로드 예시 */}
           <li className="w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P">
             <img src="/src/assets/defaultProfileImg.svg" alt="예시이미지" className="w-full h-full object-cover absolute" />
             {/* 삭제...버튼...? */}
-            <p className="absolute top-0 right-0">❌</p>
+            <p className="absolute top-0 right-0 cursor-pointer">❌</p>
           </li>
 
           {/* 이미지 업로드 버튼 */}
