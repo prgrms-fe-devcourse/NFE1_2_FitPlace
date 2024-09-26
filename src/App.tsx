@@ -15,6 +15,9 @@ import Login from "./pages/register/Login";
 import Register from "./pages/register/Register";
 import NotionAdd from "./pages/NotionAdd";
 import Navbar from "./components/Navbar";
+import NotificationPage from "./pages/NotificationPage"; 
+
+
 
 const App = () => {
   return (
@@ -32,6 +35,7 @@ const App = () => {
         <Route path="/ranking" element={<Ranking_page />} />
         <Route path="/map" element={<Location />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/notifications" element={<NotificationPage />} /> 
         <Route path="/notionAdd" element={<NotionAdd />} />
       </Routes>
       <Navbar />
