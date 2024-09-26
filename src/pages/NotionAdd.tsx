@@ -51,7 +51,7 @@ const NotionAdd = () => {
           <label   htmlFor='meetImg' className='w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-2.5'>+ 사진 업로드</label>
           <input type="file" id='meetImg' className='absolute hidden' />
         </div>
-        <Button label="모임 등록" size="mid" color="green"/>
+        <Button label="모임 등록" size="full" color="green"/>
       </form>    
     </div>
   );
