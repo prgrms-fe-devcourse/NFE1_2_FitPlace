@@ -36,7 +36,7 @@ const ProfileImg = () => {
             >
               <p className="text-greenColor font-bold text-xl">+ 사진 업로드</p>
             </label>
-            <input type="file" name="" id="imgUploadInput" className="hidden" />
+            <input type="file" name="" id="imgUploadInput" className="hidden" accept="image/jpeg, image/png, image/webp"/>
           </li>
         </ul>
       </div>
