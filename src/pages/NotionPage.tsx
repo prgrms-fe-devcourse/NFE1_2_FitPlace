@@ -110,10 +110,7 @@ const NotionPage = () => {
         </div>
       </div>
     </div>
-
-
-    </>
-   
+    </>  
   );
 };
 

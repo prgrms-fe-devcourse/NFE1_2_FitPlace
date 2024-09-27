@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Search from "../assets/Search.svg";
+
 interface SearchBarProps {
     placeholder?: string;
 }
 const Search_bar: React.FC<SearchBarProps> = ({ placeholder }) => {
+
     return (
         <div className="relative w-full">
             <img
