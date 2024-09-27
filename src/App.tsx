@@ -20,13 +20,7 @@ import ProfileImg from "./pages/profile/ProfileImg";
 
 import CommentPage from "./pages/CommentPage";
 
-import axios from "axios";
-
 const App = () => {
-  axios.defaults.baseURL = 'https://kdt.frontend.5th.programmers.co.kr:5009';
-  axios.defaults.withCredentials = true;
-
-
     return (
         <div className="flex flex-col justify-center items-center min-h-screen bg-white">
             <Routes>

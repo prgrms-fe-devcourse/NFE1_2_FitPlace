@@ -15,13 +15,13 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const handleLogin = () => {
-    axios.post('/login', {
+    axios.post('https://kdt.frontend.5th.programmers.co.kr:5009/login', {
       email: email,
       password: password
     })
     .then(res => {
         if(res.status === 200) {
-          const { accessToken } = res.data.token
+          const { accessToken } = res.data
           setLoginError(false)
           axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
           dispatch(initializeUser(res.data.user))
