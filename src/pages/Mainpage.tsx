@@ -1,12 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Search from "../assets/Search.svg";
 import Popular_sports from "../components/Popular_sports";
 import Health_post from "../components/Health_post";
 import Search_bar from "../components/Search_bar";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Mainpage = () => {
+  const [channel, setChannel] = useState([]);
+
+  const Popular_Channel = async () => {
+    try {
+      const response = await axios.get(
+        "https://kdt.frontend.5th.programmers.co.kr:5009/channels"
+      );
+      setChannel(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    Popular_Channel();
+  }, []);
+
+  useEffect(() => {
+    console.log(channel);
+  }, [channel]);
+
+  const Sort_Channel = channel.sort((a, b) => b.posts.length - a.posts.length); //post가 많은 순서대로 정렬.
+  useEffect(() => {
+    console.log(Sort_Channel);
+  }, []);
+
   return (
     <>
       <Header />
@@ -23,10 +50,6 @@ const Mainpage = () => {
             <Popular_sports name={"축구"} />
             <Popular_sports name={"야구"} />
             <Popular_sports name={"헬스"} />
-          </div>
-          <div className="flex mx-24">
-            <Popular_sports name={"런닝"} />
-            <Popular_sports name={"농구"} />
           </div>
         </section>
         <section>
