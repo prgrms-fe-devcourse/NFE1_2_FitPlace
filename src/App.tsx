@@ -13,35 +13,47 @@ import Login from "./pages/register/Login";
 import Register from "./pages/register/Register";
 import NotionAdd from "./pages/NotionAdd";
 import Navbar from "./components/Navbar";
-import NotificationPage from "./pages/NotificationPage"; 
+import NotificationPage from "./pages/NotificationPage";
 import NotionPage from "./pages/NotionPage";
 import ProfileNickname from "./pages/profile/ProfileNickname";
 import ProfileImg from "./pages/profile/ProfileImg";
 
-
+import CommentPage from "./pages/CommentPage";
 
 const App = () => {
-  return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-white">
-      <Routes>
-        <Route path="/" element={<Mainpage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<ProfileTemplate />} />
-        <Route path="/profile/edit" element={<ProfileEdit />} />
-        <Route path="/profile/edit/nickname" element={<ProfileNickname />} />
-        <Route path="/profile/edit/img" element={<ProfileImg />} />
-        <Route path="/profile/edit/desc" element={<ProfileDesc />} />
-        <Route path="/profile/edit/location" element={<ProfileLocation />} />
-        <Route path="/ranking" element={<Ranking_page />} />
-        <Route path="/map" element={<Location />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/notifications" element={<NotificationPage />} /> 
-        <Route path="/notionAdd" element={<NotionAdd />} />
-        <Route path="/notion" element={<NotionPage />} />
-      </Routes> 
-    </div>
-  );
+    return (
+        <div className="flex flex-col justify-center items-center min-h-screen bg-white">
+            <Routes>
+                <Route path="/" element={<Mainpage />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/profile" element={<ProfileTemplate />} />
+                <Route path="/profile/edit" element={<ProfileEdit />} />
+                <Route
+                    path="/profile/edit/nickname"
+                    element={<ProfileNickname />}
+                />
+                <Route path="/profile/edit/img" element={<ProfileImg />} />
+                <Route path="/profile/edit/desc" element={<ProfileDesc />} />
+                <Route
+                    path="/profile/edit/location"
+                    element={<ProfileLocation />}
+                />
+                <Route path="/ranking" element={<Ranking_page />} />
+                <Route path="/map" element={<Location />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/notifications" element={<NotificationPage />} />
+                <Route path="/notionAdd" element={<NotionAdd />} />
+                <Route path="/notion" element={<NotionPage />} />
+
+                <Route path="/notion/comments" element={<CommentPage />} />
+                {/* 
+                ~ 추후 수정 필요(?) ~ 
+                <Route path="/notion/:postId/comments" element={<CommentPage  />} />   
+                */}
+            </Routes>
+        </div>
+    );
 };
 
 export default App;
