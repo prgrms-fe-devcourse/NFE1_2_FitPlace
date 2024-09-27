@@ -29,10 +29,12 @@ const Mainpage = () => {
     console.log(channel);
   }, [channel]);
 
-  const Sort_Channel = channel.sort((a, b) => b.posts.length - a.posts.length); //post가 많은 순서대로 정렬.
+  const Sort_Channel = channel
+    .sort((a, b) => b.posts.length - a.posts.length)
+    .slice(0, 5); //post가 많은 순서대로 정렬.
   useEffect(() => {
     console.log(Sort_Channel);
-  }, []);
+  }, [Sort_Channel]);
 
   return (
     <>
@@ -44,14 +46,21 @@ const Mainpage = () => {
             <Search_bar placeholder="검색" />
           </button>
         </Link>
-        <section className="mt-11">
-          <p className="font-bold mt-11 text-xl mb-3">인기종목</p>
-          <div className="flex">
-            <Popular_sports name={"축구"} />
-            <Popular_sports name={"야구"} />
-            <Popular_sports name={"헬스"} />
-          </div>
-        </section>
+        {Sort_Channel.length > 0 && (
+          <section className="mt-11">
+            <p className="font-bold mt-11 text-xl mb-3">인기종목</p>
+            <div className="flex">
+              <Popular_sports name={Sort_Channel[0].name} />
+              <Popular_sports name={Sort_Channel[1].name} />
+              <Popular_sports name={Sort_Channel[2].name} />
+            </div>
+            <div className="flex mx-24">
+              <Popular_sports name={Sort_Channel[3].name} />
+              <Popular_sports name={Sort_Channel[4].name} />
+            </div>
+          </section>
+        )}
+
         <section>
           <p className="font-bold mt-11 text-xl mb-3">인기 모임</p>
           <div className="h-1/2">
