@@ -9,6 +9,7 @@ import axios from "axios";
 
 const Mainpage = () => {
   const [channel, setChannel] = useState([]);
+  const [post, setPost] = useState([]);
 
   const Popular_Channel = async () => {
     try {
@@ -21,20 +22,33 @@ const Mainpage = () => {
     }
   };
 
-  useEffect(() => {
-    Popular_Channel();
-  }, []);
+  const Popular_post = async () => {
+    try {
+      const response = await axios.get(
+        "https://kdt.frontend.5th.programmers.co.kr:5009/posts"
+      );
+      setPost(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    console.log(channel);
-  }, [channel]);
+    Popular_Channel();
+    Popular_post();
+  }, []);
 
   const Sort_Channel = channel
     .sort((a, b) => b.posts.length - a.posts.length)
     .slice(0, 5); //post가 많은 순서대로 정렬.
+
+  const Sort_Post = post
+    .sort((a, b) => b.likes.length - a.likes.length)
+    .slice(0, 6);
+
   useEffect(() => {
-    console.log(Sort_Channel);
-  }, [Sort_Channel]);
+    console.log("post:", Sort_Post);
+  }, [Sort_Post]);
 
   return (
     <>
@@ -83,12 +97,16 @@ const Mainpage = () => {
 
         <section>
           <p className="font-bold mt-11 text-xl mb-3">인기 모임</p>
+
           <div className="h-1/2">
-            <Health_post title={"러닝 크루 모집"} />
-            <Health_post title={"배드민턴 치실분"} />
-            <Health_post title={"서로 헬스 보조해요!"} />
-            <Health_post title={"4:4 풋살 인원 구합니다"} />
-            <Health_post title={"1:1 농구 해요!"} />
+            {Sort_Post.length > 0 &&
+              Sort_Post.map((post, index) => (
+                <Health_post
+                  title={post.title}
+                  channel_name={post.channel.name}
+                  key={index}
+                />
+              ))}
           </div>
         </section>
       </div>
