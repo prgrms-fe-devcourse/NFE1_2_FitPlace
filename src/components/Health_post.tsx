@@ -19,10 +19,10 @@ const Health_post = ({ title, channel_name }) => {
       <div className="mb-2 text-sm flex">
         <p className="text-lime-400 font-bold">모집 중!</p>
         <span className="mx-3 opacity-5">|</span>
-        2024.09.13 19:00 ~ 20:00
+        {titleObject.meetingTime || "기간 없음"}
       </div>
       <div className="text-sm flex">
-        양재 시민의 숲역
+        {titleObject.meetingSpot || "장소 없음"}
         <span className="mx-3 opacity-5">|</span>
         {titleObject.meetingCapacity || 0}명 / 6명
         <span className="mx-3 opacity-5">|</span>
