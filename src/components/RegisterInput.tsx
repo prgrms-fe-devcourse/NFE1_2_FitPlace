@@ -4,6 +4,8 @@ interface LoginProps {
   margin?: string
   minLength?: number
   maxLength?: number
+  value: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const inputStyle = {
@@ -16,6 +18,7 @@ const RegisterInput = (props: LoginProps) => {
       <input
         type={props.type}
         placeholder={props.placeholder}
+        onChange={props.onChange}
         className="px-3.5 py-2.5 text-lg w-full placeholder:text-placeholder text-black leading-input rounded focus:outline-none"
         style={inputStyle}
       />
