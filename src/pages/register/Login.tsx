@@ -4,7 +4,7 @@ import Button from "../../components/Button";
 import axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { initializeUser } from "../../data/store";
+import { initializeUser, isLogin } from "../../data/store";
 
 const Login = () => {
 
@@ -23,8 +23,9 @@ const Login = () => {
         if(res.status === 200) {
           const { accessToken } = res.data
           setLoginError(false)
-          axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+          axios.defaults.headers.common['Authorization'] = `bearer ${accessToken}`
           dispatch(initializeUser(res.data.user))
+          dispatch(isLogin(true))
           navigate('/')
         }
       }

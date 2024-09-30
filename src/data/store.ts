@@ -8,12 +8,24 @@ let currentUser = createSlice({
       return state = action.payload
     }
   }
+});
+
+let userStatus = createSlice({
+  name: 'userStatus',
+  initialState: false,
+  reducers: {
+    isLogin(state, action){
+      return state = action.payload
+    }
+  }
 })
 
 export let { initializeUser } = currentUser.actions
+export let { isLogin } = userStatus.actions
 
 export default configureStore({
   reducer: {
-    currentUser: currentUser.reducer
+    currentUser: currentUser.reducer,
+    userStatus: currentUser.reducer
   }
 })
