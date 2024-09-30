@@ -1,4 +1,4 @@
-import React, { useState, useCallback, ChangeEvent, FormEvent } from "react";
+import React, { useState, useCallback, ChangeEvent, useEffect } from "react";
 import arrowforward from "../assets/arrowforward.svg";
 import Button from "../components/Button";
 import Header from "../components/Header";
@@ -17,6 +17,12 @@ interface FormData {
     image: string | null;
 }
 
+interface Channel {
+    _id: string;
+    name: string;
+    description: string;
+}
+
 const INITIAL_FORM_STATE: FormData = {
     title: "",
     channel: "",
@@ -32,23 +38,48 @@ const INITIAL_FORM_STATE: FormData = {
 
 const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
 
-const NotionAdd: React.FC = () => {
+const NotionAdd = () => {
     const [formData, setFormData] = useState<FormData>(INITIAL_FORM_STATE);
 
-    const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+    const [channels, setChannels] = useState<Channel[]>([]);
+
+    useEffect(() => {
+        fetchChannels();
     }, []);
 
-    const handleFileChange = useCallback(
-        (e: ChangeEvent<HTMLInputElement>) => {},
+    const fetchChannels = async () => {
+        try {
+            const response = await fetch(`${API_URL}/channels`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setChannels(data);
+            console.log(data);
+        } catch (error) {
+            console.error("Error fetching channels:", error);
+        }
+    };
+
+    const handleChange = useCallback(
+        (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            const { name, value, type } = e.target;
+            setFormData((prev) => ({
+                ...prev,
+                [name]: type === "number" ? parseInt(value, 10) : value,
+            }));
+        },
         []
     );
 
     const handleCategorySelect = useCallback((category: string) => {
-        setFormData((prev) => ({ ...prev, channel: category }));
+        setFormData((prev) => ({
+            ...prev,
+            channel: category,
+        }));
     }, []);
 
+    // 시간 무관 반영
     const handleTimeFlexibleChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
             const { checked } = e.target;
@@ -61,6 +92,15 @@ const NotionAdd: React.FC = () => {
         },
         []
     );
+    const getChannelId = (selectedChannel: string) => {
+        const channel = channels.find((ch) => ch.name === selectedChannel);
+        if (channel) {
+            return channel._id;
+        }
+
+        const others = channels.find((ch) => ch.name === "기타");
+        return others ? others._id : "";
+    };
 
     const handleSubmit = async () => {
         const channelId = getChannelId(formData.channel);
@@ -82,18 +122,18 @@ const NotionAdd: React.FC = () => {
         };
 
         const submitData = new FormData();
-        submitData.append("title", JSON.stringify(customJsonData));
-        if (imageFile) {
-            submitData.append("image", imageFile);
-            // 실제 File 객체 추가
-        }
-        submitData.append("channelId", channelId);
+        submitData.set("title", JSON.stringify(customJsonData));
+        // if (imageFile) {
+        //     submitData.append("image", imageFile);
+        //     // 실제 File 객체 추가
+        // }
+        submitData.set("channelId", channelId);
 
         try {
             const response = await fetch(`${API_URL}/posts/create`, {
                 method: "POST",
                 headers: {
-                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs`,
+                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg`,
                 },
                 body: submitData,
             });
@@ -262,7 +302,6 @@ const NotionAdd: React.FC = () => {
                             type="file"
                             id="image"
                             name="image"
-                            onChange={handleFileChange}
                             className="absolute hidden"
                         />
                     </div>
