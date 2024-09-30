@@ -26,12 +26,12 @@ const SearchPost = (props) => {
             <section>
                 <p className="font-bold text-xl mb-3">인기 모임</p>
                 <div className="h-1/2">
-                    {data.map((value, index) => (
+                    {data.map((value) => (
                         <Health_post
                             title={value.title}
-                            channel_name={value.channel.name}
+                            channel_name={value._id}
                             id={value._id}
-                            key={index}
+                            key={value._id}
                         />
                     ))}
                 </div>

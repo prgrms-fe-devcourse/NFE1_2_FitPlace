@@ -90,12 +90,15 @@ const SearchPage = () => {
         setError(null);
 
         try {
-            const response = await fetch(`${API_URL}/search/all/${query}`, {
-                headers: {
-                    Authorization:
-                        "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs",
-                },
-            });
+            const response = await fetch(
+                `${API_URL}/search/${selectCl}/${query}`,
+                {
+                    headers: {
+                        Authorization:
+                            "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs",
+                    },
+                }
+            );
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -106,7 +109,8 @@ const SearchPage = () => {
                 "email" in item ? item : parsePost(item as Post)
             );
             setResults(parsedResults); // 검색 결과 업데이트
-            console.log(parsedResults);
+            console.log(results);
+            setPosts(results);
         } catch (error) {
             setError("Failed to fetch search results");
             console.error("Error searching:", error);
@@ -121,7 +125,8 @@ const SearchPage = () => {
 
     useEffect(() => {
         console.log("posts:", posts);
-    }, [posts]);
+        console.log("results:", results);
+    }, [results]);
 
     return (
         <>
@@ -149,7 +154,7 @@ const SearchPage = () => {
                     ))}
                 </div>
                 {activeButton === "포스트" ? (
-                    <SearchPost postList={posts} />
+                    <SearchPost postList={results} />
                 ) : (
                     <SearchUser />
                 )}

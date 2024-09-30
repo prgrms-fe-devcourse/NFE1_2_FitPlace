@@ -40,7 +40,7 @@ const INITIAL_FORM_STATE: FormData = {
 
 const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
 
-const NotionAdd: React.FC = () => {
+const NotionAdd = () => {
     const [formData, setFormData] = useState<FormData>(INITIAL_FORM_STATE);
 
     const [channels, setChannels] = useState<Channel[]>([]);
