@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NotificationItem from '../components/NotificationItem'; // NotificationItem 컴포넌트 임포트
 
 interface Notification {
@@ -8,8 +9,8 @@ interface Notification {
 }
 
 const NotificationPage = () => {
-  // 알림 목록 더미 데이터
-  const [notifications] = useState<Notification[]>([
+  const navigate = useNavigate(); 
+  const [notifications, setNotifications] = useState<Notification[]>([
     { id: 1, content: 'sdfsfs님이 댓글을 남겼습니다.', isRead: false },
     { id: 2, content: 'sdfsfs님이 댓글을 남겼습니다.', isRead: false },
     { id: 3, content: 'sdfsfs님이 댓글을 남겼습니다.', isRead: true },
@@ -18,17 +19,32 @@ const NotificationPage = () => {
 
   const hasNotifications = notifications.length > 0;
 
-  useEffect(() => {
-    // 상단 정렬
-    document.body.style.margin = '0';
-    document.body.style.padding = '0';
-  }, []);
+  // 개별 읽기
+  const markAsRead = (id: number) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notification) =>
+        notification.id === id
+          ? { ...notification, isRead: true }
+          : notification
+      )
+    );
+  };
+
+  // 전체 읽기 
+  const markAllAsRead = () => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notification) => ({
+        ...notification,
+        isRead: true,
+      }))
+    );
+  };
 
   return (
     <div className="w-140 mx-auto bg-white" style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)' }}>
       <div className="pt-5 px-4 pb-2 relative flex items-center justify-between">
-        {/* SVG 아이콘 */}
-        <div className="flex items-center">
+        {/* SVG 아이콘 (뒤로가기) */}
+        <div className="flex items-center cursor-pointer" onClick={() => navigate(-1)}>
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
                 <path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z"/>
             </svg>
@@ -37,7 +53,10 @@ const NotificationPage = () => {
         <h2 className="text-xl font-bold text-center flex-1">알림</h2>
 
         {hasNotifications && (
-          <button className="text-gray-500 text-sm absolute right-8 top-[60%] transform -translate-y-1/2">
+          <button
+            onClick={markAllAsRead} 
+            className="text-gray-500 text-sm absolute right-8 top-[60%] transform -translate-y-1/2"
+          >
             전체 읽음
           </button>
         )}
@@ -56,6 +75,7 @@ const NotificationPage = () => {
                 key={notification.id}
                 content={notification.content}
                 isRead={notification.isRead}
+                onClick={() => markAsRead(notification.id)} 
               />
             ))}
           </div>
