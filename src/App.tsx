@@ -20,7 +20,7 @@ import ProfileImg from "./pages/profile/ProfileImg";
 
 import CommentPage from "./pages/CommentPage";
 import { Cookies } from "react-cookie";
-import { initializeToken } from "./data/store";
+import { initializeToken, isLogin } from "./data/store";
 import { useDispatch } from "react-redux";
 
 const App = () => {
@@ -30,7 +30,10 @@ const App = () => {
 
   useEffect(() => {
     const token = cookie.get('token')
-    token ? dispatch(initializeToken(token)) : null
+    if(token) {
+      dispatch(initializeToken(token))
+      dispatch(isLogin(true))
+    }
   }, [])
 
     return (

@@ -36,7 +36,6 @@ const Login = () => {
           })
           setLoginError(false)
           dispatch(initializeUser(res.data.user))
-          dispatch(isLogin(true))
           navigate('/')
         }
       }
