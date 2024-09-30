@@ -1,28 +1,16 @@
-<<<<<<< HEAD
-import React, { useEffect } from "react";
-=======
 import React, { useEffect, useState } from "react";
->>>>>>> 06095acd8aaa115e65939cfe7e3ff1ecf638f899
 import Search from "../assets/Search.svg";
 import Popular_sports from "../components/Popular_sports";
 import Health_post from "../components/Health_post";
 import Search_bar from "../components/Search_bar";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
-<<<<<<< HEAD
 import { useSelector } from "react-redux";
-
-const Mainpage = () => {
-
-  const userData = useSelector((state: { currentUser: object }) => state.currentUser)
-
-  useEffect(() => {
-    console.log(userData)
-  }, [userData])
-=======
 import axios from "axios";
 
+
 const Mainpage = () => {
+  const userData = useSelector((state: { currentUser: object }) => state.currentUser)
   const [channel, setChannel] = useState([]);
   const [post, setPost] = useState([]);
 
@@ -64,7 +52,6 @@ const Mainpage = () => {
   useEffect(() => {
     console.log("post:", Sort_Post);
   }, [Sort_Post]);
->>>>>>> 06095acd8aaa115e65939cfe7e3ff1ecf638f899
 
   return (
     <>
