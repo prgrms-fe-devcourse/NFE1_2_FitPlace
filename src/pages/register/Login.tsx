@@ -32,6 +32,7 @@ const Login = () => {
           setCookie("token", `bearer ${token}`, {
             path: '/',
             sameSite: "strict",
+            secure: true
           })
           setLoginError(false)
           dispatch(initializeUser(res.data.user))
@@ -64,7 +65,7 @@ const Login = () => {
       <Link to={"/register"} className="text-placeholder mt-6 text-center">
         회원가입
       </Link>
-      { loginError ? <p className="text-center text-red-600 font-bold mt-6">아이디 혹은 비밀번호를 확인해주세요</p> : null}
+      <p className="text-center text-red-600 font-bold mt-6">{ loginError ? "아이디 혹은 비밀번호를 확인해주세요" : null }</p>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import Mainpage from "./pages/Mainpage";
 import Ranking_page from "./pages/Ranking_page";
@@ -19,8 +19,20 @@ import ProfileNickname from "./pages/profile/ProfileNickname";
 import ProfileImg from "./pages/profile/ProfileImg";
 
 import CommentPage from "./pages/CommentPage";
+import { Cookies } from "react-cookie";
+import { initializeToken } from "./data/store";
+import { useDispatch } from "react-redux";
 
 const App = () => {
+
+  const dispatch = useDispatch()
+  const cookie = new Cookies();
+
+  useEffect(() => {
+    const token = cookie.get('token')
+    token ? dispatch(initializeToken(token)) : null
+  }, [])
+
     return (
         <div className="flex flex-col justify-center items-center min-h-screen bg-white">
             <Routes>

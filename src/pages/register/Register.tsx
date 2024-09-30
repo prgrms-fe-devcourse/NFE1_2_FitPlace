@@ -17,47 +17,40 @@ const Register = () => {
 
   const [checkEmail, setCheckEmail] = useState(0);
   const [checkPw, setCheckPw] = useState(false);
-
-  const [emailMsg, setEmailMsg] = useState('');
+  const [checkPwConfirm, setCheckPwConfirm] = useState(false);
 
   // 비밀번호 일치 체크
   useEffect(() => {
-    userPw === userPwConfirm ? setCheckPw(true) : setCheckPw(false)
+    userPw === userPwConfirm ? setCheckPwConfirm(true) : setCheckPwConfirm(false)
   }, [userPwConfirm])
 
   // 이메일 검사
-  useEffect(() => {
+  const emailMsg = () => {
     switch (checkEmail) {
       case -1:
-        setEmailMsg("유효한 이메일 주소가 아닙니다")
-        break;
+        return <p>유효한 이메일 주소가 아닙니다</p>
       case 0:
-        setEmailMsg("사용가능한 이메일 주소입니다")
-        break;
+        return <p>사용가능한 이메일 주소입니다</p>
       case 1:
-        setEmailMsg("이미 등록된 이메일 주소입니다.")
-        break;
+        return <p>이미 등록된 이메일 주소입니다.</p>
     }
-  }, [checkEmail])
+  }
 
-  useEffect(() => {
-    axios.post('https://kdt.frontend.5th.programmers.co.kr:5009/login', {
-      "email": "test7@gmail.com",
-	    "password": "test123"
-    })
-    .then(res => {
-      console.log(res.data.user)
-      console.log(res.data.user.fullName)
-      console.log(JSON.parse(res.data.user.fullName).birth)
-    });
-  }, [])
-
+  // 인풋에서 이메일 유효성 검사
   function regEmail(){
     const reg = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
 
     reg.test(userEmail) ? setCheckEmail(0) : setCheckEmail(-1);
   }
 
+  // 인풋에서 패스워드 검사
+  function regPw(){
+    const reg = new RegExp(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,16}$/)
+
+    reg.test(userPw) ? setCheckPw(true) : setCheckPw(false);
+  }
+
+  // 회원가입 정보 전송
   const handleRegi = () => {
     let regiObj: { email?: string, password?: string, fullName?: string } = {}
     const stringObj = {
@@ -66,7 +59,7 @@ const Register = () => {
       userId: userId,
     }
     
-    if (checkEmail === 0 && checkPw === true) {
+    if (checkEmail === 0 && checkPwConfirm === true) {
       regiObj.email = userEmail
       regiObj.fullName = JSON.stringify(stringObj);
       regiObj.password = userPw;
@@ -76,7 +69,7 @@ const Register = () => {
       })
       .then(res => {
         const regiName = JSON.parse(res.data.user.fullName)
-        alert(`${regiName.fullName}님 회원가입이 완료되었습니다!`)
+        alert(`${regiName.fullName}님 회원가입이 완료되었습니다.`)
         navigate('/')
       })
       .catch(err => {
@@ -84,8 +77,6 @@ const Register = () => {
         setCheckEmail(1)
         : null
       })
-    } else {
-      alert('회원가입창을 다시 수정해주십시요')
     }
   }
 
@@ -118,18 +109,22 @@ const Register = () => {
         placeholder="비밀번호"
         margin="mb-3"
         value={userPw}
-        onChange={(e) => setUserPw(e.target.value)}
+        onChange={(e) => {
+          setUserPw(e.target.value)
+          regPw();
+        }}
       />
       <p
-        className="
+        className={`
         mb-3
         w-full
         text-left
         text-lg
         text-medium
-      "
+        ${checkPw ? null : "text-red-500 font-bold"}
+      `}
       >
-        {/* 사용가능한 비밀번호 입니다 */}
+        { checkPw ? "사용 가능한 비밀번호입니다" : "비밀번호는 5 ~ 16자 사이 영문과 숫자를 혼합해야합니다." }
       </p>
 
       {/* 비밀번호 확인 */}
@@ -149,10 +144,10 @@ const Register = () => {
         text-left
         text-lg
         text-medium
-        ${ !checkPw ? "text-red-600" : null }
+        ${ !checkPwConfirm ? "text-red-600 font-bold" : null }
       `}
       >
-        { !checkPw ? "비밀번호가 일치하지 않습니다" : null }
+        { !checkPwConfirm ? "비밀번호가 일치하지 않습니다" : null }
       </p>
 
       {/* 하단 기타정보 */}
@@ -169,7 +164,9 @@ const Register = () => {
           placeholder="생년월일 ex)20240930"
           margin="mb-5"
           value={userBirth}
-          onChange={(e) => setUserBirth(e.target.value)}
+          onChange={(e) => {
+            setUserBirth(e.target.value)
+          }}
         />
         <RegisterInput 
           type="text"
@@ -191,7 +188,7 @@ const Register = () => {
           ${checkEmail ? 'text-red-600 font-bold' : null}
         `}
         >
-          {emailMsg}
+          {emailMsg()}
         </p>
       </div>
 
