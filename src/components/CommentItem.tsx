@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import iconUser from "../assets/defaultProfileImg.svg";
 import iconMore from "../assets/icon_more.svg";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 interface CommentProps {
   author: {};
@@ -10,6 +12,9 @@ interface CommentProps {
 const CommentItem = ({ item }: CommentProps): JSX.Element => {
   const [showOptions, setShowOptions] = useState(false);
   const timerRef = useRef<number | null>(null);
+  const { id } = useParams();
+
+  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg`;
 
   const toggleOptions = () => {
     setShowOptions(true);
@@ -24,12 +29,23 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
     }, 5000);
   };
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     // 수정 로직
   };
 
-  const handleDelete = () => {
-    // 삭제 로직
+  const handleDelete = async () => {
+    try {
+      await axios.delete(
+        `https://kdt.frontend.5th.programmers.co.kr:5009/comments/delete/66fa3f15151b9f772b9c1eb4`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // JWT 토큰 추가
+          },
+        }
+      );
+    } catch (error) {
+      console.log("댓글 삭제 에러", error);
+    }
   };
 
   useEffect(() => {
@@ -53,7 +69,7 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
         <div className="text-sm mb-2 font-bold">{item.author.fullName}</div>
         <div className="text-base">{item.comment}</div>
       </div>
-      {item.author.fullName === "선영" && (
+      {item.author.fullName === "STYLED 관리자" && (
         <div className="absolute top-0 right-0">
           {!showOptions ? (
             <img
@@ -73,7 +89,7 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
               <div className="mx-4 text-gray-300">|</div>
               <div
                 className="cursor-pointer text-red-500 hover:underline"
-                onClick={handleDelete}
+                onClick={() => handleDelete()}
               >
                 삭제
               </div>

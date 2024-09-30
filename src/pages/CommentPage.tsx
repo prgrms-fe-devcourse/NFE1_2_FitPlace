@@ -36,9 +36,7 @@ const CommentPage = (): JSX.Element => {
       try {
         const parsedTitle = JSON.parse(Post.title);
         setParsingData(parsedTitle);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     }
   }, [Post]);
 
