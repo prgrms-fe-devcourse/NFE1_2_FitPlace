@@ -104,7 +104,9 @@ const NotionPage = () => {
               <button><img src={favorite} alt="좋아요버튼" /></button>
             </div>
             <div className='w-8'>
-              <button><img src={commentIcon} alt="메세지버튼" /></button>
+              <form action="/notion/comments">
+                <button><img src={commentIcon} alt="댓글버튼" /></button>
+              </form>
             </div>
           </div>
         </div>
