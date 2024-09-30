@@ -3,6 +3,7 @@ import CommentItem from "../components/CommentItem";
 import Button from "../components/Button";
 import { json, useParams } from "react-router-dom";
 import axios from "axios";
+import { useCookies } from "react-cookie";
 
 // Comment 타입 정의
 interface Comment {
@@ -17,8 +18,9 @@ const CommentPage = (): JSX.Element => {
   const [Post, setPost] = useState();
   const [Input_value, setInput_value] = useState("");
   const [ParsingData, setParsingData] = useState("");
+  const [cookies] = useCookies(["token"]);
 
-  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg`;
+  const token = cookies.token;
 
   const CommentLoading = async () => {
     try {
@@ -54,7 +56,7 @@ const CommentPage = (): JSX.Element => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // JWT 토큰 추가
+            Authorization: `${token}`, // JWT 토큰 추가
           },
         }
       );

@@ -3,6 +3,7 @@ import iconUser from "../assets/defaultProfileImg.svg";
 import iconMore from "../assets/icon_more.svg";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 interface CommentProps {
   author: {};
@@ -14,7 +15,9 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
   const timerRef = useRef<number | null>(null);
   const { id } = useParams();
 
-  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg`;
+  const [cookies] = useCookies(["token"]);
+
+  const token = cookies.token;
 
   const toggleOptions = () => {
     setShowOptions(true);
@@ -29,9 +32,9 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
     }, 5000);
   };
 
-  const handleEdit = async () => {
-    // 수정 로직
-  };
+  // const handleEdit = async () => {
+  //   // 수정 로직
+  // };
   const handleDelete = async () => {
     try {
       await axios.delete(
@@ -41,7 +44,7 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
             id: item._id, // 삭제할 댓글의 ID
           },
           headers: {
-            Authorization: `Bearer ${token}`, // JWT 토큰 추가
+            Authorization: `${token}`, // JWT 토큰 추가
           },
         }
       );
@@ -72,32 +75,30 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
         <div className="text-sm mb-2 font-bold">{item.author.fullName}</div>
         <div className="text-base">{item.comment}</div>
       </div>
-      {item.author.fullName === "STYLED 관리자" && (
+      {item.author.fullName && (
         <div className="absolute top-0 right-0">
-          {!showOptions ? (
+          {/* {!showOptions ? (
             <img
               src={iconMore}
               alt="more-options"
               className="w-6 h-6 object-contain cursor-pointer"
               onClick={toggleOptions}
             />
-          ) : (
-            <div className="flex items-center">
-              <div
+          ) : ( */}
+          <div className="flex items-center">
+            {/* <div
                 className="cursor-pointer hover:underline"
                 onClick={handleEdit}
               >
                 수정
-              </div>
-              <div className="mx-4 text-gray-300">|</div>
-              <div
-                className="cursor-pointer text-red-500 hover:underline"
-                onClick={() => handleDelete()}
-              >
-                삭제
-              </div>
+              </div> */}
+            <div
+              className="cursor-pointer text-red-500 hover:underline text-sm"
+              onClick={() => handleDelete()}
+            >
+              삭제
             </div>
-          )}
+          </div>
         </div>
       )}
     </div>
