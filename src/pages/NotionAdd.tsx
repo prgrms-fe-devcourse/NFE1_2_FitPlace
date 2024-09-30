@@ -15,6 +15,7 @@ interface FormData {
     isTimeFlexible: boolean;
     meetingSpot: string;
     image: string | null;
+    meetingInfo: string;
 }
 
 interface Channel {
@@ -34,11 +35,12 @@ const INITIAL_FORM_STATE: FormData = {
     isTimeFlexible: false,
     meetingSpot: "",
     image: null,
+    meetingInfo: "",
 };
 
 const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
 
-const NotionAdd = () => {
+const NotionAdd: React.FC = () => {
     const [formData, setFormData] = useState<FormData>(INITIAL_FORM_STATE);
 
     const [channels, setChannels] = useState<Channel[]>([]);
@@ -72,14 +74,15 @@ const NotionAdd = () => {
         []
     );
 
+    const handleFileChange = useCallback(
+        (e: ChangeEvent<HTMLInputElement>) => {},
+        []
+    );
+
     const handleCategorySelect = useCallback((category: string) => {
-        setFormData((prev) => ({
-            ...prev,
-            channel: category,
-        }));
+        setFormData((prev) => ({ ...prev, channel: category }));
     }, []);
 
-    // 시간 무관 반영
     const handleTimeFlexibleChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
             const { checked } = e.target;
@@ -92,48 +95,43 @@ const NotionAdd = () => {
         },
         []
     );
-    const getChannelId = (selectedChannel: string) => {
+
+    const getChannelId = (selectedChannel: string): string => {
         const channel = channels.find((ch) => ch.name === selectedChannel);
         if (channel) {
             return channel._id;
         }
-
-        const others = channels.find((ch) => ch.name === "기타");
-        return others ? others._id : "";
+        const otherChannel = channels.find((ch) => ch.name === "기타");
+        return otherChannel ? otherChannel._id : "";
     };
 
     const handleSubmit = async () => {
         const channelId = getChannelId(formData.channel);
 
+        // meetingTime 문자열 생성
+        const meetingTime = formData.isTimeFlexible
+            ? `${formData.meetingDate}, 시간 무관`
+            : `${formData.meetingDate} ${formData.meetingStartTime} - ${formData.meetingEndTime}`;
+
         const customJsonData = {
             title: formData.title,
             currentMember: formData.currentMember,
             meetingCapacity: formData.meetingCapacity,
-            meetingDate: formData.meetingDate,
-            isTimeFlexible: formData.isTimeFlexible,
-            meetingStartTime: formData.isTimeFlexible
-                ? ""
-                : formData.meetingStartTime,
-            meetingEndTime: formData.isTimeFlexible
-                ? ""
-                : formData.meetingEndTime,
+            meetingTime: meetingTime, // 하나의 속성으로 합침
             meetingSpot: formData.meetingSpot,
             channel: formData.channel,
         };
 
         const submitData = new FormData();
-        submitData.set("title", JSON.stringify(customJsonData));
-        // if (imageFile) {
-        //     submitData.append("image", imageFile);
-        //     // 실제 File 객체 추가
-        // }
-        submitData.set("channelId", channelId);
+        submitData.append("title", JSON.stringify(customJsonData));
+
+        submitData.append("channelId", channelId);
 
         try {
             const response = await fetch(`${API_URL}/posts/create`, {
                 method: "POST",
                 headers: {
-                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg`,
+                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs`,
                 },
                 body: submitData,
             });
@@ -289,7 +287,23 @@ const NotionAdd = () => {
                             className="border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5"
                         />
                     </div>
-
+                    <div>
+                        <label
+                            htmlFor="meetingSpot"
+                            className="flex font-bold text-xl mt-6"
+                        >
+                            모임 설명
+                        </label>
+                        <input
+                            type="text"
+                            id="meetingInfo"
+                            name="meetingInfo"
+                            value={formData.meetingInfo}
+                            onChange={handleChange}
+                            placeholder="모임 설명을 입력해주세요."
+                            className="border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5"
+                        />
+                    </div>
                     <div className="mb-6">
                         <p className="font-bold text-xl mt-6">사진 등록</p>
                         <label

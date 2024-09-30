@@ -2,8 +2,13 @@ import React from "react";
 import Search from "../assets/Search.svg";
 interface SearchBarProps {
     placeholder?: string;
+    getValue: (value: string) => void;
 }
-const Search_bar: React.FC<SearchBarProps> = ({ placeholder }) => {
+const Search_bar: React.FC<SearchBarProps> = ({ placeholder, getValue }) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        getValue(event.target.value); // 입력값을 부모로 전달
+    };
+
     return (
         <div className="relative w-full">
             <img
@@ -15,6 +20,7 @@ const Search_bar: React.FC<SearchBarProps> = ({ placeholder }) => {
                 className="bg-gray-100 h-8 w-full rounded-md shadow-lg p-5 pl-10"
                 placeholder={placeholder}
                 type="text"
+                onChange={handleInputChange}
             />
         </div>
     );
