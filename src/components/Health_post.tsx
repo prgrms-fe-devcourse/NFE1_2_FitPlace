@@ -17,15 +17,20 @@ const Health_post = ({ title, channel_name }) => {
         {titleObject.title || "제목 없음"}
       </p>
       <div className="mb-2 text-sm flex">
-        <p className="text-lime-400 font-bold">모집 중!</p>
+        {titleObject.currentMember === titleObject.meetingCapacity ? (
+          <p className="text-rose-600	 font-bold">모집 마감</p>
+        ) : (
+          <p className="text-lime-400 font-bold">모집 중</p>
+        )}
+
         <span className="mx-3 opacity-5">|</span>
         {titleObject.meetingTime || "기간 없음"}
       </div>
       <div className="text-sm flex">
         {titleObject.meetingSpot || "장소 없음"}
         <span className="mx-3 opacity-5">|</span>
-        {titleObject.meetingCapacity || 0}명 / 6명
-        <span className="mx-3 opacity-5">|</span>
+        {titleObject.currentMember || 0}명 / {titleObject.meetingCapacity || 0}
+        명<span className="mx-3 opacity-5">|</span>
         {channel_name || titleObject.channel}
       </div>
     </button>
