@@ -104,6 +104,7 @@ const Mainpage = () => {
                 <Health_post
                   title={post.title}
                   channel_name={post.channel.name}
+                  id={post._id}
                   key={index}
                 />
               ))}
