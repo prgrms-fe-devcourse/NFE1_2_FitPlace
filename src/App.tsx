@@ -24,17 +24,16 @@ import { initializeToken, isLogin } from "./data/store";
 import { useDispatch } from "react-redux";
 
 const App = () => {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const cookie = new Cookies();
 
   useEffect(() => {
-    const token = cookie.get('token')
-    if(token) {
-      dispatch(initializeToken(token))
-      dispatch(isLogin(true))
+    const token = cookie.get("token");
+    if (token) {
+      dispatch(initializeToken(token));
+      dispatch(isLogin(true));
     }
-  }, [])
+  }, []);
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-white">

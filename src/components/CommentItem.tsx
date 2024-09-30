@@ -32,17 +32,20 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
   const handleEdit = async () => {
     // 수정 로직
   };
-
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://kdt.frontend.5th.programmers.co.kr:5009/comments/delete/66fa3f15151b9f772b9c1eb4`,
+        `https://kdt.frontend.5th.programmers.co.kr:5009/comments/delete`,
         {
+          data: {
+            id: item._id, // 삭제할 댓글의 ID
+          },
           headers: {
             Authorization: `Bearer ${token}`, // JWT 토큰 추가
           },
         }
       );
+      console.log("댓글 삭제 성공");
     } catch (error) {
       console.log("댓글 삭제 에러", error);
     }
