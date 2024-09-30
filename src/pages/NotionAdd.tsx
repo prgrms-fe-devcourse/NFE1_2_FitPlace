@@ -1,4 +1,4 @@
-import React, { useState, useCallback, ChangeEvent, FormEvent } from "react";
+import React, { useState, useCallback, ChangeEvent, useEffect } from "react";
 import arrowforward from "../assets/arrowforward.svg";
 import Button from "../components/Button";
 import Header from "../components/Header";
@@ -15,6 +15,13 @@ interface FormData {
     isTimeFlexible: boolean;
     meetingSpot: string;
     image: string | null;
+    meetingInfo: string;
+}
+
+interface Channel {
+    _id: string;
+    name: string;
+    description: string;
 }
 
 const INITIAL_FORM_STATE: FormData = {
@@ -28,6 +35,7 @@ const INITIAL_FORM_STATE: FormData = {
     isTimeFlexible: false,
     meetingSpot: "",
     image: null,
+    meetingInfo: "",
 };
 
 const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
@@ -35,10 +43,36 @@ const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
 const NotionAdd: React.FC = () => {
     const [formData, setFormData] = useState<FormData>(INITIAL_FORM_STATE);
 
-    const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+    const [channels, setChannels] = useState<Channel[]>([]);
+
+    useEffect(() => {
+        fetchChannels();
     }, []);
+
+    const fetchChannels = async () => {
+        try {
+            const response = await fetch(`${API_URL}/channels`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setChannels(data);
+            console.log(data);
+        } catch (error) {
+            console.error("Error fetching channels:", error);
+        }
+    };
+
+    const handleChange = useCallback(
+        (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            const { name, value, type } = e.target;
+            setFormData((prev) => ({
+                ...prev,
+                [name]: type === "number" ? parseInt(value, 10) : value,
+            }));
+        },
+        []
+    );
 
     const handleFileChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {},
@@ -62,31 +96,35 @@ const NotionAdd: React.FC = () => {
         []
     );
 
+    const getChannelId = (selectedChannel: string): string => {
+        const channel = channels.find((ch) => ch.name === selectedChannel);
+        if (channel) {
+            return channel._id;
+        }
+        const otherChannel = channels.find((ch) => ch.name === "기타");
+        return otherChannel ? otherChannel._id : "";
+    };
+
     const handleSubmit = async () => {
         const channelId = getChannelId(formData.channel);
+
+        // meetingTime 문자열 생성
+        const meetingTime = formData.isTimeFlexible
+            ? `${formData.meetingDate}, 시간 무관`
+            : `${formData.meetingDate} ${formData.meetingStartTime} - ${formData.meetingEndTime}`;
 
         const customJsonData = {
             title: formData.title,
             currentMember: formData.currentMember,
             meetingCapacity: formData.meetingCapacity,
-            meetingDate: formData.meetingDate,
-            isTimeFlexible: formData.isTimeFlexible,
-            meetingStartTime: formData.isTimeFlexible
-                ? ""
-                : formData.meetingStartTime,
-            meetingEndTime: formData.isTimeFlexible
-                ? ""
-                : formData.meetingEndTime,
+            meetingTime: meetingTime, // 하나의 속성으로 합침
             meetingSpot: formData.meetingSpot,
             channel: formData.channel,
         };
 
         const submitData = new FormData();
         submitData.append("title", JSON.stringify(customJsonData));
-        if (imageFile) {
-            submitData.append("image", imageFile);
-            // 실제 File 객체 추가
-        }
+
         submitData.append("channelId", channelId);
 
         try {
@@ -249,7 +287,23 @@ const NotionAdd: React.FC = () => {
                             className="border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5"
                         />
                     </div>
-
+                    <div>
+                        <label
+                            htmlFor="meetingSpot"
+                            className="flex font-bold text-xl mt-6"
+                        >
+                            모임 설명
+                        </label>
+                        <input
+                            type="text"
+                            id="meetingInfo"
+                            name="meetingInfo"
+                            value={formData.meetingInfo}
+                            onChange={handleChange}
+                            placeholder="모임 설명을 입력해주세요."
+                            className="border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5"
+                        />
+                    </div>
                     <div className="mb-6">
                         <p className="font-bold text-xl mt-6">사진 등록</p>
                         <label
@@ -262,7 +316,6 @@ const NotionAdd: React.FC = () => {
                             type="file"
                             id="image"
                             name="image"
-                            onChange={handleFileChange}
                             className="absolute hidden"
                         />
                     </div>
