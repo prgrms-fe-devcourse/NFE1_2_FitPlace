@@ -1,4 +1,3 @@
-// 카카오 지도 관련(지도 + 마커 표시 + 현재위치 설정)
 import React, { useEffect, useRef, useState } from "react";
 
 declare global {
@@ -7,10 +6,18 @@ declare global {
   }
 }
 
-const KakaoMap = () => {
+interface KakaoMapProps {
+  isMarkerFixed: boolean; 
+}
+
+const KakaoMap: React.FC<KakaoMapProps> = ({ isMarkerFixed }) => {
   const mapRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
-  const [address, setAddress] = useState<string>("");
+  const [address, setAddress] = useState<string>(""); 
+  const [currentPosition, setCurrentPosition] = useState<{ lat: number; lng: number }>({
+    lat: 37.556135, // 초기값 설정(= 서울역 좌표)
+    lng: 126.972608,
+  });
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -20,24 +27,14 @@ const KakaoMap = () => {
 
     script.onload = () => {
       window.kakao.maps.load(() => {
-        console.log("카카오 지도가 로드되었습니다.");
         const container = document.getElementById("map");
         if (!container) {
-          console.error("표시할 영역을 찾을 수 없습니다.");
+          console.error("마커를 표시할 영역을 찾을 수 없습니다.");
           return;
         }
 
-        // 서울역 좌표 (위도: 37.556135, 경도: 126.972608)
-        const initialPosition = {
-          lat: 37.556135,
-          lng: 126.972608,
-        };
-
         const options = {
-          center: new window.kakao.maps.LatLng(
-            initialPosition.lat,
-            initialPosition.lng
-          ),
+          center: new window.kakao.maps.LatLng(currentPosition.lat, currentPosition.lng),
           level: 3,
         };
 
@@ -45,7 +42,7 @@ const KakaoMap = () => {
         mapRef.current = map;
 
         const marker = new window.kakao.maps.Marker({
-          position: map.getCenter(),
+          position: new window.kakao.maps.LatLng(currentPosition.lat, currentPosition.lng),
           map: map,
         });
         markerRef.current = marker;
@@ -62,17 +59,17 @@ const KakaoMap = () => {
           });
         };
 
-        // 초기 주소 설정 (서울역)
-        getAddress(initialPosition.lat, initialPosition.lng);
+        // 초기 주소 설정하기
+        getAddress(currentPosition.lat, currentPosition.lng);
 
         window.kakao.maps.event.addListener(map, "center_changed", () => {
-          const center = map.getCenter();
-          marker.setPosition(center);
-
-          getAddress(center.getLat(), center.getLng());
+          if (!isMarkerFixed) {
+            const center = map.getCenter();
+            marker.setPosition(center);
+            setCurrentPosition({ lat: center.getLat(), lng: center.getLng() }); 
+            getAddress(center.getLat(), center.getLng());
+          }
         });
-
-        console.log("지도에 마커가 추가되었습니다.", map.getCenter());
       });
     };
 
@@ -83,15 +80,13 @@ const KakaoMap = () => {
     return () => {
       script.remove();
     };
-  }, []);
+  }, [isMarkerFixed, currentPosition.lat, currentPosition.lng]); 
 
   return (
     <div>
-      {/* 현재 주소를 텍스트로 표시 */}
-      <div className="text-left mb-2 text-gray-400 text-xs ">
+      <div className="text-left mb-2 text-gray-400 text-xs">
         <p>현재 위치: {address}</p>
       </div>
-      {/* 카카오 지도 */}
       <div id="map" style={{ width: "100%", height: "550px" }}></div>
     </div>
   );
