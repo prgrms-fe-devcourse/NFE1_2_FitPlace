@@ -68,7 +68,7 @@ const CommentPage = (): JSX.Element => {
 
   useEffect(() => {
     CommentLoading();
-  }, []);
+  }, [Post]);
 
   return (
     <>
