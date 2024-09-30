@@ -5,6 +5,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { initializeUser, isLogin } from "../../data/store";
+import { Cookies } from "react-cookie";
 
 const Login = () => {
 
@@ -14,6 +15,12 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const cookies = new Cookies();
+
+  const setCookie = (name: string, value: string, opt: object) => {
+    return cookies.set(name, value, { ...opt })
+  }
+
   const handleLogin = () => {
     axios.post('https://kdt.frontend.5th.programmers.co.kr:5009/login', {
       email: email,
@@ -21,9 +28,12 @@ const Login = () => {
     })
     .then(res => {
         if(res.status === 200) {
-          const { accessToken } = res.data
+          const { token } = res.data
+          setCookie("token", `bearer ${token}`, {
+            path: '/',
+            sameSite: "strict",
+          })
           setLoginError(false)
-          axios.defaults.headers.common['Authorization'] = `bearer ${accessToken}`
           dispatch(initializeUser(res.data.user))
           dispatch(isLogin(true))
           navigate('/')
