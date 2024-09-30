@@ -39,12 +39,8 @@ const App = () => {
         <Route path="/notifications" element={<NotificationPage />} />
         <Route path="/notionAdd" element={<NotionAdd />} />
         <Route path="/notion/:id" element={<NotionPage />} />
-
         <Route path="/notion/comments" element={<CommentPage />} />
-        {/* 
-                ~ 추후 수정 필요(?) ~ 
-                <Route path="/notion/:postId/comments" element={<CommentPage  />} />   
-                */}
+        <Route path="/notion/:id/comments" element={<CommentPage />} />
       </Routes>
     </div>
   );
