@@ -52,24 +52,25 @@ const Register = () => {
 
   // 회원가입 정보 전송
   const handleRegi = () => {
-    let regiObj: { email?: string, password?: string, fullName?: string } = {}
+    let regiObj = {}
     const stringObj = {
-      fullName: userName,
       birth: userBirth,
       userId: userId,
     }
     
     if (checkEmail === 0 && checkPwConfirm === true) {
       regiObj.email = userEmail
-      regiObj.fullName = JSON.stringify(stringObj);
+      regiObj.fullName = userName
       regiObj.password = userPw;
+      regiObj.messages = JSON.stringify(...stringObj)
 
       axios.post('https://kdt.frontend.5th.programmers.co.kr:5009/signup', {
         ...regiObj
       })
       .then(res => {
-        const regiName = JSON.parse(res.data.user.fullName)
-        alert(`${regiName.fullName}님 회원가입이 완료되었습니다.`)
+        // const regiName = JSON.parse(res.data.user.fullName)
+        const regiName = res.data.user.fullName
+        alert(`${regiName}님 회원가입이 완료되었습니다.`)
         navigate('/')
       })
       .catch(err => {
