@@ -5,9 +5,12 @@ import Health_post from "../components/Health_post";
 import Search_bar from "../components/Search_bar";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 
+
 const Mainpage = () => {
+  const userData = useSelector((state: { currentUser: object }) => state.currentUser)
   const [channel, setChannel] = useState([]);
   const [post, setPost] = useState([]);
 
