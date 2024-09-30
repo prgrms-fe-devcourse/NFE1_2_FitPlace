@@ -39,7 +39,6 @@ const App = () => {
         <Route path="/notifications" element={<NotificationPage />} />
         <Route path="/notionAdd" element={<NotionAdd />} />
         <Route path="/notion/:id" element={<NotionPage />} />
-        <Route path="/notion/comments" element={<CommentPage />} />
         <Route path="/notion/:id/comments" element={<CommentPage />} />
       </Routes>
     </div>
