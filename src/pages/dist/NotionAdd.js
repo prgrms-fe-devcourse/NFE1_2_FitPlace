@@ -48,6 +48,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var react_1 = require("react");
+var arrowforward_svg_1 = require("../assets/arrowforward.svg");
 var Button_1 = require("../components/Button");
 var Header_1 = require("../components/Header");
 var NotionCategory_1 = require("../components/NotionCategory");
@@ -65,16 +66,13 @@ var INITIAL_FORM_STATE = {
     meetingInfo: ""
 };
 var API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
+var CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+var UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 var NotionAdd = function () {
     var _a = react_1.useState(INITIAL_FORM_STATE), formData = _a[0], setFormData = _a[1];
     var _b = react_1.useState([]), channels = _b[0], setChannels = _b[1];
-    var _c = react_1.useState(), image = _c[0], setImage = _c[1];
-    var handleFileImage = function (e) {
-        var file = e.target.files[0];
-        if (file) {
-            setImage(URL.createObjectURL(file));
-        }
-    };
+    var _c = react_1.useState(null), image = _c[0], setImage = _c[1]; // 선택된 파일
+    var _d = react_1.useState(null), imageUrl = _d[0], setImageUrl = _d[1]; // 업로드된 이미지 URL
     react_1.useEffect(function () {
         fetchChannels();
     }, []);
@@ -94,7 +92,6 @@ var NotionAdd = function () {
                 case 2:
                     data = _a.sent();
                     setChannels(data);
-                    console.log(data);
                     return [3 /*break*/, 4];
                 case 3:
                     error_1 = _a.sent();
@@ -111,7 +108,44 @@ var NotionAdd = function () {
             return (__assign(__assign({}, prev), (_a = {}, _a[name] = type === "number" ? parseInt(value, 10) : value, _a)));
         });
     }, []);
-    var handleFileChange = react_1.useCallback(function (e) { }, []);
+    var handleFileChange = react_1.useCallback(function (e) { return __awaiter(void 0, void 0, void 0, function () {
+        var file, formData_1, response, data_1, error_2;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    file = (_a = e.target.files) === null || _a === void 0 ? void 0 : _a[0];
+                    if (!file) return [3 /*break*/, 5];
+                    setImage(file); // 선택된 파일을 저장
+                    formData_1 = new FormData();
+                    formData_1.append("file", file);
+                    formData_1.append("upload_preset", UPLOAD_PRESET);
+                    _b.label = 1;
+                case 1:
+                    _b.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, fetch("https://api.cloudinary.com/v1_1/" + CLOUD_NAME + "/image/upload", {
+                            method: "POST",
+                            body: formData_1
+                        })];
+                case 2:
+                    response = _b.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    data_1 = _b.sent();
+                    setImageUrl(data_1.secure_url); // 업로드된 이미지 URL 설정
+                    setFormData(function (prev) { return (__assign(__assign({}, prev), { image: data_1.secure_url })); }); // 폼 데이터에 이미지 URL 저장
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_2 = _b.sent();
+                    console.error("이미지 업로드 실패:", error_2);
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
+            }
+        });
+    }); }, []);
+    react_1.useEffect(function () {
+        console.log(imageUrl);
+    }, [imageUrl]);
     var handleCategorySelect = react_1.useCallback(function (category) {
         setFormData(function (prev) { return (__assign(__assign({}, prev), { channel: category })); });
     }, []);
@@ -128,7 +162,7 @@ var NotionAdd = function () {
         return otherChannel ? otherChannel._id : "";
     };
     var handleSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var channelId, meetingTime, customJsonData, submitData, response, data, error_2;
+        var channelId, meetingTime, customJsonData, submitData, response, data, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -142,7 +176,9 @@ var NotionAdd = function () {
                         meetingCapacity: formData.meetingCapacity,
                         meetingTime: meetingTime,
                         meetingSpot: formData.meetingSpot,
-                        channel: formData.channel
+                        channel: formData.channel,
+                        image: formData.image,
+                        meetingInfo: formData.meetingInfo
                     };
                     submitData = new FormData();
                     submitData.append("title", JSON.stringify(customJsonData));
@@ -168,16 +204,13 @@ var NotionAdd = function () {
                     console.log("Post", data);
                     return [3 /*break*/, 5];
                 case 4:
-                    error_2 = _a.sent();
-                    console.error("Error: ", error_2 instanceof Error ? error_2.message : String(error_2));
+                    error_3 = _a.sent();
+                    console.error("Error: ", error_3 instanceof Error ? error_3.message : String(error_3));
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
             }
         });
     }); };
-    react_1.useEffect(function () {
-        console.log(image);
-    }, [image]);
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "bg-white w-[640px] h-full" },
@@ -201,24 +234,21 @@ var NotionAdd = function () {
                         "\uC2DC\uAC04 \uBB34\uAD00")),
                 !formData.isTimeFlexible && (react_1["default"].createElement(react_1["default"].Fragment, null,
                     react_1["default"].createElement("div", null,
-                        react_1["default"].createElement("label", { htmlFor: "meetingStartTime", className: "flex font-bold text-xl mt-6" }, "\uBAA8\uC784 \uC2DC\uC791 \uC2DC\uAC04"),
+                        react_1["default"].createElement("label", { htmlFor: "meetingStartTime", className: "flex font-bold text-xl mt-6" }, "\uC2DC\uC791 \uC2DC\uAC04"),
                         react_1["default"].createElement("input", { type: "time", id: "meetingStartTime", name: "meetingStartTime", value: formData.meetingStartTime, onChange: handleChange, className: "border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5" })),
                     react_1["default"].createElement("div", null,
-                        react_1["default"].createElement("label", { htmlFor: "meetingEndTime", className: "flex font-bold text-xl mt-6" }, "\uBAA8\uC784 \uC885\uB8CC \uC2DC\uAC04"),
+                        react_1["default"].createElement("label", { htmlFor: "meetingEndTime", className: "flex font-bold text-xl mt-6" }, "\uC885\uB8CC \uC2DC\uAC04"),
                         react_1["default"].createElement("input", { type: "time", id: "meetingEndTime", name: "meetingEndTime", value: formData.meetingEndTime, onChange: handleChange, className: "border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5" })))),
                 react_1["default"].createElement("div", null,
                     react_1["default"].createElement("label", { htmlFor: "meetingSpot", className: "flex font-bold text-xl mt-6" }, "\uBAA8\uC784 \uC7A5\uC18C"),
-                    react_1["default"].createElement("input", { type: "text", id: "meetingSpot", name: "meetingSpot", value: formData.meetingSpot, onChange: handleChange, placeholder: "\uBAA8\uC784 \uC7A5\uC18C\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.", className: "border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5" })),
+                    react_1["default"].createElement("input", { type: "text", id: "meetingSpot", name: "meetingSpot", value: formData.meetingSpot, onChange: handleChange, placeholder: "\uC7A5\uC18C\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.", className: "border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5" })),
                 react_1["default"].createElement("div", null,
-                    react_1["default"].createElement("label", { htmlFor: "meetingSpot", className: "flex font-bold text-xl mt-6" }, "\uBAA8\uC784 \uC124\uBA85"),
-                    react_1["default"].createElement("input", { type: "text", id: "meetingInfo", name: "meetingInfo", value: formData.meetingInfo, onChange: handleChange, placeholder: "\uBAA8\uC784 \uC124\uBA85\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694.", className: "border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5" })),
-                react_1["default"].createElement("div", { className: "mb-6" },
-                    react_1["default"].createElement("p", { className: "font-bold text-xl mt-6" }, "\uC0AC\uC9C4 \uB4F1\uB85D"),
-                    react_1["default"].createElement("label", { htmlFor: "image", className: "w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-2.5" }, "+ \uC0AC\uC9C4 \uC5C5\uB85C\uB4DC"),
-                    react_1["default"].createElement("input", { id: "image", type: "file", accept: "image/*" // 이미지 파일만 선택 가능
-                        , onChange: handleFileChange }),
-                    image && (react_1["default"].createElement("img", { src: image, alt: "Uploaded", className: "mt-2" }) // 선택된 이미지 미리보기
-                    )),
-                react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC784 \uB4F1\uB85D", size: "full", color: "green", onClick: handleSubmit })))));
+                    react_1["default"].createElement("label", { htmlFor: "image", className: "flex font-bold text-xl mt-6" }, "\uC774\uBBF8\uC9C0"),
+                    react_1["default"].createElement("input", { type: "file", id: "image", name: "image", accept: "image/*", onChange: handleFileChange, className: "mt-2.5" })),
+                react_1["default"].createElement("div", null,
+                    react_1["default"].createElement("label", { htmlFor: "meetingInfo", className: "flex font-bold text-xl mt-6" }, "\uBAA8\uC784 \uC124\uBA85"),
+                    react_1["default"].createElement("textarea", { id: "meetingInfo", name: "meetingInfo", value: formData.meetingInfo, onChange: handleChange, placeholder: "\uBAA8\uC784\uC5D0 \uB300\uD55C \uC124\uBA85\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694.", className: "border-2 border-solid border-[#e8e8e8] w-[600px] h-[120px] mt-2.5 text-lg pl-2.5" })),
+                react_1["default"].createElement("div", { className: "flex justify-end mt-6" },
+                    react_1["default"].createElement(Button_1["default"], { text: "\uC644\uB8CC", onClick: handleSubmit, icon: arrowforward_svg_1["default"] }))))));
 };
 exports["default"] = NotionAdd;

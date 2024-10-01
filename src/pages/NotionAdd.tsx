@@ -3,6 +3,7 @@ import arrowforward from "../assets/arrowforward.svg";
 import Button from "../components/Button";
 import Header from "../components/Header";
 import NotionCategory from "../components/NotionCategory";
+import axios from "axios";
 
 interface FormData {
   title: string;
@@ -39,20 +40,14 @@ const INITIAL_FORM_STATE: FormData = {
 };
 
 const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
+const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 const NotionAdd: React.FC = () => {
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM_STATE);
-
   const [channels, setChannels] = useState<Channel[]>([]);
-
-  const [image, setImage] = useState();
-
-  const handleFileImage = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(URL.createObjectURL(file));
-    }
-  };
+  const [image, setImage] = useState<File | null>(null); // 선택된 파일
+  const [imageUrl, setImageUrl] = useState<string | null>(null); // 업로드된 이미지 URL
 
   useEffect(() => {
     fetchChannels();
@@ -66,7 +61,6 @@ const NotionAdd: React.FC = () => {
       }
       const data = await response.json();
       setChannels(data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching channels:", error);
     }
@@ -84,9 +78,36 @@ const NotionAdd: React.FC = () => {
   );
 
   const handleFileChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {},
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setImage(file); // 선택된 파일을 저장
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", UPLOAD_PRESET);
+
+        try {
+          const response = await fetch(
+            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+          const data = await response.json();
+          setImageUrl(data.secure_url); // 업로드된 이미지 URL 설정
+          setFormData((prev) => ({ ...prev, image: data.secure_url })); // 폼 데이터에 이미지 URL 저장
+        } catch (error) {
+          console.error("이미지 업로드 실패:", error);
+        }
+      }
+    },
     []
   );
+
+  useEffect(() => {
+    console.log(imageUrl);
+  }, [imageUrl]);
 
   const handleCategorySelect = useCallback((category: string) => {
     setFormData((prev) => ({ ...prev, channel: category }));
@@ -117,7 +138,6 @@ const NotionAdd: React.FC = () => {
   const handleSubmit = async () => {
     const channelId = getChannelId(formData.channel);
 
-    // meetingTime 문자열 생성
     const meetingTime = formData.isTimeFlexible
       ? `${formData.meetingDate}, 시간 무관`
       : `${formData.meetingDate} ${formData.meetingStartTime} - ${formData.meetingEndTime}`;
@@ -126,14 +146,15 @@ const NotionAdd: React.FC = () => {
       title: formData.title,
       currentMember: formData.currentMember,
       meetingCapacity: formData.meetingCapacity,
-      meetingTime: meetingTime, // 하나의 속성으로 합침
+      meetingTime: meetingTime,
       meetingSpot: formData.meetingSpot,
       channel: formData.channel,
+      image: formData.image, // 이미지 URL 포함
+      meetingInfo: formData.meetingInfo, // 추가된 모임 설명 필드
     };
 
     const submitData = new FormData();
     submitData.append("title", JSON.stringify(customJsonData));
-
     submitData.append("channelId", channelId);
 
     try {
@@ -158,10 +179,6 @@ const NotionAdd: React.FC = () => {
       );
     }
   };
-
-  useEffect(() => {
-    console.log(image);
-  }, [image]);
 
   return (
     <>
@@ -249,7 +266,7 @@ const NotionAdd: React.FC = () => {
                   htmlFor="meetingStartTime"
                   className="flex font-bold text-xl mt-6"
                 >
-                  모임 시작 시간
+                  시작 시간
                 </label>
                 <input
                   type="time"
@@ -266,7 +283,7 @@ const NotionAdd: React.FC = () => {
                   htmlFor="meetingEndTime"
                   className="flex font-bold text-xl mt-6"
                 >
-                  모임 종료 시간
+                  종료 시간
                 </label>
                 <input
                   type="time"
@@ -293,52 +310,45 @@ const NotionAdd: React.FC = () => {
               name="meetingSpot"
               value={formData.meetingSpot}
               onChange={handleChange}
-              placeholder="모임 장소를 입력해주세요."
+              placeholder="장소를 입력해주세요."
               className="border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5"
             />
           </div>
+
+          <div>
+            <label htmlFor="image" className="flex font-bold text-xl mt-6">
+              이미지
+            </label>
+            <input
+              type="file"
+              id="image"
+              name="image"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="mt-2.5"
+            />
+          </div>
+
           <div>
             <label
-              htmlFor="meetingSpot"
+              htmlFor="meetingInfo"
               className="flex font-bold text-xl mt-6"
             >
               모임 설명
             </label>
-            <input
-              type="text"
+            <textarea
               id="meetingInfo"
               name="meetingInfo"
               value={formData.meetingInfo}
               onChange={handleChange}
-              placeholder="모임 설명을 입력해주세요."
-              className="border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5"
+              placeholder="모임에 대한 설명을 입력해주세요."
+              className="border-2 border-solid border-[#e8e8e8] w-[600px] h-[120px] mt-2.5 text-lg pl-2.5"
             />
-          </div>
-          <div className="mb-6">
-            <p className="font-bold text-xl mt-6">사진 등록</p>
-            <label
-              htmlFor="image"
-              className="w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-2.5"
-            >
-              + 사진 업로드
-            </label>
-            <input
-              id="image"
-              type="file"
-              accept="image/*" // 이미지 파일만 선택 가능
-              onChange={handleFileChange}
-            />
-            {image && (
-              <img src={image} alt="Uploaded" className="mt-2" /> // 선택된 이미지 미리보기
-            )}
           </div>
 
-          <Button
-            label="모임 등록"
-            size="full"
-            color="green"
-            onClick={handleSubmit}
-          />
+          <div className="flex justify-end mt-6">
+            <Button text="완료" onClick={handleSubmit} icon={arrowforward} />
+          </div>
         </form>
       </div>
     </>
