@@ -9,21 +9,26 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   const [nav_on, setNav_on] = useState(false);
 
-  const navHandler = () => {
-    setNav_on(!nav_on);
+  const handleMouseEnter = () => {
+    setNav_on(true);
+  };
+
+  const handleMouseLeave = () => {
+    setNav_on(false);
   };
 
   return (
     <>
       {nav_on ? (
-        <div className="w-140 fixed bottom-0 flex flex-col items-center border-2 border-gray-200 border-b-gray-200 drop-shadow-2xl">
-          <button
-            className="bg-white w-full h-[10px]"
-            onClick={navHandler}
-          ></button>
-          <div className="w-full h-[45px] bg-white flex justify-between items-center px-20">
+        <div
+          className={`w-140 fixed bottom-0 flex flex-col items-center border-2 border-gray-200 border-b-gray-200 drop-shadow-2xl transition-all duration-300 ${
+            nav_on ? "opacity-100 translate-y-0" : "opacity-100 translate-y-12"
+          }`}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="w-full h-[56px] bg-white flex justify-between items-center px-20">
             <Link to="/">
-              <button className="group">
+              <button className="group mt-3">
                 <img
                   src={HomeIcon}
                   alt="Home"
@@ -32,7 +37,7 @@ const Navbar = () => {
               </button>
             </Link>
             <Link to="/search">
-              <button className="group">
+              <button className="group mt-3">
                 <img
                   src={SearchIcon}
                   alt="Search"
@@ -41,7 +46,7 @@ const Navbar = () => {
               </button>
             </Link>
             <Link to="/notionAdd">
-              <button className="group">
+              <button className="group mt-3">
                 <img
                   src={PostIcon}
                   alt="NewPost"
@@ -50,7 +55,7 @@ const Navbar = () => {
               </button>
             </Link>
             <Link to="/ranking">
-              <button className="group">
+              <button className="group mt-3">
                 <img
                   src={RankingIcon}
                   alt="Ranking"
@@ -59,7 +64,7 @@ const Navbar = () => {
               </button>
             </Link>
             <Link to="/profile">
-              <button className="group">
+              <button className="group mt-3">
                 <img
                   src={MyIcon}
                   alt="My"
@@ -70,10 +75,10 @@ const Navbar = () => {
           </div>
         </div>
       ) : (
-        <div className="w-140 fixed bottom-0 flex flex-col items-center border-2 border-gray-200 border-b-gray-200 drop-shadow-2xl rounded-xl	">
+        <div className="w-140 fixed bottom-0 flex flex-col items-center border-2 border-gray-200 border-b-gray-200 drop-shadow-2xl">
           <button
-            className="bg-white w-full h-[10px]"
-            onClick={navHandler}
+            className="bg-white w-full h-[15px]"
+            onMouseEnter={handleMouseEnter}
           ></button>
         </div>
       )}
