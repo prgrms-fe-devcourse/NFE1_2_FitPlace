@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import logo from "../assets/FitPlaceLogo.svg";
 import iconUser from "../assets/icon_user_profile.svg";
 import favorite from "../assets/favorite.svg";
@@ -9,10 +9,84 @@ import Header from "../components/Header";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
+interface ParsedPost {
+  _id: string;
+  actualTitle: string;
+  meetingCapacity: number;
+  currentMember: number;
+  channel: string;
+  meetingDate: string;
+  meetingStartTime: string;
+  meetingEndTime: string;
+  isTimeFlexible: boolean;
+  meetingSpot: string;
+  image: string | null;
+  author: string;
+  createdAt: string;
+  updatedAt: string;
+  likes: any[];
+  comments: any[];
+}
+
 const NotionPage = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const modalBackground = useRef();
   const { id } = useParams();
+
+  const [postData, setPostData] = useState<ParsedPost | null>(null);
+
+  const parsePostData = (post: any): ParsedPost => {
+    try {
+      const parsedTitle = JSON.parse(post.title);
+      return {
+        ...post,
+        actualTitle: parsedTitle.title,
+        meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10),
+        currentMember: parseInt(parsedTitle.currentMember, 10),
+        channel: parsedTitle.channel,
+        meetingDate: parsedTitle.meetingDate,
+        meetingStartTime: parsedTitle.meetingStartTime,
+        meetingEndTime: parsedTitle.meetingEndTime,
+        isTimeFlexible: parsedTitle.isTimeFlexible,
+        meetingSpot: parsedTitle.meetingSpot,
+        image: parsedTitle.image,
+      };
+    } catch (error) {
+      console.error("Error parsing post title:", error);
+      return post; // 파싱에 실패하면 원본 데이터 반환
+    }
+  };
+
+  useEffect(() => {
+    const fetchPostData = async () => {
+      try {
+        const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
+        const postId = "66f9fce2e300f96f2e55266f";
+        const response = await fetch(`${API_URL}/posts/${postId}`, {
+          headers: {
+            Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDE0ODU5fQ.Al40jxy-6yrAoANrY3fQA1joeNw08-fjByus_ZfxXSk`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const parsedData = parsePostData(data);
+        setPostData(parsedData);
+        console.log(parsedData);
+      } catch (error) {
+        console.error("Error fetching post data:", error);
+      }
+    };
+
+    fetchPostData();
+  }, []);
+
+  if (!postData) {
+    return <div>Loading...</div>; // 데이터 로딩 중 표시
+  }
 
   return (
     <>
@@ -45,6 +119,20 @@ const NotionPage = () => {
             </div>
           )}
 
+          {/*  data 출력테스트 */}
+          <h1>{postData.actualTitle}</h1>
+          <p>{postData.channel}</p>
+          <p>장소: {postData.meetingSpot}</p>
+          <p>
+            일시: {postData.meetingDate}{" "}
+            {postData.isTimeFlexible
+              ? "시간 무관"
+              : `${postData.meetingStartTime} - ${postData.meetingEndTime}`}
+          </p>
+          <p>
+            멤버 {postData.currentMember}명 / {postData.meetingCapacity}명
+          </p>
+          {postData.image && <img src={postData.image} alt="모임 이미지" />}
           <section>
             <div>
               <div className="flex justify-between">
@@ -55,7 +143,7 @@ const NotionPage = () => {
                 </div>
               </div>
 
-              <h3 className="text-2xl font-bold">풋살 4 vs 4 모집</h3>
+              <h3 className="text-2xl font-bold">{postData.actualTitle}</h3>
               <p className="text-lg text-[#666666] pt-2.5">풋살</p>
             </div>
           </section>
@@ -116,11 +204,9 @@ const NotionPage = () => {
                 </button>
               </div>
               <div className="w-8">
-                <Link to={`/notion/${id}/comments`}>
-                  <button>
-                    <img src={commentIcon} alt="메세지버튼" />
-                  </button>
-                </Link>
+                <button>
+                  <img src={commentIcon} alt="메세지버튼" />
+                </button>
               </div>
             </div>
           </div>
