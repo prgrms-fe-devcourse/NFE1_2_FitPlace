@@ -11,6 +11,8 @@ const SearchPost = (props) => {
         setActiveButton(item);
     };
 
+    console.log("여긴어디:" , postList.meetingCapacity)
+
     return (
         <div>
             <div className="mb-10">
@@ -31,13 +33,13 @@ const SearchPost = (props) => {
                     {postList.map((value, index) => (
                              <Health_post
                              title={value.title}
-                             channel_name={value.name}
+                             channel_name={value.channel?.name}
                              id={value._id}
                              key={index}
                            />
-           
+                        
                     ))}
-                
+         
                 </div>
             </section>
         </div>

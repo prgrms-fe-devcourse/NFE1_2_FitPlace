@@ -56,6 +56,7 @@ function parsePost(post) {
             parsedTitle = {};
         }
     }
+    console.log("서치 채널 모임인원: ", parsedTitle.meetingCapacity);
     return {
         _id: post._id,
         title: parsedTitle.title || post.title || "",
@@ -113,7 +114,6 @@ var SearchPage = function () {
                         return "email" in item ? item : parsePost(item);
                     });
                     setResults(parsedResults);
-                    console.log(parsedResults);
                     return [3 /*break*/, 6];
                 case 4:
                     error_1 = _a.sent();
@@ -167,31 +167,26 @@ var SearchPage = function () {
             }
         });
     }); };
-    var renderSearchResult = function (result) {
-        // This is a ParsedPost
-        return (React.createElement("div", { key: result._id, className: "post-result" },
-            React.createElement("h3", null, result.title),
-            React.createElement("p", null,
-                "Channel: ",
-                result.channel),
-            React.createElement("p", null,
-                "Members: ",
-                result.currentMember,
-                " / ",
-                result.meetingCapacity),
-            React.createElement("p", null,
-                "Date: ",
-                result.meetingDate),
-            React.createElement("p", null,
-                "Time:",
-                " ",
-                result.isTimeFlexible
-                    ? "Flexible"
-                    : result.meetingStartTime + " - " + result.meetingEndTime),
-            React.createElement("p", null,
-                "Location: ",
-                result.meetingSpot)));
-    };
+    // const renderSearchResult = (result: SearchResult) => {
+    //     // This is a ParsedPost
+    //     return (
+    //         <div key={result._id} className="post-result">
+    //             <h3>{result.title}</h3>
+    //             <p>Channel: {result.channel}</p>
+    //             <p>
+    //                 Members: {result.currentMember} / {result.meetingCapacity}
+    //             </p>
+    //             <p>Date: {result.meetingDate}</p>
+    //             <p>
+    //                 Time:{" "}
+    //                 {result.isTimeFlexible
+    //                     ? "Flexible"
+    //                     : `${result.meetingStartTime} - ${result.meetingEndTime}`}
+    //             </p>
+    //             <p>Location: {result.meetingSpot}</p>
+    //         </div>
+    //     );
+    // };
     var handleButtonClick = function (item) {
         setActiveButton(item);
     };
@@ -207,6 +202,8 @@ var SearchPage = function () {
             loading && React.createElement("p", null, "Loading..."),
             error && React.createElement("p", { className: "error" }, error),
             React.createElement("div", { className: "mb-4 flex" }, searchCategory.map(function (category, index) { return (React.createElement(Button_1["default"], { key: index, label: category, color: activeButton === category ? "green" : "grey", size: "mid", margin: "btnMr", onClick: function () { return handleButtonClick(category); } })); })),
+            loading && React.createElement("p", null, "Loading..."),
+            error && React.createElement("p", { className: "error" }, error),
             activeButton === "포스트" ? React.createElement(SearchPost_1["default"], { postList: results })
                 : React.createElement(SearchUser_1["default"], null))));
 };

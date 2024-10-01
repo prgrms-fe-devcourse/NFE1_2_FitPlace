@@ -32,6 +32,7 @@ var Health_post = function (_a) {
         console.error("JSON 파싱 오류:", error);
         titleObject = { title: title };
     }
+    console.log("모임인원: ", title.meetingCapacity);
     return (react_1["default"].createElement(react_router_dom_1.Link, { to: "/notion/" + id },
         react_1["default"].createElement("button", { className: "bg-gray-100 h-32 w-full rounded-md shadow-lg mb-5 p-5 flex flex-col transition-transform duration-300 ease-in-out hover:bg-gray-200 hover:shadow-xl" },
             react_1["default"].createElement("p", { className: "font-bold text-lg mb-3" }, titleObject.title || "제목 없음"),

@@ -15,6 +15,7 @@ interface Post {
     title: string;
     channel: any;
     name: string;
+    meetingCapacity: number;
     author: any;
     createdAt: string;
     updatedAt: string;
@@ -52,6 +53,8 @@ function parsePost(post: Post): ParsedPost {
         }
     }
 
+    console.log("서치 채널 모임인원: ", parsedTitle.meetingCapacity );
+
     return {
         _id: post._id,
         title: parsedTitle.title || post.title || "",  // JSON 파싱 실패 시 post.title 사용
@@ -68,6 +71,8 @@ function parsePost(post: Post): ParsedPost {
         updatedAt: post.updatedAt,
         likes: post.likes,
         comments: post.comments,
+
+      
     };
 }
 const SearchPage = () => {
@@ -109,7 +114,6 @@ const SearchPage = () => {
                 "email" in item ? item : parsePost(item as Post)
             );
             setResults(parsedResults);
-            console.log(parsedResults);
         } catch (error) {
             setError("Failed to fetch search results");
             console.error("Error searching:", error);
@@ -151,26 +155,26 @@ const SearchPage = () => {
             setLoading(false);
         }
     };
-    const renderSearchResult = (result: SearchResult) => {
-        // This is a ParsedPost
-        return (
-            <div key={result._id} className="post-result">
-                <h3>{result.title}</h3>
-                <p>Channel: {result.channel}</p>
-                <p>
-                    Members: {result.currentMember} / {result.meetingCapacity}
-                </p>
-                <p>Date: {result.meetingDate}</p>
-                <p>
-                    Time:{" "}
-                    {result.isTimeFlexible
-                        ? "Flexible"
-                        : `${result.meetingStartTime} - ${result.meetingEndTime}`}
-                </p>
-                <p>Location: {result.meetingSpot}</p>
-            </div>
-        );
-    };
+    // const renderSearchResult = (result: SearchResult) => {
+    //     // This is a ParsedPost
+    //     return (
+    //         <div key={result._id} className="post-result">
+    //             <h3>{result.title}</h3>
+    //             <p>Channel: {result.channel}</p>
+    //             <p>
+    //                 Members: {result.currentMember} / {result.meetingCapacity}
+    //             </p>
+    //             <p>Date: {result.meetingDate}</p>
+    //             <p>
+    //                 Time:{" "}
+    //                 {result.isTimeFlexible
+    //                     ? "Flexible"
+    //                     : `${result.meetingStartTime} - ${result.meetingEndTime}`}
+    //             </p>
+    //             <p>Location: {result.meetingSpot}</p>
+    //         </div>
+    //     );
+    // };
 
     const handleButtonClick = (item: string) => {
         setActiveButton(item);
@@ -182,6 +186,9 @@ const SearchPage = () => {
 
 
     console.log("searchPage:", results);
+
+
+   
 
     return (
         <>
@@ -210,6 +217,9 @@ const SearchPage = () => {
                         />
                     ))}
                 </div>
+                {loading && <p>Loading...</p>}
+            {error && <p className="error">{error}</p>}
+
             {activeButton === "포스트" ? <SearchPost  postList={results}/>
                : <SearchUser />}
         </div>

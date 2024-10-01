@@ -10,10 +10,14 @@ var SearchPost = function (props) {
     var handleButtonClick = function (item) {
         setActiveButton(item);
     };
+    console.log("여긴어디:", postList.meetingCapacity);
     return (react_1["default"].createElement("div", null,
         react_1["default"].createElement("div", { className: "mb-10" }, exerciseList.map(function (item, index) { return (react_1["default"].createElement(Button_1["default"], { key: index, label: item, color: item === activeButton ? "green" : "grey", size: "mid", margin: "btnMr", onClick: function () { return handleButtonClick(item); } })); })),
         react_1["default"].createElement("section", null,
             react_1["default"].createElement("p", { className: "font-bold text-xl mb-3" }, "\uC778\uAE30 \uBAA8\uC784"),
-            react_1["default"].createElement("div", { className: "h-1/2" }, postList.map(function (value, index) { return (react_1["default"].createElement(Health_post_1["default"], { title: value.title, channel_name: value.name, id: value._id, key: index })); })))));
+            react_1["default"].createElement("div", { className: "h-1/2" }, postList.map(function (value, index) {
+                var _a;
+                return (react_1["default"].createElement(Health_post_1["default"], { title: value.title, channel_name: (_a = value.channel) === null || _a === void 0 ? void 0 : _a.name, id: value._id, key: index }));
+            })))));
 };
 exports["default"] = SearchPost;

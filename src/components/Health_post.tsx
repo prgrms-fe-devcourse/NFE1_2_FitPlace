@@ -29,6 +29,8 @@ const Health_post = ({ title, channel_name, id }) => {
     titleObject = { title: title };
   }
 
+  console.log("모임인원: ", title.meetingCapacity);
+
 
   return (
     <Link to={`/notion/${id}`}>
