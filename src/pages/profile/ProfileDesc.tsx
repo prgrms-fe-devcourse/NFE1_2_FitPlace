@@ -1,9 +1,72 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../components/Button";
+import { Cookies } from "react-cookie";
+import { TypedUseSelectorHook, useSelector } from "react-redux";
+import axios from "axios";
+
+interface ResData {
+  banned: boolean
+  comments: []
+  createdAt: string
+  email: string
+  emailVerified: boolean
+  followers: []
+  following: []
+  fullName: string
+  isOnline: boolean
+  likes: []
+  messages: []
+  notifications: []
+  posts: []
+  role: string
+  updatedAt: string
+  __v: number;
+  _id: string
+}
+interface UserData {
+  fullName: string;
+  birth: number;
+  userId: string;
+  description?: string;
+  location?: string;
+}
+
+interface RootState {
+  currentUser: ResData;
+}
+
+const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const ProfileDesc = () => {
 
-  const [textValue, setTextValue] = useState('')
+  const cookie = new Cookies();
+
+  const [myToken, setMyToken] = useState("");
+  const [textValue, setTextValue] = useState('');
+
+  const myInfo = useTypedSelector((state) => state.currentUser);
+  const myDetailData: UserData = JSON.parse(myInfo.fullName);
+
+  useEffect(() => {
+    setMyToken(cookie.get('token').replace(/bearer\s+/g, ""));
+  }, [cookie])
+
+  const handleEdit = () => {
+    const putData = { ...myDetailData };
+    putData.description = textValue
+    const submitData = { fullName: JSON.stringify(putData) }
+    axios.put(
+      "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",submitData ,
+      {
+        headers: {
+          Authorization: `bearer ${myToken}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    .then(res => res.status === 200 ? alert('수정이 완료되었습니다') : null)
+    .catch(err => console.error(err))
+  };
 
   return (
     <div className="w-140 min-h-screen bg-white p-3 flex flex-col justify-start relative">
@@ -29,6 +92,7 @@ const ProfileDesc = () => {
           label="저장"
           size="full"
           color="green"
+          onClick={handleEdit}
         />
       </div>
     </div>
