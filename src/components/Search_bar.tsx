@@ -5,6 +5,8 @@ interface SearchBarProps {
     getValue?: any;
     value?: any;
 
+    placeholder?: string;
+    getValue: (value: string) => void;
 }
 const Search_bar: React.FC<SearchBarProps> = ({ value, getValue}) => {
 
@@ -14,6 +16,11 @@ const Search_bar: React.FC<SearchBarProps> = ({ value, getValue}) => {
 
 
     
+const Search_bar: React.FC<SearchBarProps> = ({ placeholder, getValue }) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        getValue(event.target.value); // 입력값을 부모로 전달
+    };
+
     return (
         <div className="relative w-full">
             <img
@@ -26,9 +33,6 @@ const Search_bar: React.FC<SearchBarProps> = ({ value, getValue}) => {
                 className="bg-gray-100 h-8 w-full rounded-md shadow-lg p-5 pl-10"
                 value={value}
                 type="text"
-                onChange={pushValue}
-
-                id="invalue"
             />
 
         </div>

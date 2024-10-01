@@ -1,18 +1,90 @@
-import React, { useState, useRef } from 'react';
-import logo from '../assets/FitPlaceLogo.svg'
-import iconUser from '../assets/icon_user_profile.svg'
-import favorite from '../assets/favorite.svg'
-import commentIcon from '../assets/commentIcon.svg'
-import NotionItem from '../components/NotionItem';
-import Button from '../components/Button';
-import Header from '../components/Header';
+import React, { useState, useRef, useEffect } from "react";
+import logo from "../assets/FitPlaceLogo.svg";
+import iconUser from "../assets/icon_user_profile.svg";
+import favorite from "../assets/favorite.svg";
+import commentIcon from "../assets/commentIcon.svg";
+import NotionItem from "../components/NotionItem";
+import Button from "../components/Button";
+import Header from "../components/Header";
 
-
+interface ParsedPost {
+    _id: string;
+    actualTitle: string;
+    meetingCapacity: number;
+    currentMember: number;
+    channel: string;
+    meetingDate: string;
+    meetingStartTime: string;
+    meetingEndTime: string;
+    isTimeFlexible: boolean;
+    meetingSpot: string;
+    image: string | null;
+    author: string;
+    createdAt: string;
+    updatedAt: string;
+    likes: any[];
+    comments: any[];
+}
 
 const NotionPage = () => {
+    const [deleteModal, setDeleteModal] = useState(false);
+    const modalBackground = useRef();
 
-  const [deleteModal, setDeleteModal] = useState(false);
-  const modalBackground = useRef();
+    const [postData, setPostData] = useState<ParsedPost | null>(null);
+
+    const parsePostData = (post: any): ParsedPost => {
+        try {
+            const parsedTitle = JSON.parse(post.title);
+            return {
+                ...post,
+                actualTitle: parsedTitle.title,
+                meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10),
+                currentMember: parseInt(parsedTitle.currentMember, 10),
+                channel: parsedTitle.channel,
+                meetingDate: parsedTitle.meetingDate,
+                meetingStartTime: parsedTitle.meetingStartTime,
+                meetingEndTime: parsedTitle.meetingEndTime,
+                isTimeFlexible: parsedTitle.isTimeFlexible,
+                meetingSpot: parsedTitle.meetingSpot,
+                image: parsedTitle.image,
+            };
+        } catch (error) {
+            console.error("Error parsing post title:", error);
+            return post; // 파싱에 실패하면 원본 데이터 반환
+        }
+    };
+
+    useEffect(() => {
+        const fetchPostData = async () => {
+            try {
+                const API_URL =
+                    "https://kdt.frontend.5th.programmers.co.kr:5009";
+                const postId = "66f9fce2e300f96f2e55266f";
+                const response = await fetch(`${API_URL}/posts/${postId}`, {
+                    headers: {
+                        Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDE0ODU5fQ.Al40jxy-6yrAoANrY3fQA1joeNw08-fjByus_ZfxXSk`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const parsedData = parsePostData(data);
+                setPostData(parsedData);
+                console.log(parsedData);
+            } catch (error) {
+                console.error("Error fetching post data:", error);
+            }
+        };
+
+        fetchPostData();
+    }, []);
+
+    if (!postData) {
+        return <div>Loading...</div>; // 데이터 로딩 중 표시
+    }
 
   return (
     <>
@@ -104,15 +176,16 @@ const NotionPage = () => {
               <button><img src={favorite} alt="좋아요버튼" /></button>
             </div>
             <div className='w-8'>
-              <form action="/notion/comments">
-                <button><img src={commentIcon} alt="댓글버튼" /></button>
-              </form>
+              <button><img src={commentIcon} alt="메세지버튼" /></button>
             </div>
           </div>
         </div>
       </div>
     </div>
-    </>  
+
+
+    </>
+   
   );
 };
 
