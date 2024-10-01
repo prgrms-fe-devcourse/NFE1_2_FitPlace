@@ -1,12 +1,57 @@
 import { locationList } from "../../data/location";
 
 import Button from "../../components/Button";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Cookies } from "react-cookie";
+import { TypedUseSelectorHook, useSelector } from "react-redux";
+import axios from "axios";
+
+interface ResData {
+  banned: boolean
+  comments: []
+  createdAt: string
+  email: string
+  emailVerified: boolean
+  followers: []
+  following: []
+  fullName: string
+  isOnline: boolean
+  likes: []
+  messages: []
+  notifications: []
+  posts: []
+  role: string
+  updatedAt: string
+  __v: number;
+  _id: string
+}
+interface UserData {
+  fullName: string;
+  birth: number;
+  userId: string;
+  description?: string;
+  location?: string;
+}
+
+interface RootState {
+  currentUser: ResData;
+}
+
+const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const ProfileLocation = () => {
 
+  const cookie = new Cookies();
+
   const [locaNum, setLocaNum] = useState(0);
-  const [cityNum, setCityNum] = useState(0);
+  const [cityNum, setCityNum] = useState<number | null>(null);
+
+  const [myToken, setMyToken] = useState('');
+  const [locaValue, setLocaValue] = useState('');
+  const [cityValue, setCityValue] = useState('');
+
+  const myInfo = useTypedSelector((state) => state.currentUser);
+  const myDetailData: UserData = JSON.parse(myInfo.fullName);
 
   // 도, 광역시 선택시 시군구 스크롤 최상단으로
   const myRef = useRef<HTMLUListElement>(null);
@@ -14,6 +59,31 @@ const ProfileLocation = () => {
   const scrollTop = () => {
     if (myRef.current) {myRef.current.scrollTop = 0}
   }
+
+  useEffect(() => {
+    setMyToken(cookie.get("token").replace(/bearer\s+/g, ""))
+  }, [cookie])
+
+  const handleEdit = () => {
+    const putData = { ...myDetailData };
+    putData.location = locaValue + ' ' + cityValue
+    const submitData = { fullName: JSON.stringify(putData) }
+    if (!cityValue || cityValue.length === 0 || cityValue === '') {
+      return alert('시군구를 선택하세요')
+    } else {
+      axios.put(
+        "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",submitData ,
+        {
+          headers: {
+            Authorization: `bearer ${myToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      .then(res => res.status === 200 ? alert('수정이 완료되었습니다') : null)
+      .catch(err => console.error(err))
+    }
+  };
 
   return (
     <div className="w-140 min-h-screen bg-white p-3 flex flex-col justify-start relative">
@@ -35,8 +105,10 @@ const ProfileLocation = () => {
                     className={`cursor-pointer py-3 hover:bg-gray-200 ${locaNum === idx ? "text-greenColor font-bold" : null}`}
                     onClick={() => {
                       setLocaNum(idx)
-                      setCityNum(0)
+                      setCityNum(null)
                       scrollTop();
+                      setLocaValue(province.name)
+                      setCityValue('')
                     }}
                   ><span>{province.name}</span></div>
                 )
@@ -53,7 +125,10 @@ const ProfileLocation = () => {
                   <div
                     key={idx}
                     className={`cursor-pointer py-3 hover:bg-gray-200 ${cityNum === idx ? "text-greenColor font-bold" : null} relative`}
-                    onClick={() => setCityNum(idx)}
+                    onClick={() => {
+                      setCityNum(idx)
+                      setCityValue(city)
+                    }}
                   >
                     <span>{city}</span>
                     {cityNum === idx ? <span><img src="/src/assets/check.svg" alt="선택되었습니다" className="absolute bottom-1/2 right-12 translate-y-1/2" /></span> : null}
