@@ -46,7 +46,10 @@ const ProfileTemplate = () => {
         <div className="flex flex-col justify-center items-stretch text-center pt-8 pb-6 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow">
           {/* 프로필 이미지 */}
           <div id="profileImg" className="mx-auto">
-            <img src="/src/assets/defaultProfileImg.svg" alt="프로필 사진" />
+            <img
+              src="/src/assets/defaultProfileImg.svg"
+              alt={`${profileData.fullName}님의 프로필 사진`}
+            />
           </div>
 
           {/* 닉네임 */}
@@ -67,24 +70,24 @@ const ProfileTemplate = () => {
           {/* 소개글 */}
           <ProfileWrap
             category="소개글"
-            description="헬스, 수영, 배드민턴 좋아합니다 3대 550칩니다 언더아머 착용중입니다 같이 운동하실 분들 연락주세요"
+            description={ !profileData.description ? "아직 작성하지 않았어요" : "대충 있을때 이거 넣을듯" }
           />
 
           {/* 지역 */}
-          <ProfileWrap category="지역" description="서울특별시 강남구 개포동" />
+          <ProfileWrap category="지역" description={ !profileData.location ? "아직 작성하지 않았어요" : "대충 있을때 이거 넣을듯" } />
 
           {/* 오늘의 일정 */}
           <ProfileWrap
             category="오늘의 일정"
-            description="함께 5:5 풋살하실분 구합니다"
+            description={ !profileData.description ? "오늘 할 일정이 없어요" : "대충 있을때 이거 넣을듯" }
           />
 
           {/* 후기 */}
-          <ProfileWrap category="후기" description="친절하셨습니다" />
+          <ProfileWrap category="후기" description={ !profileData.description ? "아직 작성된 후기가 없어요" : "대충 있을때 이거넣을듯" } />
 
           {/* 차단유저 목록 */}
           {/* 타유저 프로필 조회시 안보이게 처리 */}
-          <ProfileWrap category="차단유저 목록" description="고래상어" />
+          <ProfileWrap category="차단유저 목록" description={ userData.likes.length === 0 ? "아직 차단한 유저가 없어요" : "대충 있을때 이거넣을듯" } />
         </div>
       </div>
     </div>

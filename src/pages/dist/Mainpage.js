@@ -95,7 +95,7 @@ var Mainpage = function () {
         .slice(0, 5); //post가 많은 순서대로 정렬.
     var Sort_Post = post
         .sort(function (a, b) { return b.likes.length - a.likes.length; })
-        .slice(0, 6);
+        .slice(0, 1);
     react_1.useEffect(function () {
         console.log("post:", Sort_Post);
     }, [Sort_Post]);
