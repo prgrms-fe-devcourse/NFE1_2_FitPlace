@@ -31,13 +31,6 @@ var App = function () {
             dispatch(store_1.isLogin(true));
         }
     }, []);
-    react_1.useEffect(function () {
-        var token = cookie.get("token");
-        if (token) {
-            dispatch(store_1.initializeToken(token));
-            dispatch(store_1.isLogin(true));
-        }
-    }, []);
     return (react_1["default"].createElement("div", { className: "flex flex-col justify-center items-center min-h-screen bg-white" },
         react_1["default"].createElement(react_router_dom_1.Routes, null,
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/", element: react_1["default"].createElement(Mainpage_1["default"], null) }),

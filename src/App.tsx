@@ -33,13 +33,6 @@ const App = () => {
       dispatch(isLogin(true));
     }
   }, []);
-  useEffect(() => {
-    const token = cookie.get("token");
-    if (token) {
-      dispatch(initializeToken(token));
-      dispatch(isLogin(true));
-    }
-  }, []);
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-white">

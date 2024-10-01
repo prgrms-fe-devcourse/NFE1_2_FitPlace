@@ -204,9 +204,11 @@ const NotionPage = () => {
                 </button>
               </div>
               <div className="w-8">
-                <button>
-                  <img src={commentIcon} alt="메세지버튼" />
-                </button>
+                <Link to={`/notion/${id}/comments`}>
+                  <button>
+                    <img src={commentIcon} alt="메세지버튼" />
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

@@ -55,10 +55,11 @@ var NotionItem_1 = require("../components/NotionItem");
 var Button_1 = require("../components/Button");
 var Header_1 = require("../components/Header");
 var react_router_dom_1 = require("react-router-dom");
+var react_router_dom_2 = require("react-router-dom");
 var NotionPage = function () {
     var _a = react_1.useState(false), deleteModal = _a[0], setDeleteModal = _a[1];
     var modalBackground = react_1.useRef();
-    var id = react_router_dom_1.useParams().id;
+    var id = react_router_dom_2.useParams().id;
     var _b = react_1.useState(null), postData = _b[0], setPostData = _b[1];
     var parsePostData = function (post) {
         try {
@@ -192,7 +193,8 @@ var NotionPage = function () {
                             react_1["default"].createElement("button", null,
                                 react_1["default"].createElement("img", { src: favorite_svg_1["default"], alt: "\uC88B\uC544\uC694\uBC84\uD2BC" }))),
                         react_1["default"].createElement("div", { className: "w-8" },
-                            react_1["default"].createElement("button", null,
-                                react_1["default"].createElement("img", { src: commentIcon_svg_1["default"], alt: "\uBA54\uC138\uC9C0\uBC84\uD2BC" })))))))));
+                            react_1["default"].createElement(react_router_dom_1.Link, { to: "/notion/" + id + "/comments" },
+                                react_1["default"].createElement("button", null,
+                                    react_1["default"].createElement("img", { src: commentIcon_svg_1["default"], alt: "\uBA54\uC138\uC9C0\uBC84\uD2BC" }))))))))));
 };
 exports["default"] = NotionPage;
