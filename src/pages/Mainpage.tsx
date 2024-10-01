@@ -8,9 +8,10 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
-
 const Mainpage = () => {
-  const userData = useSelector((state: { currentUser: object }) => state.currentUser)
+  const userData = useSelector(
+    (state: { currentUser: object }) => state.currentUser
+  );
   const [channel, setChannel] = useState([]);
   const [post, setPost] = useState([]);
 
@@ -106,7 +107,7 @@ const Mainpage = () => {
               Sort_Post.map((post, index) => (
                 <Health_post
                   title={post.title}
-                  channel_name={post.name}
+                  channel_name={post.channel?.name}
                   id={post._id}
                   key={index}
                 />

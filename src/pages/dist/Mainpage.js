@@ -117,6 +117,9 @@ var Mainpage = function () {
             react_1["default"].createElement("section", null,
                 react_1["default"].createElement("p", { className: "font-bold mt-11 text-xl mb-3" }, "\uC778\uAE30 \uBAA8\uC784"),
                 react_1["default"].createElement("div", { className: "h-1/2" }, Sort_Post.length > 0 &&
-                    Sort_Post.map(function (post, index) { return (react_1["default"].createElement(Health_post_1["default"], { title: post.title, channel_name: post.name, id: post._id, key: index })); }))))));
+                    Sort_Post.map(function (post, index) {
+                        var _a;
+                        return (react_1["default"].createElement(Health_post_1["default"], { title: post.title, channel_name: (_a = post.channel) === null || _a === void 0 ? void 0 : _a.name, id: post._id, key: index }));
+                    }))))));
 };
 exports["default"] = Mainpage;
