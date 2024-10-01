@@ -2,16 +2,17 @@
 exports.__esModule = true;
 var react_redux_1 = require("react-redux");
 var ProfileWrap_1 = require("../../components/ProfileWrap");
+var useTypedSelector = react_redux_1.useSelector;
 var ProfileTemplate = function () {
-    var user = react_redux_1.useSelector(function (state) { return state; });
-    console.log(user);
+    var userData = useTypedSelector(function (state) { return state.currentUser; });
+    var profileData = JSON.parse(userData.fullName);
     return (React.createElement("div", { className: "w-140 min-h-screen bg-white p-3" },
         React.createElement("div", { className: "flex flex-col justify-center items-stretch" },
             React.createElement("div", { className: "flex flex-col justify-center items-stretch text-center pt-8 pb-6 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow" },
                 React.createElement("div", { id: "profileImg", className: "mx-auto" },
                     React.createElement("img", { src: "/src/assets/defaultProfileImg.svg", alt: "\uD504\uB85C\uD544 \uC0AC\uC9C4" })),
                 React.createElement("div", { className: "mt-2" },
-                    React.createElement("p", { className: "text-3xl font-bold" }, "\uB2C9\uB124\uC784")),
+                    React.createElement("p", { className: "text-3xl font-bold" }, profileData.fullName)),
                 React.createElement("div", { className: "mt-6" },
                     React.createElement("p", { className: "text-base font-normal" },
                         React.createElement("span", { className: "font-bold" }, "0"),

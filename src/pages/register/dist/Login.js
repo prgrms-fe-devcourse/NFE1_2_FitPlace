@@ -45,6 +45,7 @@ var Login = function () {
                 setLoginError(false);
                 dispatch(store_1.initializeUser(res.data.user));
                 // 임시로 profile페이지로 감 추후 메인으로 바꿔야함
+                // navigate('/')
                 navigate('/profile');
             }
         })["catch"](function (err) { return err.status === 400 ? setLoginError(true) : null; });

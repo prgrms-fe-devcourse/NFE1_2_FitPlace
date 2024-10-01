@@ -1,18 +1,43 @@
-import { useSelector } from "react-redux";
+import { TypedUseSelectorHook, useSelector } from "react-redux";
 import ProfileWrap from "../../components/ProfileWrap";
 
-interface Ex {
-  fullName: string
-  birth: number
-  userId: string
-  description?: string
-  location?: string
+interface ResData {
+  banned: boolean;
+  comments: [];
+  createdAt: string;
+  email: string;
+  emailVerified: boolean;
+  followers: [];
+  following: [];
+  fullName: string;
+  isOnline: boolean;
+  likes: [];
+  messages: [];
+  notifications: [];
+  posts: [];
+  role: string;
+  updatedAt: string;
+  __v: number;
+  _id: string;
 }
 
-const ProfileTemplate = () => {
+interface UserData {
+  fullName: string;
+  birth: number;
+  userId: string;
+  description?: string;
+  location?: string;
+}
 
-  const user = useSelector(state => state)
-  console.log(user)
+interface RootState {
+  currentUser: ResData
+}
+
+const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+const ProfileTemplate = () => {
+  const userData = useTypedSelector(state => state.currentUser);
+  const profileData: UserData = JSON.parse(userData.fullName);
 
   return (
     <div className="w-140 min-h-screen bg-white p-3">
@@ -23,15 +48,17 @@ const ProfileTemplate = () => {
           <div id="profileImg" className="mx-auto">
             <img src="/src/assets/defaultProfileImg.svg" alt="프로필 사진" />
           </div>
-  
+
           {/* 닉네임 */}
           <div className="mt-2">
-            <p className="text-3xl font-bold">닉네임</p>
+            <p className="text-3xl font-bold">{profileData.fullName}</p>
           </div>
 
           {/* 운동완료 횟수 */}
           <div className="mt-6">
-            <p className="text-base font-normal"><span className="font-bold">0</span>회 오늘의 같이 운동 완료!</p>
+            <p className="text-base font-normal">
+              <span className="font-bold">0</span>회 오늘의 같이 운동 완료!
+            </p>
           </div>
         </div>
 
@@ -44,10 +71,7 @@ const ProfileTemplate = () => {
           />
 
           {/* 지역 */}
-          <ProfileWrap
-            category="지역"
-            description="서울특별시 강남구 개포동"
-          />
+          <ProfileWrap category="지역" description="서울특별시 강남구 개포동" />
 
           {/* 오늘의 일정 */}
           <ProfileWrap
@@ -56,17 +80,11 @@ const ProfileTemplate = () => {
           />
 
           {/* 후기 */}
-          <ProfileWrap
-            category="후기"
-            description="친절하셨습니다"
-          />
+          <ProfileWrap category="후기" description="친절하셨습니다" />
 
           {/* 차단유저 목록 */}
           {/* 타유저 프로필 조회시 안보이게 처리 */}
-          <ProfileWrap
-            category="차단유저 목록"
-            description="고래상어"
-          />
+          <ProfileWrap category="차단유저 목록" description="고래상어" />
         </div>
       </div>
     </div>
