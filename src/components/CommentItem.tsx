@@ -19,22 +19,34 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
 
   const token = cookies.token;
 
-  const toggleOptions = () => {
-    setShowOptions(true);
+  // const toggleOptions = () => {
 
-    if (timerRef.current !== null) {
-      clearTimeout(timerRef.current);
-    }
+  //   setShowOptions(true);
 
-    timerRef.current = window.setTimeout(() => {
-      setShowOptions(false);
-      timerRef.current = null;
-    }, 5000);
-  };
+  //   if (timerRef.current !== null) {
+  //     clearTimeout(timerRef.current);
+  //   }
+
+  //   timerRef.current = window.setTimeout(() => {
+  //     setShowOptions(false);
+  //     timerRef.current = null;
+  //   }, 5000);
+  // };
 
   // const handleEdit = async () => {
   //   // 수정 로직
   // };
+
+  let parsingObject;
+  try {
+    // 이중 파싱: 이스케이프된 문자열을 먼저 일반 문자열로 변환 후 JSON 파싱
+    parsingObject = JSON.parse(item.author.fullName);
+    console.log("parsing", parsingObject);
+  } catch (error) {
+    console.error("JSON 파싱 오류:", error);
+    parsingObject = {};
+  }
+
   const handleDelete = async () => {
     const isConfirmed = window.confirm("댓글을 삭제하시겠습니까?");
 
@@ -79,7 +91,7 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
         />
       </div>
       <div className="flex-grow">
-        <div className="text-sm mb-2 font-bold">{item.author.fullName}</div>
+        <div className="text-sm mb-2 font-bold">{parsingObject.fullName}</div>
         <div className="text-base">{item.comment}</div>
       </div>
       {item.author.fullName && (

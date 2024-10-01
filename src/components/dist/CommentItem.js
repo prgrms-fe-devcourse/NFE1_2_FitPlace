@@ -48,19 +48,29 @@ var CommentItem = function (_a) {
     var id = react_router_dom_1.useParams().id;
     var cookies = react_cookie_1.useCookies(["token"])[0];
     var token = cookies.token;
-    var toggleOptions = function () {
-        setShowOptions(true);
-        if (timerRef.current !== null) {
-            clearTimeout(timerRef.current);
-        }
-        timerRef.current = window.setTimeout(function () {
-            setShowOptions(false);
-            timerRef.current = null;
-        }, 5000);
-    };
+    // const toggleOptions = () => {
+    //   setShowOptions(true);
+    //   if (timerRef.current !== null) {
+    //     clearTimeout(timerRef.current);
+    //   }
+    //   timerRef.current = window.setTimeout(() => {
+    //     setShowOptions(false);
+    //     timerRef.current = null;
+    //   }, 5000);
+    // };
     // const handleEdit = async () => {
     //   // 수정 로직
     // };
+    var parsingObject;
+    try {
+        // 이중 파싱: 이스케이프된 문자열을 먼저 일반 문자열로 변환 후 JSON 파싱
+        parsingObject = JSON.parse(item.author.fullName);
+        console.log("parsing", parsingObject);
+    }
+    catch (error) {
+        console.error("JSON 파싱 오류:", error);
+        parsingObject = {};
+    }
     var handleDelete = function () { return __awaiter(void 0, void 0, void 0, function () {
         var isConfirmed, error_1;
         return __generator(this, function (_a) {
@@ -107,7 +117,7 @@ var CommentItem = function (_a) {
         react_1["default"].createElement("div", { className: "w-10 mr-4 flex-shrink-0" },
             react_1["default"].createElement("img", { src: defaultProfileImg_svg_1["default"], alt: "user-icon", className: "w-full h-full object-cover rounded-full overflow-hidden" })),
         react_1["default"].createElement("div", { className: "flex-grow" },
-            react_1["default"].createElement("div", { className: "text-sm mb-2 font-bold" }, item.author.fullName),
+            react_1["default"].createElement("div", { className: "text-sm mb-2 font-bold" }, parsingObject.fullName),
             react_1["default"].createElement("div", { className: "text-base" }, item.comment)),
         item.author.fullName && (react_1["default"].createElement("div", { className: "absolute top-0 right-0" },
             react_1["default"].createElement("div", { className: "flex items-center" },
