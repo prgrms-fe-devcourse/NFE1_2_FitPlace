@@ -5,14 +5,32 @@ var react_router_dom_1 = require("react-router-dom");
 var Health_post = function (_a) {
     var title = _a.title, channel_name = _a.channel_name, id = _a.id;
     var titleObject;
+    // title이 JSON 형식인지 확인하는 함수
+    var isValidJson = function (str) {
+        if (typeof str !== "string")
+            return false;
+        try {
+            JSON.parse(str);
+            return true;
+        }
+        catch (error) {
+            return false;
+        }
+    };
     try {
-        // 이중 파싱: 이스케이프된 문자열을 먼저 일반 문자열로 변환 후 JSON 파싱
-        titleObject = JSON.parse(title);
-        console.log("parsing", titleObject);
+        // title이 유효한 JSON인지 확인 후 파싱
+        if (isValidJson(title)) {
+            titleObject = JSON.parse(title);
+            console.log("Parsing successful:", titleObject);
+        }
+        else {
+            // title이 JSON이 아니면 그대로 사용
+            titleObject = { title: title };
+        }
     }
     catch (error) {
         console.error("JSON 파싱 오류:", error);
-        titleObject = {};
+        titleObject = { title: title };
     }
     return (react_1["default"].createElement(react_router_dom_1.Link, { to: "/notion/" + id },
         react_1["default"].createElement("button", { className: "bg-gray-100 h-32 w-full rounded-md shadow-lg mb-5 p-5 flex flex-col transition-transform duration-300 ease-in-out hover:bg-gray-200 hover:shadow-xl" },

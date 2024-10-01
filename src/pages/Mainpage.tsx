@@ -106,7 +106,7 @@ const Mainpage = () => {
               Sort_Post.map((post, index) => (
                 <Health_post
                   title={post.title}
-                  channel_name={post.channel.name}
+                  channel_name={post.name}
                   id={post._id}
                   key={index}
                 />
