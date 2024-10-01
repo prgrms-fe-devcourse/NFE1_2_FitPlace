@@ -30,8 +30,8 @@ export default {
       padding: {
         "100P": "100%",
       },
-      height: {
-        150: "30%",
+      maxHeight: {
+        "80vh": "80vh", // 50rem 값을 추가
       },
     },
   },

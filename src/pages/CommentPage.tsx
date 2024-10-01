@@ -90,7 +90,7 @@ const CommentPage = (): JSX.Element => {
             {Post?.channel?.name || "채널 이름 없음"}
           </div>
 
-          <div className="flex-grow overflow-y-auto max-h-full">
+          <div className="flex-grow overflow-y-auto max-h-80vh">
             {Post ? (
               Post.comments.map((item, idx) => (
                 <div
