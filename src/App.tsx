@@ -41,7 +41,7 @@ const App = () => {
                 <Route path="/" element={<Mainpage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/profile" element={<ProfileTemplate />} />
+                <Route path="/profile/:id" element={<ProfileTemplate />} />
                 <Route path="/profile/edit" element={<ProfileEdit />} />
                 <Route
                     path="/profile/edit/nickname"
