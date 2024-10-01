@@ -34,6 +34,7 @@ const NotionPage = () => {
   const { id } = useParams();
 
   const [postData, setPostData] = useState<ParsedPost | null>(null);
+  const [PrevData, setPrevData] = useState({}); //파싱하기 전의 데이터
 
   const parsePostData = (post: any): ParsedPost => {
     try {
@@ -73,6 +74,7 @@ const NotionPage = () => {
         }
 
         const data = await response.json();
+        setPrevData(data);
         const parsedData = parsePostData(data);
         setPostData(parsedData);
       } catch (error) {
@@ -118,7 +120,7 @@ const NotionPage = () => {
             </div>
           )}
 
-          {/*  data 출력테스트 */}
+          {/* data 출력테스트
           <h1>{postData.actualTitle}</h1>
           <p>{postData.channel}</p>
           <p>장소: {postData.meetingSpot}</p>
@@ -131,7 +133,7 @@ const NotionPage = () => {
           <p>
             멤버 {postData.currentMember}명 / {postData.meetingCapacity}명
           </p>
-          {postData.image && <img src={postData.image} alt="모임 이미지" />}
+          {postData.image && <img src={postData.image} alt="모임 이미지" />} */}
           <section>
             <div>
               <div className="flex justify-between">
@@ -143,35 +145,38 @@ const NotionPage = () => {
               </div>
 
               <h3 className="text-2xl font-bold">{postData.actualTitle}</h3>
-              <p className="text-lg text-[#666666] pt-2.5">풋살</p>
+              <p className="text-lg text-[#666666] pt-2.5"></p>
             </div>
           </section>
           <section className="mt-7">
             <div className="flex flex-col gap-3">
               <div className="flex gap-5">
                 <p className="text-lg font-bold">장소</p>
-                <p className="text-sm text-[#7e7e7e]">영훈국제중학교</p>
+                <p className="text-sm text-[#7e7e7e]">
+                  {postData.meetingSpot || "장소 없음"}
+                </p>
               </div>
               <div className="flex gap-5">
                 <p className="text-lg font-bold">일시</p>
                 <p className="text-sm text-[#7e7e7e]">
-                  2024.09.25 저녁 19시 이후
+                  {postData.meetingDate || "시간 무관"}
                 </p>
               </div>
             </div>
           </section>
           <section className="mt-7">
             <div>
-              <NotionItem />
+              <NotionItem content={postData.meetingInfo} />
             </div>
             <div className="flex w-[160px] h-[150px] border-2 border-solid rounded-xl">
-              <img src="#" alt="게시글사진" id="notionImg" />
+              <img src={PrevData.image} alt="게시글사진" id="notionImg" />
             </div>
           </section>
           <section className="mt-11 flex flex-col gap-5">
             <div>
               <p className="text-lg font-bold">
-                멤버 <span>2명</span> / 4명
+                멤버 <span>{postData.currentMember || "0명"}</span> /{" "}
+                {postData.meetingCapacity}명
               </p>
             </div>
             <div className="flex gap-10 ">

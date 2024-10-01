@@ -61,6 +61,7 @@ var NotionPage = function () {
     var modalBackground = react_1.useRef();
     var id = react_router_dom_2.useParams().id;
     var _b = react_1.useState(null), postData = _b[0], setPostData = _b[1];
+    var _c = react_1.useState({}), PrevData = _c[0], setPrevData = _c[1]; //파싱하기 전의 데이터
     var parsePostData = function (post) {
         try {
             var parsedTitle = JSON.parse(post.title);
@@ -93,6 +94,7 @@ var NotionPage = function () {
                         return [4 /*yield*/, response.json()];
                     case 2:
                         data = _a.sent();
+                        setPrevData(data);
                         parsedData = parsePostData(data);
                         setPostData(parsedData);
                         return [3 /*break*/, 4];
@@ -124,25 +126,6 @@ var NotionPage = function () {
                             react_1["default"].createElement("div", { className: "flex gap-5 mt-2" },
                                 react_1["default"].createElement(Button_1["default"], { label: "\uC0AD\uC81C", size: "mid", color: "green" }),
                                 react_1["default"].createElement(Button_1["default"], { label: "\uCDE8\uC18C", size: "mid", color: "green", onClick: function () { return setDeleteModal(false); } })))))),
-                react_1["default"].createElement("h1", null, postData.actualTitle),
-                react_1["default"].createElement("p", null, postData.channel),
-                react_1["default"].createElement("p", null,
-                    "\uC7A5\uC18C: ",
-                    postData.meetingSpot),
-                react_1["default"].createElement("p", null,
-                    "\uC77C\uC2DC: ",
-                    postData.meetingDate,
-                    " ",
-                    postData.isTimeFlexible
-                        ? "시간 무관"
-                        : postData.meetingStartTime + " - " + postData.meetingEndTime),
-                react_1["default"].createElement("p", null,
-                    "\uBA64\uBC84 ",
-                    postData.currentMember,
-                    "\uBA85 / ",
-                    postData.meetingCapacity,
-                    "\uBA85"),
-                postData.image && react_1["default"].createElement("img", { src: postData.image, alt: "\uBAA8\uC784 \uC774\uBBF8\uC9C0" }),
                 react_1["default"].createElement("section", null,
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement("div", { className: "flex justify-between" },
@@ -152,26 +135,29 @@ var NotionPage = function () {
                                 "|",
                                 react_1["default"].createElement("button", { onClick: function () { return setDeleteModal(true); } }, "\uC0AD\uC81C"))),
                         react_1["default"].createElement("h3", { className: "text-2xl font-bold" }, postData.actualTitle),
-                        react_1["default"].createElement("p", { className: "text-lg text-[#666666] pt-2.5" }, "\uD48B\uC0B4"))),
+                        react_1["default"].createElement("p", { className: "text-lg text-[#666666] pt-2.5" }))),
                 react_1["default"].createElement("section", { className: "mt-7" },
                     react_1["default"].createElement("div", { className: "flex flex-col gap-3" },
                         react_1["default"].createElement("div", { className: "flex gap-5" },
                             react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC7A5\uC18C"),
-                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, "\uC601\uD6C8\uAD6D\uC81C\uC911\uD559\uAD50")),
+                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingSpot || "장소 없음")),
                         react_1["default"].createElement("div", { className: "flex gap-5" },
                             react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC77C\uC2DC"),
-                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, "2024.09.25 \uC800\uB141 19\uC2DC \uC774\uD6C4")))),
+                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingDate || "시간 무관")))),
                 react_1["default"].createElement("section", { className: "mt-7" },
                     react_1["default"].createElement("div", null,
-                        react_1["default"].createElement(NotionItem_1["default"], null)),
+                        react_1["default"].createElement(NotionItem_1["default"], { content: postData.meetingInfo })),
                     react_1["default"].createElement("div", { className: "flex w-[160px] h-[150px] border-2 border-solid rounded-xl" },
-                        react_1["default"].createElement("img", { src: "#", alt: "\uAC8C\uC2DC\uAE00\uC0AC\uC9C4", id: "notionImg" }))),
+                        react_1["default"].createElement("img", { src: PrevData.image, alt: "\uAC8C\uC2DC\uAE00\uC0AC\uC9C4", id: "notionImg" }))),
                 react_1["default"].createElement("section", { className: "mt-11 flex flex-col gap-5" },
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement("p", { className: "text-lg font-bold" },
                             "\uBA64\uBC84 ",
-                            react_1["default"].createElement("span", null, "2\uBA85"),
-                            " / 4\uBA85")),
+                            react_1["default"].createElement("span", null, postData.currentMember || "0명"),
+                            " /",
+                            " ",
+                            postData.meetingCapacity,
+                            "\uBA85")),
                     react_1["default"].createElement("div", { className: "flex gap-10 " },
                         react_1["default"].createElement("div", { className: "flex flex-col text-center gap-1.5" },
                             react_1["default"].createElement("img", { src: icon_user_profile_svg_1["default"], alt: "\uD504\uB85C\uD544\uC774\uBBF8\uC9C0" }),
