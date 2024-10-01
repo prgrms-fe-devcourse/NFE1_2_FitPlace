@@ -48,7 +48,7 @@ const Mainpage = () => {
 
   const Sort_Post = post
     .sort((a, b) => b.likes.length - a.likes.length)
-    .slice(0, 1);
+    .slice(0, 6);
 
   useEffect(() => {
     console.log("post:", Sort_Post);
@@ -107,7 +107,7 @@ const Mainpage = () => {
               Sort_Post.map((post, index) => (
                 <Health_post
                   title={post.title}
-                  channel_name={post.channel.name}
+                  channel_name={post.channel?.name}
                   id={post._id}
                   key={index}
                 />
