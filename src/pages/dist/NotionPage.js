@@ -79,7 +79,7 @@ var NotionPage = function () {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
                         API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
-                        postId = "66f9fce2e300f96f2e55266f";
+                        postId = id;
                         return [4 /*yield*/, fetch(API_URL + "/posts/" + postId, {
                                 headers: {
                                     Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDE0ODU5fQ.Al40jxy-6yrAoANrY3fQA1joeNw08-fjByus_ZfxXSk"
@@ -95,7 +95,6 @@ var NotionPage = function () {
                         data = _a.sent();
                         parsedData = parsePostData(data);
                         setPostData(parsedData);
-                        console.log(parsedData);
                         return [3 /*break*/, 4];
                     case 3:
                         error_1 = _a.sent();

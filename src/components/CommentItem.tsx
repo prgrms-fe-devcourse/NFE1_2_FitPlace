@@ -41,9 +41,7 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
   try {
     // 이중 파싱: 이스케이프된 문자열을 먼저 일반 문자열로 변환 후 JSON 파싱
     parsingObject = JSON.parse(item.author.fullName);
-    console.log("parsing", parsingObject);
   } catch (error) {
-    console.error("JSON 파싱 오류:", error);
     parsingObject = {};
   }
 
@@ -91,7 +89,9 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
         />
       </div>
       <div className="flex-grow">
-        <div className="text-sm mb-2 font-bold">{parsingObject.fullName}</div>
+        <div className="text-sm mb-2 font-bold">
+          {parsingObject.fullName || "알 수 없는 사용자"}
+        </div>
         <div className="text-base">{item.comment}</div>
       </div>
       {item.author.fullName && (

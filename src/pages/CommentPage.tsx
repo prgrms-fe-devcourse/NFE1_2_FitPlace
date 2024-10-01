@@ -87,18 +87,23 @@ const CommentPage = (): JSX.Element => {
           </div>
 
           <div className="text-sm text-gray-600 mb-8">
-            {Post && Post.channel.name}
+            {Post?.channel?.name || "채널 이름 없음"}
           </div>
 
-          {Post &&
-            Post.comments.map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-gray-100 w-full  rounded-md shadow-lg mb-5 p-4 flex flex-col"
-              >
-                <CommentItem item={item} />
-              </div>
-            ))}
+          <div className="flex-grow overflow-y-auto max-h-full">
+            {Post ? (
+              Post.comments.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="bg-gray-100 w-full rounded-md shadow-lg mb-5 p-4 flex flex-col"
+                >
+                  <CommentItem item={item} />
+                </div>
+              ))
+            ) : (
+              <div>댓글이 없습니다.</div>
+            )}
+          </div>
 
           <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-6">
             <div className="flex w-full">

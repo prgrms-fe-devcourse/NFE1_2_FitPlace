@@ -61,7 +61,7 @@ const NotionPage = () => {
     const fetchPostData = async () => {
       try {
         const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
-        const postId = "66f9fce2e300f96f2e55266f";
+        const postId = id;
         const response = await fetch(`${API_URL}/posts/${postId}`, {
           headers: {
             Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDE0ODU5fQ.Al40jxy-6yrAoANrY3fQA1joeNw08-fjByus_ZfxXSk`,
@@ -75,7 +75,6 @@ const NotionPage = () => {
         const data = await response.json();
         const parsedData = parsePostData(data);
         setPostData(parsedData);
-        console.log(parsedData);
       } catch (error) {
         console.error("Error fetching post data:", error);
       }
