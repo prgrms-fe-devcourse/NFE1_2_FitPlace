@@ -36,7 +36,8 @@ const Login = () => {
           })
           setLoginError(false)
           dispatch(initializeUser(res.data.user))
-          navigate('/')
+          // 임시로 profile페이지로 감 추후 메인으로 바꿔야함
+          navigate('/profile')
         }
       }
     )

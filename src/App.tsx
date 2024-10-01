@@ -21,7 +21,7 @@ import ProfileImg from "./pages/profile/ProfileImg";
 import CommentPage from "./pages/CommentPage";
 import { Cookies } from "react-cookie";
 import { initializeToken, isLogin } from "./data/store";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const App = () => {
     const dispatch = useDispatch();

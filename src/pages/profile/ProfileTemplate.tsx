@@ -1,6 +1,19 @@
+import { useSelector } from "react-redux";
 import ProfileWrap from "../../components/ProfileWrap";
 
+interface Ex {
+  fullName: string
+  birth: number
+  userId: string
+  description?: string
+  location?: string
+}
+
 const ProfileTemplate = () => {
+
+  const user = useSelector(state => state)
+  console.log(user)
+
   return (
     <div className="w-140 min-h-screen bg-white p-3">
       <div className="flex flex-col justify-center items-stretch">
