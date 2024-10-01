@@ -37,7 +37,7 @@ var App = function () {
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/", element: react_1["default"].createElement(Mainpage_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/login", element: react_1["default"].createElement(Login_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/register", element: react_1["default"].createElement(Register_1["default"], null) }),
-            react_1["default"].createElement(react_router_dom_1.Route, { path: "/profile", element: react_1["default"].createElement(ProfileTemplate_1["default"], null) }),
+            react_1["default"].createElement(react_router_dom_1.Route, { path: "/profile/:id", element: react_1["default"].createElement(ProfileTemplate_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/profile/edit", element: react_1["default"].createElement(ProfileEdit_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/profile/edit/nickname", element: react_1["default"].createElement(ProfileNickname_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/profile/edit/img", element: react_1["default"].createElement(ProfileImg_1["default"], null) }),
