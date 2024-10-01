@@ -13,6 +13,7 @@ var SearchPage_1 = require("./pages/SearchPage");
 var Login_1 = require("./pages/register/Login");
 var Register_1 = require("./pages/register/Register");
 var NotionAdd_1 = require("./pages/NotionAdd");
+var Navbar_1 = require("./components/Navbar");
 var NotificationPage_1 = require("./pages/NotificationPage");
 var NotionPage_1 = require("./pages/NotionPage");
 var ProfileNickname_1 = require("./pages/profile/ProfileNickname");
@@ -36,7 +37,7 @@ var App = function () {
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/", element: react_1["default"].createElement(Mainpage_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/login", element: react_1["default"].createElement(Login_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/register", element: react_1["default"].createElement(Register_1["default"], null) }),
-            react_1["default"].createElement(react_router_dom_1.Route, { path: "/profile/:id", element: react_1["default"].createElement(ProfileTemplate_1["default"], null) }),
+            react_1["default"].createElement(react_router_dom_1.Route, { path: "/profile", element: react_1["default"].createElement(ProfileTemplate_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/profile/edit", element: react_1["default"].createElement(ProfileEdit_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/profile/edit/nickname", element: react_1["default"].createElement(ProfileNickname_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/profile/edit/img", element: react_1["default"].createElement(ProfileImg_1["default"], null) }),
@@ -48,6 +49,7 @@ var App = function () {
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/notifications", element: react_1["default"].createElement(NotificationPage_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/notionAdd", element: react_1["default"].createElement(NotionAdd_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/notion/:id", element: react_1["default"].createElement(NotionPage_1["default"], null) }),
-            react_1["default"].createElement(react_router_dom_1.Route, { path: "/notion/comments", element: react_1["default"].createElement(CommentPage_1["default"], null) }))));
+            react_1["default"].createElement(react_router_dom_1.Route, { path: "/notion/:id/comments", element: react_1["default"].createElement(CommentPage_1["default"], null) })),
+        react_1["default"].createElement(Navbar_1["default"], null)));
 };
 exports["default"] = App;

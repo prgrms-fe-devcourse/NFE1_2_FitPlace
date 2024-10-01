@@ -95,7 +95,11 @@ var Mainpage = function () {
         .slice(0, 5); //post가 많은 순서대로 정렬.
     var Sort_Post = post
         .sort(function (a, b) { return b.likes.length - a.likes.length; })
+<<<<<<< HEAD
         .slice(0, 1);
+=======
+        .slice(0, 6);
+>>>>>>> c95a28774156d1e66a5b4406a677b27c7953800e
     react_1.useEffect(function () {
         console.log("post:", Sort_Post);
     }, [Sort_Post]);
@@ -117,6 +121,13 @@ var Mainpage = function () {
             react_1["default"].createElement("section", null,
                 react_1["default"].createElement("p", { className: "font-bold mt-11 text-xl mb-3" }, "\uC778\uAE30 \uBAA8\uC784"),
                 react_1["default"].createElement("div", { className: "h-1/2" }, Sort_Post.length > 0 &&
+<<<<<<< HEAD
                     Sort_Post.map(function (post, index) { return (react_1["default"].createElement(Health_post_1["default"], { title: post.title, channel_name: post.channel.name, id: post._id, key: index })); }))))));
+=======
+                    Sort_Post.map(function (post, index) {
+                        var _a;
+                        return (react_1["default"].createElement(Health_post_1["default"], { title: post.title, channel_name: (_a = post.channel) === null || _a === void 0 ? void 0 : _a.name, id: post._id, key: index }));
+                    }))))));
+>>>>>>> c95a28774156d1e66a5b4406a677b27c7953800e
 };
 exports["default"] = Mainpage;
