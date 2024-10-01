@@ -1,111 +1,180 @@
-import React, { useEffect, useState } from "react";
-import Button from "../components/Button";
+import { useEffect, useState } from "react";
 import Search_bar from "../components/Search_bar";
 import SearchPost from "../components/SearchPost";
 import SearchUser from "../components/SearchUser";
 import Header from "../components/Header";
-interface RawPost {
+import Button from "../components/Button";
+import Health_post from "../components/Health_post";
+import axios from "axios";
+interface Post {
     likes: any[];
     comments: any[];
     _id: string;
+    image?: string;
+    imagePublicId?: string;
     title: string;
-    author: string;
+    channel: any;
+    name: string;
+    author: any;
     createdAt: string;
     updatedAt: string;
-    __v: number;
 }
 interface ParsedPost {
     _id: string;
     title: string;
-    meetingCapacity: string;
-    channel: string;
-    author: string;
+    name: string;
+    currentMember: number;
+    meetingCapacity: number;
+    isTimeFlexible: boolean;
+    meetingTime: string;
+    meetingSpot: string;
+    image?: string;
+    imagePublicId?: string;
+    author: any;
     createdAt: string;
+    updatedAt: string;
+    likes: any[];
+    comments: any[];
 }
+type SearchResult = any | ParsedPost;
+const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
+function parsePost(post: Post): ParsedPost {
+    let parsedTitle: Partial<ParsedPost> ={};
+    
+    if (isValidJson(post.title)) {
+        try {
+            parsedTitle = JSON.parse(post.title);
+        } catch (error) {
+            console.error("Error parsing post title:", error);
+        }
+    }
+
+    return {
+        _id: post._id,
+        title: parsedTitle.title || post.title || "",
+        name: parsedTitle.name || "",
+        currentMember: parsedTitle.currentMember || 0,
+        meetingCapacity: parsedTitle.meetingCapacity || 0,
+        isTimeFlexible: parsedTitle.isTimeFlexible || false,
+        meetingTime: parsedTitle.meetingTime || "",
+        meetingSpot: parsedTitle.meetingSpot || "",
+        image: post.image,
+        imagePublicId: post.imagePublicId,
+        author: post.author,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        likes: post.likes,
+        comments: post.comments,
+    };
+}
+
+function isValidJson(str: string) {
+    if (typeof str !== "string") return false;
+    try {
+        JSON.parse(str);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
 const SearchPage = () => {
+    const [query, setQuery] = useState<string>("");
+    const [results, setResults] = useState<SearchResult[]>([]);
     const searchCategory = ["포스트", "사용자"];
     const [activeButton, setActiveButton] = useState(searchCategory[0]);
-    const [posts, setPosts] = useState<ParsedPost[]>([]);
-    const [inputValue, setInputValue] = useState('');
+    const [loading, setLoading] = useState<boolean>(false);
+    const [post, setPost] = useState([]);
+    const [channel, setChannel] = useState([]);
+    const [error, setError] = useState<string | null>(null);
     const getValue = (newValue) => {
-        setInputValue(newValue)
+        setQuery(newValue)
     }
-    console.log(inputValue)
 
-    const parsePost = (rawPost: RawPost): ParsedPost => {
+
+    const selectCl = activeButton === "포스트" ? "all" : "users"
+    const handleSearch = async () => {
+        if (!query.trim()) return;
+        setLoading(true);
+        setError(null);
         try {
-            let parsedTitle;
-            try {
-                parsedTitle = JSON.parse(rawPost.title);
-            } catch {
-                // title이 이미 문자열인 경우
-                parsedTitle = {
-                    title: rawPost.title,
-                    meetingCapacity: "",
-                    channel: "",
-                };
-            }
-            return {
-                _id: rawPost._id,
-                title: parsedTitle.title,
-                meetingCapacity: parsedTitle.meetingCapacity,
-                channel: parsedTitle.channel,
-                author: rawPost.author,
-                createdAt: rawPost.createdAt,
-            };
+            const response = await axios.get(
+               `${API_URL}/search/${selectCl}/${encodeURIComponent(query)}`,
+                {
+                    headers: {
+                        Authorization:
+                            "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs",
+                    },
+                }
+            );
+        
+            // if (!response.ok) {
+            //     throw new Error(`HTTP error! status: ${response.status}`);
+            // }
+            const data: SearchResult[] = await response.data;
+            const parsedResults = data.map((item) =>
+                "email" in item ? item : parsePost(item as Post)
+            );
+            setResults(parsedResults);
+            console.log(parsedResults);
         } catch (error) {
-            console.error("Error parsing post:", error);
-            return {
-                _id: rawPost._id,
-                title: rawPost.title,
-                meetingCapacity: "",
-                channel: "",
-                author: rawPost.author,
-                createdAt: rawPost.createdAt,
-            };
+            setError("Failed to fetch search results");
+            console.error("Error searching:", error);
+        } finally {
+            setLoading(false);
         }
     };
+    const renderSearchResult = (result: SearchResult) => {
+        // This is a ParsedPost
+        return (
+            <div key={result._id} className="post-result">
+                <h3>{result.title}</h3>
+                <p>Channel: {result.channel}</p>
+                <p>
+                    Members: {result.currentMember} / {result.meetingCapacity}
+                </p>
+                <p>Date: {result.meetingDate}</p>
+                <p>
+                    Time:{" "}
+                    {result.isTimeFlexible
+                        ? "Flexible"
+                        : `${result.meetingStartTime} - ${result.meetingEndTime}`}
+                </p>
+                <p>Location: {result.meetingSpot}</p>
+            </div>
+        );
+    };
 
-    const selectCl = activeButton === "포스트" ? "all" : "users" 
-
-    useEffect(() => {
-        const fetchPosts = async (title) => {
-            try {
-                const API_URL =
-                    "https://kdt.frontend.5th.programmers.co.kr:5009";
-
-                const response = await 
-               
-                    fetch(`${API_URL}/search/${selectCl}/${title}`, {
-                    headers: {
-                        Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs`,
-                    },
-                });
-                console.log(response)
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data: RawPost[] = await response.json();
-                const parsedPosts = data.map(parsePost);
-                setPosts(parsedPosts);
-                console.log(parsedPosts);
-            } catch (error) {
-                console.error("Error :", error);
-            }
-        };
-        fetchPosts(inputValue);
-    }, []);
     const handleButtonClick = (item: string) => {
         setActiveButton(item);
     };
+
+    useEffect(() => {
+        
+      }, [results]);
+
+
+    console.log("searchPage:", results);
+
     return (
         <>
             <Header />
+            <div className="search-results">
+                {results.map(renderSearchResult)}
+            </div>
             <div className="w-140 min-h-screen bg-white p-3">
                 <section className="mb-10">
-                    <Search_bar placeholder="검색어를 입력해주세요." getValue={getValue}/>
+                    <Search_bar value={query} getValue={getValue}/>
+
+                    <button onClick={handleSearch} disabled={loading}>
+                        Search
+                    </button>
                 </section>
-                <div className="mb-4 flex">
+
+            {loading && <p>Loading...</p>}
+            {error && <p className="error">{error}</p>}
+
+            <div className="mb-4 flex">
                     {searchCategory.map((category, index) => (
                         <Button
                             key={index}
@@ -117,9 +186,11 @@ const SearchPage = () => {
                         />
                     ))}
                 </div>
-                {activeButton === "포스트" ? <SearchPost postList={posts}/> : <SearchUser />}
-            </div>
+            {activeButton === "포스트" ? <SearchPost  postList={results}/>
+               : <SearchUser />}
+        </div>
         </>
+     
     );
 };
 export default SearchPage;

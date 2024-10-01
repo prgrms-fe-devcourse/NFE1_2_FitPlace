@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import Search from "../assets/Search.svg";
 
 interface SearchBarProps {
-    placeholder?: string;
     getValue?: any;
+    value?: any;
+
 }
-const Search_bar: React.FC<SearchBarProps> = ({ placeholder, getValue }) => {
+const Search_bar: React.FC<SearchBarProps> = ({ value, getValue}) => {
 
     function pushValue(e) {
         getValue(e.target.value)
     }
+
+
     
     return (
         <div className="relative w-full">
@@ -21,13 +24,13 @@ const Search_bar: React.FC<SearchBarProps> = ({ placeholder, getValue }) => {
 
             <input
                 className="bg-gray-100 h-8 w-full rounded-md shadow-lg p-5 pl-10"
-                placeholder={placeholder}
+                value={value}
                 type="text"
                 onChange={pushValue}
 
                 id="invalue"
             />
-    
+
         </div>
     );
 };
