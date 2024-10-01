@@ -16,7 +16,7 @@ const Navbar = () => {
   return (
     <>
       {nav_on ? (
-        <div className="w-140 fixed bottom-0 flex flex-col items-center border-2 border-gray-300 border-b-gray-200">
+        <div className="w-140 fixed bottom-0 flex flex-col items-center border-2 border-gray-200 border-b-gray-200 drop-shadow-2xl">
           <button
             className="bg-white w-full h-[10px]"
             onClick={navHandler}
@@ -27,7 +27,7 @@ const Navbar = () => {
                 <img
                   src={HomeIcon}
                   alt="Home"
-                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-110"
+                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
                 />
               </button>
             </Link>
@@ -36,7 +36,7 @@ const Navbar = () => {
                 <img
                   src={SearchIcon}
                   alt="Search"
-                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-110"
+                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
                 />
               </button>
             </Link>
@@ -45,7 +45,7 @@ const Navbar = () => {
                 <img
                   src={PostIcon}
                   alt="NewPost"
-                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-110"
+                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
                 />
               </button>
             </Link>
@@ -54,7 +54,7 @@ const Navbar = () => {
                 <img
                   src={RankingIcon}
                   alt="Ranking"
-                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-110"
+                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
                 />
               </button>
             </Link>
@@ -63,14 +63,14 @@ const Navbar = () => {
                 <img
                   src={MyIcon}
                   alt="My"
-                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-110"
+                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
                 />
               </button>
             </Link>
           </div>
         </div>
       ) : (
-        <div className="w-140 fixed bottom-0 flex flex-col items-center border-2 border-gray-300 border-b-gray-200">
+        <div className="w-140 fixed bottom-0 flex flex-col items-center border-2 border-gray-200 border-b-gray-200 drop-shadow-2xl rounded-xl	">
           <button
             className="bg-white w-full h-[10px]"
             onClick={navHandler}

@@ -54,6 +54,7 @@ const App = () => {
         <Route path="/notion/:id" element={<NotionPage />} />
         <Route path="/notion/:id/comments" element={<CommentPage />} />
       </Routes>
+      <Navbar />
     </div>
   );
 };
