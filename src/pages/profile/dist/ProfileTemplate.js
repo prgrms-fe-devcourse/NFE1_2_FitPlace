@@ -59,6 +59,7 @@ var ProfileTemplate = function () {
                 React.createElement(ProfileWrap_1["default"], { category: "\uD6C4\uAE30", description: !(profileData === null || profileData === void 0 ? void 0 : profileData.description) ? "아직 작성된 후기가 없어요" : "대충 있을때 이거넣을듯" }),
                 isMyProfile
                     ?
+                        // 차단 유저 목록
                         React.createElement(ProfileWrap_1["default"], { category: "\uCC28\uB2E8\uC720\uC800 \uBAA9\uB85D", description: userData.likes.length === 0 ? "아직 차단한 유저가 없어요" : "대충 있을때 이거넣을듯" })
                     : null))));
 };

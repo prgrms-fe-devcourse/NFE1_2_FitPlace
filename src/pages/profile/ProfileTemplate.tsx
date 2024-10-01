@@ -105,6 +105,7 @@ const ProfileTemplate = () => {
 
         {/* 하단 기타 정보들 래퍼 */}
         <div className="profile__bottom flex flex-col justify-center items-stretch gap-5 mt-6">
+          
           {/* 소개글 */}
           <ProfileWrap
             category="소개글"
@@ -126,6 +127,7 @@ const ProfileTemplate = () => {
           {
             isMyProfile
             ?
+            // 차단 유저 목록
             <ProfileWrap category="차단유저 목록" description={ userData.likes.length === 0 ? "아직 차단한 유저가 없어요" : "대충 있을때 이거넣을듯" } />
             : null
           }
