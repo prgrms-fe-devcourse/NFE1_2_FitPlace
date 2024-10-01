@@ -94,9 +94,11 @@ const NotionAdd: React.FC = () => {
               body: formData,
             }
           );
-          const data = await response.json();
-          setImageUrl(data.secure_url); // 업로드된 이미지 URL 설정
-          setFormData((prev) => ({ ...prev, image: data.secure_url })); // 폼 데이터에 이미지 URL 저장
+          const imageBlob = await response.blob();
+          const blobUrl = URL.createObjectURL(imageBlob);
+
+          setImageUrl(blobUrl); // 업로드된 이미지 URL 설정
+          setFormData((prev) => ({ ...prev, image: blobUrl })); // 폼 데이터에 이미지 URL 저장
         } catch (error) {
           console.error("이미지 업로드 실패:", error);
         }

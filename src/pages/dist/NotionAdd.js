@@ -109,7 +109,7 @@ var NotionAdd = function () {
         });
     }, []);
     var handleFileChange = react_1.useCallback(function (e) { return __awaiter(void 0, void 0, void 0, function () {
-        var file, formData_1, response, data_1, error_2;
+        var file, formData_1, response, imageBlob, blobUrl_1, error_2;
         var _a;
         return __generator(this, function (_b) {
             switch (_b.label) {
@@ -129,11 +129,12 @@ var NotionAdd = function () {
                         })];
                 case 2:
                     response = _b.sent();
-                    return [4 /*yield*/, response.json()];
+                    return [4 /*yield*/, response.blob()];
                 case 3:
-                    data_1 = _b.sent();
-                    setImageUrl(data_1.secure_url); // 업로드된 이미지 URL 설정
-                    setFormData(function (prev) { return (__assign(__assign({}, prev), { image: data_1.secure_url })); }); // 폼 데이터에 이미지 URL 저장
+                    imageBlob = _b.sent();
+                    blobUrl_1 = URL.createObjectURL(imageBlob);
+                    setImageUrl(blobUrl_1); // 업로드된 이미지 URL 설정
+                    setFormData(function (prev) { return (__assign(__assign({}, prev), { image: blobUrl_1 })); }); // 폼 데이터에 이미지 URL 저장
                     return [3 /*break*/, 5];
                 case 4:
                     error_2 = _b.sent();
