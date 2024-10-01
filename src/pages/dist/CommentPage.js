@@ -116,7 +116,7 @@ var CommentPage = function () {
                 ParsingData.currentMember === ParsingData.meetingCapacity ? (react_1["default"].createElement("div", { className: "text-sm text-rose-600 mb-1 font-bold" }, "\uBAA8\uC9D1 \uB9C8\uAC10")) : (react_1["default"].createElement("div", { className: "text-sm text-[#AFE327] mb-1 font-bold" }, "\uBAA8\uC9D1\uC911")),
                 react_1["default"].createElement("div", { className: "text-xl font-bold mb-4" }, ParsingData.title || "제목 없음"),
                 react_1["default"].createElement("div", { className: "text-sm text-gray-600 mb-8" }, ((_a = Post === null || Post === void 0 ? void 0 : Post.channel) === null || _a === void 0 ? void 0 : _a.name) || "채널 이름 없음"),
-                react_1["default"].createElement("div", { className: "flex-grow overflow-y-auto max-h-80vh" }, Post ? (Post.comments.map(function (item, idx) { return (react_1["default"].createElement("div", { key: idx, className: "bg-gray-100 w-full rounded-md shadow-lg mb-5 p-4 flex flex-col" },
+                react_1["default"].createElement("div", { className: "flex-grow overflow-y-auto max-h-78vh" }, Post ? (Post.comments.map(function (item, idx) { return (react_1["default"].createElement("div", { key: idx, className: "bg-gray-100 w-full rounded-md shadow-lg mb-5 p-4 flex flex-col" },
                     react_1["default"].createElement(CommentItem_1["default"], { item: item }))); })) : (react_1["default"].createElement("div", null, "\uB313\uAE00\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."))),
                 react_1["default"].createElement("div", { className: "absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-6" },
                     react_1["default"].createElement("div", { className: "flex w-full" },

@@ -31,7 +31,7 @@ export default {
         "100P": "100%",
       },
       maxHeight: {
-        "80vh": "80vh", // 50rem 값을 추가
+        "78vh": "78vh", // 50rem 값을 추가
       },
     },
   },
