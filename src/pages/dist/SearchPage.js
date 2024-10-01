@@ -82,13 +82,53 @@ var SearchPage = function () {
     var _d = react_1.useState(false), loading = _d[0], setLoading = _d[1];
     var _e = react_1.useState([]), post = _e[0], setPost = _e[1];
     var _f = react_1.useState([]), channel = _f[0], setChannel = _f[1];
-    var _g = react_1.useState(null), error = _g[0], setError = _g[1];
+    var _g = react_1.useState(false), enter = _g[0], setEnter = _g[1];
+    var _h = react_1.useState(null), error = _h[0], setError = _h[1];
     var getValue = function (newValue) {
         setQuery(newValue);
     };
     var selectCl = activeButton === "포스트" ? "all" : "users";
-    var handleSearch = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var KeyDown = function (e) { return __awaiter(void 0, void 0, void 0, function () {
         var response, data, parsedResults, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!(e.key === 'Enter')) return [3 /*break*/, 6];
+                    setLoading(true);
+                    setError(null);
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, 5, 6]);
+                    return [4 /*yield*/, axios_1["default"].get(API_URL + "/search/" + selectCl + "/" + encodeURIComponent(query), {
+                            headers: {
+                                Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs"
+                            }
+                        })];
+                case 2:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.data];
+                case 3:
+                    data = _a.sent();
+                    parsedResults = data.map(function (item) {
+                        return "email" in item ? item : parsePost(item);
+                    });
+                    setResults(parsedResults);
+                    console.log(parsedResults);
+                    return [3 /*break*/, 6];
+                case 4:
+                    error_1 = _a.sent();
+                    setError("Failed to fetch search results");
+                    console.error("Error searching:", error_1);
+                    return [3 /*break*/, 6];
+                case 5:
+                    setLoading(false);
+                    return [7 /*endfinally*/];
+                case 6: return [2 /*return*/];
+            }
+        });
+    }); };
+    var handleSearch = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, data, parsedResults, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -116,9 +156,9 @@ var SearchPage = function () {
                     console.log(parsedResults);
                     return [3 /*break*/, 6];
                 case 4:
-                    error_1 = _a.sent();
+                    error_2 = _a.sent();
                     setError("Failed to fetch search results");
-                    console.error("Error searching:", error_1);
+                    console.error("Error searching:", error_2);
                     return [3 /*break*/, 6];
                 case 5:
                     setLoading(false);
@@ -161,9 +201,9 @@ var SearchPage = function () {
     return (React.createElement(React.Fragment, null,
         React.createElement(Header_1["default"], null),
         React.createElement("div", { className: "w-140 min-h-screen bg-white p-3" },
-            React.createElement("section", { className: "mb-10" },
-                React.createElement(Search_bar_1["default"], { value: query, getValue: getValue }),
-                React.createElement("button", { onClick: handleSearch, disabled: loading }, "Search")),
+            React.createElement("section", { className: "mb-10 flex relative" },
+                React.createElement(Search_bar_1["default"], { value: query, getValue: getValue, handleKeydown: KeyDown }),
+                React.createElement("button", { onClick: handleSearch, disabled: loading, className: "p-2 absolute right-3 text-[#666666]" }, "Search")),
             loading && React.createElement("p", null, "Loading..."),
             error && React.createElement("p", { className: "error" }, error),
             React.createElement("div", { className: "mb-4 flex" }, searchCategory.map(function (category, index) { return (React.createElement(Button_1["default"], { key: index, label: category, color: activeButton === category ? "green" : "grey", size: "mid", margin: "btnMr", onClick: function () { return handleButtonClick(category); } })); })),

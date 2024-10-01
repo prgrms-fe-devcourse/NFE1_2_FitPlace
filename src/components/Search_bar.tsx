@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ChangeEvent, KeyboardEvent } from "react";
 import Search from "../assets/Search.svg";
 
 interface SearchBarProps {
     getValue: (value: string) => void;
-    value?: any;
-
-
+    value?: string; // value는 string 또는 undefined로 지정
+    inputValue?: string;
+    handleKeydown?: any;
 }
-const Search_bar: React.FC<SearchBarProps> = ({ value, getValue}) => {
+const Search_bar: React.FC<SearchBarProps> = ({ value = "", getValue, handleKeydown }) => {
 
-    function pushValue(e) {
-        getValue(e.target.value)
-    }
+    const pushValue = (e: ChangeEvent<HTMLInputElement>) => {
+        getValue(e.target.value);
+    };
+
+
+
 
 
     return (
@@ -27,7 +30,7 @@ const Search_bar: React.FC<SearchBarProps> = ({ value, getValue}) => {
                 value={value}
                 type="text"
                 onChange={pushValue}
-
+                onKeyDown={handleKeydown}
                 id="invalue"
           
             />

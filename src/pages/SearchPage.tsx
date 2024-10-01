@@ -78,6 +78,7 @@ const SearchPage = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [post, setPost] = useState([]);
     const [channel, setChannel] = useState([]);
+    const [enter, setEnter] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const getValue = (newValue) => {
         setQuery(newValue)
@@ -85,6 +86,40 @@ const SearchPage = () => {
 
 
     const selectCl = activeButton === "포스트" ? "all" : "users"
+
+    const KeyDown = async (e) => {
+        if(e.key === 'Enter') {
+            setLoading(true);
+            setError(null);
+        try {
+            const response = await axios.get(`${API_URL}/search/${selectCl}/${encodeURIComponent(query)}`,
+                {
+                    headers: {
+                        Authorization:
+                            "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs",
+                    },
+                }
+            );
+        
+            // if (!response.ok) {
+            //     throw new Error(HTTP error! status: ${response.status});
+            // }
+            const data: SearchResult[] = await response.data;
+            const parsedResults = data.map((item) =>
+                "email" in item ? item : parsePost(item as Post)
+            );
+            setResults(parsedResults);
+            console.log(parsedResults);
+        } catch (error) {
+            setError("Failed to fetch search results");
+            console.error("Error searching:", error);
+        } finally {
+            setLoading(false);
+        }
+        }
+    }
+
+
 
     const handleSearch = async () => {
         if (!query.trim()) return;
@@ -152,10 +187,10 @@ const SearchPage = () => {
         <>
             <Header />
             <div className="w-140 min-h-screen bg-white p-3">
-                <section className="mb-10">
-                    <Search_bar value={query} getValue={getValue}/>
+                <section className="mb-10 flex relative">
+                    <Search_bar value={query} getValue={getValue} handleKeydown={KeyDown}/>
 
-                    <button onClick={handleSearch} disabled={loading}>
+                    <button onClick={handleSearch} disabled={loading} className="p-2 absolute right-3 text-[#666666]">
                         Search
                     </button>
                 </section>
