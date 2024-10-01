@@ -36,21 +36,28 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
   //   // 수정 로직
   // };
   const handleDelete = async () => {
-    try {
-      await axios.delete(
-        `https://kdt.frontend.5th.programmers.co.kr:5009/comments/delete`,
-        {
-          data: {
-            id: item._id, // 삭제할 댓글의 ID
-          },
-          headers: {
-            Authorization: `${token}`, // JWT 토큰 추가
-          },
-        }
-      );
-      console.log("댓글 삭제 성공");
-    } catch (error) {
-      console.log("댓글 삭제 에러", error);
+    const isConfirmed = window.confirm("댓글을 삭제하시겠습니까?");
+
+    if (isConfirmed) {
+      try {
+        await axios.delete(
+          `https://kdt.frontend.5th.programmers.co.kr:5009/comments/delete`,
+          {
+            data: {
+              id: item._id, // 삭제할 댓글의 ID
+            },
+            headers: {
+              Authorization: `${token}`, // JWT 토큰 추가
+            },
+          }
+        );
+        console.log("댓글 삭제 성공");
+      } catch (error) {
+        alert("삭제 할 수 없는 댓글입니다.");
+        console.log("댓글 삭제 에러", error);
+      }
+    } else {
+      console.log("삭제가 취소되었습니다.");
     }
   };
 
@@ -93,7 +100,7 @@ const CommentItem = ({ item }: CommentProps): JSX.Element => {
                 수정
               </div> */}
             <div
-              className="cursor-pointer text-red-500 hover:underline text-sm"
+              className="cursor-pointer text-red-400 hover:underline text-sm"
               onClick={() => handleDelete()}
             >
               삭제
