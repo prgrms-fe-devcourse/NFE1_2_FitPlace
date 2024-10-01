@@ -68,6 +68,13 @@ var API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
 var NotionAdd = function () {
     var _a = react_1.useState(INITIAL_FORM_STATE), formData = _a[0], setFormData = _a[1];
     var _b = react_1.useState([]), channels = _b[0], setChannels = _b[1];
+    var _c = react_1.useState(), image = _c[0], setImage = _c[1];
+    var handleFileImage = function (e) {
+        var file = e.target.files[0];
+        if (file) {
+            setImage(URL.createObjectURL(file));
+        }
+    };
     react_1.useEffect(function () {
         fetchChannels();
     }, []);
@@ -168,6 +175,9 @@ var NotionAdd = function () {
             }
         });
     }); };
+    react_1.useEffect(function () {
+        console.log(image);
+    }, [image]);
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "bg-white w-[640px] h-full" },
@@ -205,7 +215,10 @@ var NotionAdd = function () {
                 react_1["default"].createElement("div", { className: "mb-6" },
                     react_1["default"].createElement("p", { className: "font-bold text-xl mt-6" }, "\uC0AC\uC9C4 \uB4F1\uB85D"),
                     react_1["default"].createElement("label", { htmlFor: "image", className: "w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-2.5" }, "+ \uC0AC\uC9C4 \uC5C5\uB85C\uB4DC"),
-                    react_1["default"].createElement("input", { type: "file", id: "image", name: "image", className: "absolute hidden" })),
+                    react_1["default"].createElement("input", { id: "image", type: "file", accept: "image/*" // 이미지 파일만 선택 가능
+                        , onChange: handleFileChange }),
+                    image && (react_1["default"].createElement("img", { src: image, alt: "Uploaded", className: "mt-2" }) // 선택된 이미지 미리보기
+                    )),
                 react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC784 \uB4F1\uB85D", size: "full", color: "green", onClick: handleSubmit })))));
 };
 exports["default"] = NotionAdd;

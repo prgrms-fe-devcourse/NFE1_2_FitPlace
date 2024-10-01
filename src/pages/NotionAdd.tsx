@@ -45,6 +45,15 @@ const NotionAdd: React.FC = () => {
 
   const [channels, setChannels] = useState<Channel[]>([]);
 
+  const [image, setImage] = useState();
+
+  const handleFileImage = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(URL.createObjectURL(file));
+    }
+  };
+
   useEffect(() => {
     fetchChannels();
   }, []);
@@ -149,6 +158,10 @@ const NotionAdd: React.FC = () => {
       );
     }
   };
+
+  useEffect(() => {
+    console.log(image);
+  }, [image]);
 
   return (
     <>
@@ -310,11 +323,14 @@ const NotionAdd: React.FC = () => {
               + 사진 업로드
             </label>
             <input
-              type="file"
               id="image"
-              name="image"
-              className="absolute hidden"
+              type="file"
+              accept="image/*" // 이미지 파일만 선택 가능
+              onChange={handleFileChange}
             />
+            {image && (
+              <img src={image} alt="Uploaded" className="mt-2" /> // 선택된 이미지 미리보기
+            )}
           </div>
 
           <Button
