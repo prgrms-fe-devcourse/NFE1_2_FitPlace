@@ -3,7 +3,7 @@ import Button from "../components/Button";
 import Header from "../components/Header";
 import NotionCategory from "../components/NotionCategory";
 import KakaoMap from "./KakaoMap";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 interface FormData {
@@ -125,7 +125,7 @@ const NotionAdd = () => {
             const response = await fetch(`${API_URL}/posts/create`, {
                 method: "POST",
                 headers: {
-                    Authorization: `bearer ${token}`,
+                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg`,
                 },
                 body: submitData,
             });
