@@ -162,7 +162,7 @@ var NotionPage = function () {
                         react_1["default"].createElement("div", { className: "flex justify-between" },
                             postData.currentMember === postData.meetingCapacity ? (react_1["default"].createElement("p", { className: "text-sm text-rose-600 font-bold" }, "\uBAA8\uC9D1 \uB9C8\uAC10")) : (react_1["default"].createElement("p", { className: "text-sm text-[#AFE327] font-bold" }, "\uBAA8\uC9D1 \uC911")),
                             react_1["default"].createElement("div", { className: "text-xs text-[#898989] flex gap-2" },
-                                react_1["default"].createElement(react_router_dom_2.Link, { to: "/notionFix" },
+                                react_1["default"].createElement(react_router_dom_2.Link, { to: "/notionFix/" + id },
                                     react_1["default"].createElement("button", null, "\uC218\uC815")),
                                 "|",
                                 react_1["default"].createElement("button", { onClick: function () { return setDeleteModal(true); } }, "\uC0AD\uC81C"))),

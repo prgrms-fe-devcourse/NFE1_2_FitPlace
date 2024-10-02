@@ -159,7 +159,7 @@ const NotionPage = () => {
                 )}
 
                 <div className="text-xs text-[#898989] flex gap-2">
-                  <Link to="/notionFix">
+                  <Link to={`/notionFix/${id}`}>
                     <button>수정</button>
                   </Link>
                   |<button onClick={() => setDeleteModal(true)}>삭제</button>

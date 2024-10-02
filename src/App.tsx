@@ -51,7 +51,7 @@ const App = () => {
         <Route path="/map" element={<Location />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/notifications" element={<NotificationPage />} />
-        <Route path="/notionFix" element={<NotionFix />} />
+        <Route path="/notionFix/:id" element={<NotionFix />} />
         <Route path="/notionAdd" element={<NotionAdd />} />
         <Route path="/notion/:id" element={<NotionPage />} />
         <Route path="/notion/:id/comments" element={<CommentPage />} />

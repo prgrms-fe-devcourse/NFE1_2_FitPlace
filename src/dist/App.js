@@ -48,7 +48,7 @@ var App = function () {
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/map", element: react_1["default"].createElement(LocationSetting_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/search", element: react_1["default"].createElement(SearchPage_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/notifications", element: react_1["default"].createElement(NotificationPage_1["default"], null) }),
-            react_1["default"].createElement(react_router_dom_1.Route, { path: "/notionFix", element: react_1["default"].createElement(NotionFix_1["default"], null) }),
+            react_1["default"].createElement(react_router_dom_1.Route, { path: "/notionFix/:id", element: react_1["default"].createElement(NotionFix_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/notionAdd", element: react_1["default"].createElement(NotionAdd_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/notion/:id", element: react_1["default"].createElement(NotionPage_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/notion/:id/comments", element: react_1["default"].createElement(CommentPage_1["default"], null) })),

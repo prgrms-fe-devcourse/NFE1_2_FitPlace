@@ -60,6 +60,7 @@ var Header_1 = require("../components/Header");
 var NotionCategory_1 = require("../components/NotionCategory");
 var KakaoMap_1 = require("./KakaoMap");
 var react_router_dom_1 = require("react-router-dom");
+var react_router_dom_2 = require("react-router-dom");
 var INITIAL_FORM_STATE = {
     title: "",
     channel: "",
@@ -77,6 +78,7 @@ var API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
 var CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
 var UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 var NotionFix = function () {
+    var id = react_router_dom_2.useParams().id;
     var _a = react_1.useState(INITIAL_FORM_STATE), formData = _a[0], setFormData = _a[1];
     var _b = react_1.useState(null), selectedLocation = _b[0], setSelectedLocation = _b[1];
     var _c = react_1.useState([]), channels = _c[0], setChannels = _c[1];
@@ -199,11 +201,12 @@ var NotionFix = function () {
                     submitData = new FormData();
                     submitData.append("title", JSON.stringify(customJsonData));
                     submitData.append("channelId", channelId);
+                    submitData.append("postId", id);
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch(API_URL + "/posts/create", {
-                            method: "POST",
+                    return [4 /*yield*/, fetch(API_URL + "/posts/update", {
+                            method: "PUT",
                             headers: {
                                 Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg"
                             },
@@ -214,6 +217,7 @@ var NotionFix = function () {
                     if (!response.ok) {
                         throw new Error("HTTP error : " + response.status);
                     }
+                    navigate("/notion/" + id);
                     return [4 /*yield*/, response.json()];
                 case 3:
                     data = _b.sent();
@@ -221,6 +225,7 @@ var NotionFix = function () {
                     return [3 /*break*/, 5];
                 case 4:
                     error_3 = _b.sent();
+                    console.log(submitData);
                     console.error("Error: ", error_3 instanceof Error ? error_3.message : String(error_3));
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
@@ -275,6 +280,6 @@ var NotionFix = function () {
                         react_1["default"].createElement("input", { type: "file", id: "image", name: "image", accept: "image/*", onChange: handleFileChange, className: "absolute hidden" }))),
                 imageUrls && imageUrls.length > 0 && (react_1["default"].createElement("div", { className: "flex flex-col items-center" },
                     react_1["default"].createElement("button", { className: "w-1/2 bg-gray-300 my-3 h-10 text-sm hover:bg-gray-400 hover:rounded-2xl transition-all", onClick: function () { return setImageUrls([]); } }, "\uC0AC\uC9C4 \uCD08\uAE30\uD654"))),
-                react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC784 \uB4F1\uB85D", size: "full", color: "green", onClick: handleSubmit })))));
+                react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC784 \uC815\uBCF4 \uC218\uC815\uD558\uAE30", size: "full", color: "green", onClick: handleSubmit })))));
 };
 exports["default"] = NotionFix;

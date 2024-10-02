@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import NotionCategory from "../components/NotionCategory";
 import KakaoMap from "./KakaoMap";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 interface FormData {
   title: string;
@@ -44,6 +45,7 @@ const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 const NotionFix: React.FC = () => {
+  const { id } = useParams();
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM_STATE);
   const [selectedLocation, setSelectedLocation] = useState<{
     address: string;
@@ -163,10 +165,11 @@ const NotionFix: React.FC = () => {
     const submitData = new FormData();
     submitData.append("title", JSON.stringify(customJsonData));
     submitData.append("channelId", channelId);
+    submitData.append("postId", id);
 
     try {
-      const response = await fetch(`${API_URL}/posts/create`, {
-        method: "POST",
+      const response = await fetch(`${API_URL}/posts/update`, {
+        method: "PUT",
         headers: {
           Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg`,
         },
@@ -176,10 +179,11 @@ const NotionFix: React.FC = () => {
       if (!response.ok) {
         throw new Error(`HTTP error : ${response.status}`);
       }
-
+      navigate(`/notion/${id}`);
       const data = await response.json();
       console.log("Post", data);
     } catch (error) {
+      console.log(submitData);
       console.error(
         "Error: ",
         error instanceof Error ? error.message : String(error)
@@ -405,7 +409,7 @@ const NotionFix: React.FC = () => {
 
           {/* 모임 등록 버튼 */}
           <Button
-            label="모임 등록"
+            label="모임 정보 수정하기"
             size="full"
             color="green"
             onClick={handleSubmit}
