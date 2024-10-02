@@ -139,7 +139,8 @@ var NotionAdd = function () {
                         meetingCapacity: formData.meetingCapacity,
                         meetingTime: meetingTime,
                         meetingSpot: formData.meetingSpot,
-                        channel: formData.channel
+                        channel: formData.channel,
+                        meetingInfo: formData.meetingInfo
                     };
                     submitData = new FormData();
                     submitData.append("title", JSON.stringify(customJsonData));

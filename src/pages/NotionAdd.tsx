@@ -115,6 +115,7 @@ const NotionAdd = () => {
             meetingTime: meetingTime,
             meetingSpot: formData.meetingSpot,
             channel: formData.channel,
+            meetingInfo: formData.meetingInfo,
         };
 
         const submitData = new FormData();
