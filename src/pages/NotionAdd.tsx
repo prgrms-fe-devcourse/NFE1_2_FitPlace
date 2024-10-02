@@ -53,50 +53,47 @@ const NotionAdd: React.FC = () => {
 
   const [channels, setChannels] = useState<Channel[]>([]);
 
-  //이미지 업로드 부분(충돌 방지 주석)---------------------------------------------------------------
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [imageFiles, setImageFiles] = useState<File[]>([]); // 선택된 파일들
-  const [imageUrls, setImageUrls] = useState<string[]>([]); // 업로드된 이미지 URL들
-
-  const handleFileChange = useCallback(
-    async (e: ChangeEvent<HTMLInputElement>) => {
-      const files = e.target.files;
-      if (files) {
-        const newFiles = Array.from(files);
-        setImageFiles((prev) => [...prev, ...newFiles]); // 기존 파일에 추가
-
-        const newUrls: string[] = [];
-        const formData = new FormData();
-
-        for (const file of newFiles) {
-          formData.append("file", file);
-          formData.append("upload_preset", UPLOAD_PRESET);
-
-          try {
-            const response = await fetch(
-              `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-              {
-                method: "POST",
-                body: formData,
-              }
-            );
-            const data = await response.json();
-            newUrls.push(data.secure_url); // 업로드된 이미지 URL 추가
-          } catch (error) {
-            console.error("이미지 업로드 실패:", error);
-          }
-        }
-        setImageUrls((prev) => [...prev, ...newUrls]); // 기존 URL에 추가
-        setFormData((prev) => ({
-          ...prev,
-          images: [...prev.images, ...newUrls],
-        })); // 폼 데이터에 이미지 URL 배열 저장
-      }
-    },
-    []
-  );
-
-  // 이미지 업로드 부분 여기까지---------------------------------------------------------------
+   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+   const [imageFiles, setImageFiles] = useState<File[]>([]); 
+   const [imageUrls, setImageUrls] = useState<string[]>([]); 
+ 
+   const handleFileChange = useCallback(
+     async (e: ChangeEvent<HTMLInputElement>) => {
+       const files = e.target.files;
+       if (files) {
+         const newFiles = Array.from(files);
+         setImageFiles((prev) => [...prev, ...newFiles]); 
+ 
+         const newUrls: string[] = [];
+         const formData = new FormData();
+ 
+         for (const file of newFiles) {
+           formData.append("file", file);
+           formData.append("upload_preset", UPLOAD_PRESET);
+ 
+           try {
+             const response = await fetch(
+               `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+               {
+                 method: "POST",
+                 body: formData,
+               }
+             );
+             const data = await response.json();
+             newUrls.push(data.secure_url); 
+           } catch (error) {
+             console.error("이미지 업로드 실패:", error);
+           }
+         }
+         setImageUrls((prev) => [...prev, ...newUrls]); 
+         setFormData((prev) => ({
+           ...prev,
+           images: [...prev.images, ...newUrls],
+         })); 
+       }
+     },
+     []
+   );
 
   const navigate = useNavigate();
 
@@ -157,7 +154,7 @@ const NotionAdd: React.FC = () => {
       meetingTime: meetingTime,
       meetingSpot: formData.meetingSpot,
       channel: formData.channel,
-      image: formData.images, //이미지 업로드 부분
+      image: formData.images,
     };
 
     const submitData = new FormData();
@@ -337,7 +334,7 @@ const NotionAdd: React.FC = () => {
               <KakaoMap
                 isMarkerFixed={true}
                 location={selectedLocation}
-                style={{ height: "300px" }} // 높이를 300px로 설정
+                style={{ height: "300px" }} 
               />
             </div>
           )}
@@ -391,6 +388,7 @@ const NotionAdd: React.FC = () => {
               />
             </div>
           </div>
+
           {/*사진 초기화하기 */}
           {imageUrls && imageUrls.length > 0 && (
             <div className="flex flex-col items-center">
