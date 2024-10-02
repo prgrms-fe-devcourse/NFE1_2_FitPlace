@@ -250,6 +250,6 @@ var NotionAdd = function () {
                     react_1["default"].createElement("label", { htmlFor: "meetingInfo", className: "flex font-bold text-xl mt-6" }, "\uBAA8\uC784 \uC124\uBA85"),
                     react_1["default"].createElement("textarea", { id: "meetingInfo", name: "meetingInfo", value: formData.meetingInfo, onChange: handleChange, placeholder: "\uBAA8\uC784\uC5D0 \uB300\uD55C \uC124\uBA85\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694.", className: "border-2 border-solid border-[#e8e8e8] w-[600px] h-[120px] mt-2.5 text-lg pl-2.5" })),
                 react_1["default"].createElement("div", { className: "flex justify-end mt-6" },
-                    react_1["default"].createElement(Button_1["default"], { text: "\uC644\uB8CC", onClick: handleSubmit, icon: arrowforward_svg_1["default"] }))))));
+                    react_1["default"].createElement(Button_1["default"], { label: "\uC644\uB8CC", onClick: handleSubmit, icon: arrowforward_svg_1["default"] }))))));
 };
 exports["default"] = NotionAdd;

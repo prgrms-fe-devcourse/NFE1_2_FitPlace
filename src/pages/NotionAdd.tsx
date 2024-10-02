@@ -349,7 +349,7 @@ const NotionAdd: React.FC = () => {
           </div>
 
           <div className="flex justify-end mt-6">
-            <Button text="완료" onClick={handleSubmit} icon={arrowforward} />
+            <Button label="완료" onClick={handleSubmit} icon={arrowforward} />
           </div>
         </form>
       </div>
