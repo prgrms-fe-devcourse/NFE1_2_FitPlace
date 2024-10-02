@@ -2,8 +2,9 @@ import React, { useState, useCallback, ChangeEvent, useEffect } from "react";
 import Button from "../components/Button";
 import Header from "../components/Header";
 import NotionCategory from "../components/NotionCategory";
-import KakaoMap from "./KakaoMap"; 
-import { useNavigate } from "react-router-dom";
+import KakaoMap from "./KakaoMap";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 interface FormData {
     title: string;
@@ -42,32 +43,36 @@ const INITIAL_FORM_STATE: FormData = {
 const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
 
 const NotionAdd = () => {
+    const navigate = useNavigate();
+    const token = useSelector((state) => state.userToken);
+
     const [formData, setFormData] = useState<FormData>(INITIAL_FORM_STATE);
     const [selectedLocation, setSelectedLocation] = useState<{
         address: string;
         lat: number;
         lng: number;
-    } | null>(null); 
+    } | null>(null);
 
     const [channels, setChannels] = useState<Channel[]>([]);
 
-    const navigate = useNavigate();
-
     useEffect(() => {
-        fetchChannels();
-
-        const savedLocation = sessionStorage.getItem("selectedLocation");
-        if (savedLocation) {
-            const locationData = JSON.parse(savedLocation);
-            setSelectedLocation(locationData); 
-            setFormData((prev) => ({
-                ...prev,
-                meetingSpot: locationData.address,
-            }));
+        if (!token) {
+            navigate("/login");
+        } else {
+            fetchChannels();
+            const savedLocation = sessionStorage.getItem("selectedLocation");
+            if (savedLocation) {
+                const locationData = JSON.parse(savedLocation);
+                setSelectedLocation(locationData);
+                setFormData((prev) => ({
+                    ...prev,
+                    meetingSpot: locationData.address,
+                }));
+            }
         }
-    }, []);
+    }, [token, navigate]);
 
-    const fetchChannels = async () => {
+    const fetchChannels = useCallback(async () => {
         try {
             const response = await fetch(`${API_URL}/channels`);
             if (!response.ok) {
@@ -78,7 +83,7 @@ const NotionAdd = () => {
         } catch (error) {
             console.error("Error fetching channels:", error);
         }
-    };
+    }, []);
 
     const handleChange = useCallback(
         (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -96,7 +101,8 @@ const NotionAdd = () => {
     }, []);
 
     const handleSubmit = async () => {
-        const channelId = channels.find((ch) => ch.name === formData.channel)?._id || "";
+        const channelId =
+            channels.find((ch) => ch.name === formData.channel)?._id || "";
 
         const meetingTime = formData.isTimeFlexible
             ? `${formData.meetingDate}, 시간 무관`
@@ -119,7 +125,7 @@ const NotionAdd = () => {
             const response = await fetch(`${API_URL}/posts/create`, {
                 method: "POST",
                 headers: {
-                    Authorization: `bearer YOUR_TOKEN`,
+                    Authorization: `bearer ${token}`,
                 },
                 body: submitData,
             });
@@ -138,9 +144,9 @@ const NotionAdd = () => {
         }
     };
 
-    const handleLocationClick = () => {
+    const handleLocationClick = useCallback(() => {
         navigate("/map");
-    };
+    }, [navigate]);
 
     return (
         <>
@@ -279,7 +285,10 @@ const NotionAdd = () => {
                             className="cursor-pointer relative mt-2.5 border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] flex items-center px-3"
                             onClick={handleLocationClick}
                         >
-                            <span>{selectedLocation?.address || "모임 장소를 입력해주세요."}</span>
+                            <span>
+                                {selectedLocation?.address ||
+                                    "모임 장소를 입력해주세요."}
+                            </span>
                         </div>
                     </div>
 
@@ -293,7 +302,6 @@ const NotionAdd = () => {
                             />
                         </div>
                     )}
-
 
                     {/* 모임 설명 */}
                     <div>
