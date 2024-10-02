@@ -57,7 +57,24 @@ var ProfileLocation = function () {
                     'Content-Type': 'application/json'
                 }
             })
-                .then(function (res) { return res.status === 200 ? alert('수정이 완료되었습니다') : null; })["catch"](function (err) { return console.error(err); });
+                .then(function (res) {
+                if (res.status === 200) {
+                    alert('수정이 완료되었습니다');
+                    navigate('/');
+                }
+                else {
+                    return null;
+                }
+            })["catch"](function (err) {
+                if (err.status === 401) {
+                    alert('올바르지 않은 사용자 입니다.');
+                    navigate('/');
+                }
+                else if (err.status === 404) {
+                    alert('올바르지 않은 경로의 접근입니다.');
+                    navigate('/');
+                }
+            });
         }
     };
     return (React.createElement("div", { className: "w-140 min-h-screen bg-white p-3 flex flex-col justify-start relative" },

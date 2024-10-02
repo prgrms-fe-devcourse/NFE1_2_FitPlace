@@ -81,8 +81,23 @@ const ProfileDesc = () => {
         }
       }
     )
-    .then(res => res.status === 200 ? alert('수정이 완료되었습니다') : null)
-    .catch(err => console.error(err))
+    .then(res => {
+      if(res.status === 200) {
+        alert('수정이 완료되었습니다')
+        navigate('/')
+      } else {
+        return null
+      }
+    })
+    .catch(err => {
+      if(err.status === 401) {
+        alert('올바르지 않은 사용자 입니다.')
+        navigate('/')
+      } else if (err.status === 404) {
+        alert('올바르지 않은 경로의 접근입니다.')
+        navigate('/')
+      } 
+    })
   };
 
   return (
