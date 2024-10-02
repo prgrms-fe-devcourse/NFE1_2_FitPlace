@@ -40,6 +40,8 @@ const INITIAL_FORM_STATE: FormData = {
 };
 
 const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
+const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 const NotionAdd: React.FC = () => {
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM_STATE);
@@ -50,6 +52,43 @@ const NotionAdd: React.FC = () => {
   } | null>(null);
 
   const [channels, setChannels] = useState<Channel[]>([]);
+
+  //이미지 업로드 부분(충돌 방지 주석)---------------------------------------------------------------
+  const [image, setImage] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  const handleFileChange = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setImage(file); // 선택된 파일을 저장
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", UPLOAD_PRESET);
+
+        try {
+          const response = await fetch(
+            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+          const data = await response.json();
+          setImageUrl(data.secure_url); // 업로드된 이미지 URL 설정
+          setFormData((prev) => ({ ...prev, image: data.secure_url })); // 폼 데이터에 이미지 URL 저장
+        } catch (error) {
+          console.error("이미지 업로드 실패:", error);
+        }
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    console.log(imageUrl);
+  }, [imageUrl]);
+  // 이미지 업로드 부분 여기까지---------------------------------------------------------------
 
   const navigate = useNavigate();
 
@@ -110,6 +149,7 @@ const NotionAdd: React.FC = () => {
       meetingTime: meetingTime,
       meetingSpot: formData.meetingSpot,
       channel: formData.channel,
+      image: formData.image, //이미지 업로드 부분
     };
 
     const submitData = new FormData();
@@ -326,6 +366,8 @@ const NotionAdd: React.FC = () => {
               type="file"
               id="image"
               name="image"
+              accept="image/*"
+              onChange={handleFileChange}
               className="absolute hidden"
             />
           </div>
