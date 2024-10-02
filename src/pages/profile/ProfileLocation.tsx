@@ -6,26 +6,6 @@ import { Cookies } from "react-cookie";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-interface ResData {
-  banned: boolean
-  comments: []
-  createdAt: string
-  email: string
-  emailVerified: boolean
-  followers: []
-  following: []
-  fullName: string
-  isOnline: boolean
-  likes: []
-  messages: []
-  notifications: []
-  posts: []
-  role: string
-  updatedAt: string
-  __v: number;
-  _id: string
-}
 interface UserData {
   fullName: string;
   birth: number;
@@ -34,12 +14,6 @@ interface UserData {
   location: string;
   image: string;
 }
-
-interface RootState {
-  currentUser: ResData;
-}
-
-const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const ProfileLocation = () => {
 
@@ -53,17 +27,25 @@ const ProfileLocation = () => {
   const [locaValue, setLocaValue] = useState('');
   const [cityValue, setCityValue] = useState('');
 
-  const myInfo = useTypedSelector((state) => state.currentUser);
-  const [myDetailData, setMyDetailData] = useState<UserData | null>(null)
+  const [myData, setMyData] = useState<UserData>();
 
   useEffect(() => {
+    setMyToken(cookie.get("token").replace(/bearer\s+/g, ""));
     try {
-      setMyDetailData(JSON.parse(myInfo.fullName));
+      axios
+        .get("https://kdt.frontend.5th.programmers.co.kr:5009/auth-user", {
+          headers: {
+            Authorization: `bearer ${myToken}`,
+          },
+        })
+        .then((res) => {
+          setMyData(JSON.parse(res.data.fullName));
+        });
     } catch (err) {
-      alert('잘못된 접근 입니다.')
-      navigate('/login')
+      console.log(err);
+      navigate("/");
     }
-  }, [myInfo])
+  }, [cookie]);
 
   // 도, 광역시 선택시 시군구 스크롤 최상단으로
   const myRef = useRef<HTMLUListElement>(null);
@@ -72,51 +54,30 @@ const ProfileLocation = () => {
     if (myRef.current) {myRef.current.scrollTop = 0}
   }
 
-  useEffect(() => {
-    setMyToken(cookie.get("token").replace(/bearer\s+/g, ""))
-  }, [cookie])
-
-  const handleEdit = () => {
-    const putData = { 
-      fullName: myDetailData?.fullName,
-      description: myDetailData?.description,
-      birth: myDetailData?.birth,
-      location: myDetailData?.location,
-      userId: myDetailData?.userId,
-      image: myDetailData?.image,
-     };
-    putData.location = locaValue + ' ' + cityValue
-    const submitData = { fullName: JSON.stringify(putData) }
-    if (!cityValue || cityValue.length === 0 || cityValue === '') {
-      return alert('시군구를 선택하세요')
-    } else {
-      axios.put(
-        "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",submitData ,
+  const handleEdit = async () => {
+    const putData = { ...myData };
+    putData.location = locaValue + ' ' + cityValue;
+    const submitData = JSON.stringify(putData);
+    await axios
+      .put(
+        "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",
+        {
+          fullName: submitData,
+        },
         {
           headers: {
             Authorization: `bearer ${myToken}`,
-            'Content-Type': 'application/json'
-          }
+          },
         }
       )
-      .then(res => {
+      .then((res) => {
         if (res.status === 200) {
-          alert('수정이 완료되었습니다')
-          navigate('/')
-        } else {
-          return null
+          alert("수정 되었습니다.");
         }
       })
-      .catch(err => {
-        if(err.status === 401) {
-          alert('올바르지 않은 사용자 입니다.')
-          navigate('/')
-        } else if (err.status === 404) {
-          alert('올바르지 않은 경로의 접근입니다.')
-          navigate('/')
-        } 
-      })
-    }
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (

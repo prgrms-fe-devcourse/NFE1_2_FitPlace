@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -40,29 +51,31 @@ var react_1 = require("react");
 var Button_1 = require("../../components/Button");
 var axios_1 = require("axios");
 var react_cookie_1 = require("react-cookie");
-var react_redux_1 = require("react-redux");
 var react_router_dom_1 = require("react-router-dom");
-var useTypedSelector = react_redux_1.useSelector;
 var ProfileImg = function () {
     var cookie = new react_cookie_1.Cookies();
     var navigate = react_router_dom_1.useNavigate();
     var imgUrl = '';
     var _a = react_1.useState(''), myToken = _a[0], setMyToken = _a[1];
-    var myInfo = useTypedSelector(function (state) { return state.currentUser; });
-    var _b = react_1.useState(null), myDetailData = _b[0], setMyDetailData = _b[1];
-    react_1.useEffect(function () {
-        try {
-            setMyDetailData(JSON.parse(myInfo.fullName));
-        }
-        catch (err) {
-            alert('잘못된 접근 입니다.');
-            navigate('/login');
-        }
-    }, [myInfo]);
+    var _b = react_1.useState(), myData = _b[0], setMyData = _b[1];
     react_1.useEffect(function () {
         setMyToken(cookie.get("token").replace(/bearer\s+/g, ""));
+        try {
+            axios_1["default"]
+                .get("https://kdt.frontend.5th.programmers.co.kr:5009/auth-user", {
+                headers: {
+                    Authorization: "bearer " + myToken
+                }
+            })
+                .then(function (res) {
+                setMyData(JSON.parse(res.data.fullName));
+            });
+        }
+        catch (err) {
+            console.log(err);
+            navigate("/");
+        }
     }, [cookie]);
-    console.log(myDetailData);
     var uploadImg = function (e) { return __awaiter(void 0, void 0, void 0, function () {
         var file, formData, response, err_1;
         return __generator(this, function (_a) {
@@ -96,37 +109,32 @@ var ProfileImg = function () {
     var putImg = function (imgUrl) { return __awaiter(void 0, void 0, void 0, function () {
         var putData, submitData;
         return __generator(this, function (_a) {
-            putData = {
-                fullName: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.fullName,
-                description: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.description,
-                birth: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.birth,
-                location: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.location,
-                userId: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.userId,
-                image: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.image
-            };
-            putData.image = imgUrl;
-            submitData = JSON.stringify(putData);
-            axios_1["default"].put("https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user", submitData, {
-                headers: {
-                    Authorization: "bearer " + myToken,
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(function (res) {
-                res.status === 200
-                    ? alert('사진이 업로드 되었습니다.')
-                    : null;
-            })["catch"](function (err) {
-                if (err.status === 401) {
-                    alert('올바르지 않은 사용자 입니다.');
-                    navigate('/');
-                }
-                else if (err.status === 404) {
-                    alert('올바르지 않은 경로의 접근입니다.');
-                    navigate('/');
-                }
-            });
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0:
+                    if (!(imgUrl || imgUrl !== '')) return [3 /*break*/, 2];
+                    putData = __assign({}, myData);
+                    putData.image = imgUrl;
+                    submitData = JSON.stringify(putData);
+                    return [4 /*yield*/, axios_1["default"]
+                            .put("https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user", {
+                            fullName: submitData
+                        }, {
+                            headers: {
+                                Authorization: "bearer " + myToken
+                            }
+                        })
+                            .then(function (res) {
+                            if (res.status === 200) {
+                                alert("수정 되었습니다.");
+                            }
+                        })["catch"](function (err) {
+                            console.log(err);
+                        })];
+                case 1:
+                    _a.sent();
+                    _a.label = 2;
+                case 2: return [2 /*return*/];
+            }
         });
     }); };
     // const handleImgUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -192,9 +200,9 @@ var ProfileImg = function () {
         React.createElement("div", { className: "edit__head-btm mt-6" },
             React.createElement("ul", { className: "flex justify-start items-start flex-wrap gap-4" },
                 React.createElement("li", { className: "w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P" },
-                    (myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.image) === '' || !(myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.image)
-                        ? React.createElement("img", { src: "/src/assets/defaultProfileImg.svg", alt: "\uC608\uC2DC\uC774\uBBF8\uC9C0", className: "w-full h-full object-cover absolute" })
-                        : React.createElement("img", { src: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.image, alt: "\uC608\uC2DC\uC774\uBBF8\uC9C0", className: "w-full h-full object-cover absolute" }),
+                    (myData === null || myData === void 0 ? void 0 : myData.image) === '' || !(myData === null || myData === void 0 ? void 0 : myData.image)
+                        ? React.createElement("img", { src: "/src/assets/defaultProfileImg.svg", alt: "\uAE30\uBCF8 \uD504\uB85C\uD544 \uC0AC\uC9C4", className: "w-full h-full object-cover absolute" })
+                        : React.createElement("img", { src: myData === null || myData === void 0 ? void 0 : myData.image, alt: (myData === null || myData === void 0 ? void 0 : myData.fullName) + "\uB2D8\uC758 \uC0AC\uC9C4", className: "w-full h-full object-cover absolute" }),
                     React.createElement("p", { className: "absolute top-0 right-0 cursor-pointer" }, "\u274C")),
                 React.createElement("li", { className: "bg-gray-100 hover:bg-gray-200 w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P" },
                     React.createElement("label", { htmlFor: "imgUploadInput", className: "w-full h-full absolute flex justify-center items-center cursor-pointer" },

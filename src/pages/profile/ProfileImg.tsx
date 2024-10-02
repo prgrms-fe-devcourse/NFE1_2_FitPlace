@@ -4,27 +4,6 @@ import axios from "axios";
 import { Cookies } from "react-cookie";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-interface ResData {
-  banned: boolean
-  comments: []
-  createdAt: string
-  email: string
-  emailVerified: boolean
-  followers: []
-  following: []
-  fullName: string
-  isOnline: boolean
-  likes: []
-  messages: []
-  notifications: []
-  posts: []
-  role: string
-  updatedAt: string
-  __v: number;
-  _id: string
-}
-
 interface UserData {
   fullName: string;
   birth: number;
@@ -34,12 +13,6 @@ interface UserData {
   image: string;
 }
 
-interface RootState {
-  currentUser: ResData;
-}
-
-const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
-
 const ProfileImg = () => {
 
   const cookie = new Cookies();
@@ -47,24 +20,26 @@ const ProfileImg = () => {
   
   let imgUrl = '';
   const [myToken, setMyToken] = useState('');
+  const [myData, setMyData] = useState<UserData>();
 
-  const myInfo = useTypedSelector(state => state.currentUser);
-  const [myDetailData, setMyDetailData] = useState<UserData | null>(null)
-  
   useEffect(() => {
+    setMyToken(cookie.get("token").replace(/bearer\s+/g, ""));
     try {
-      setMyDetailData(JSON.parse(myInfo.fullName));
+      axios
+        .get("https://kdt.frontend.5th.programmers.co.kr:5009/auth-user", {
+          headers: {
+            Authorization: `bearer ${myToken}`,
+          },
+        })
+        .then((res) => {
+          setMyData(JSON.parse(res.data.fullName));
+        });
     } catch (err) {
-      alert('잘못된 접근 입니다.')
-      navigate('/login')
+      console.log(err);
+      navigate("/");
     }
-  }, [myInfo])
+  }, [cookie]);
 
-  useEffect(() => {
-    setMyToken(cookie.get("token").replace(/bearer\s+/g, ""))
-  }, [cookie])
-
-  console.log(myDetailData)
 
   const uploadImg = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if(!e.target.files) {
@@ -87,40 +62,32 @@ const ProfileImg = () => {
   }
 
   const putImg = async (imgUrl: string) => {
-    const putData = {
-      fullName: myDetailData?.fullName,
-      description: myDetailData?.description,
-      birth: myDetailData?.birth,
-      location: myDetailData?.location,
-      userId: myDetailData?.userId,
-      image: myDetailData?.image
-    }
-    putData.image = imgUrl
-    const submitData = JSON.stringify(putData)
-    axios.put(
-      "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user", submitData ,
-      {
-        headers: {
-          Authorization: `bearer ${myToken}`,
-          'Content-Type': 'application/json'
-        }
+    if(imgUrl || imgUrl !== '') {
+      const putData = { ...myData };
+      putData.image = imgUrl;
+      const submitData = JSON.stringify(putData);
+      await axios
+        .put(
+          "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",
+          {
+            fullName: submitData,
+          },
+          {
+            headers: {
+              Authorization: `bearer ${myToken}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            alert("수정 되었습니다.");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       }
-    )
-    .then(res => {
-      res.status === 200
-      ? alert('사진이 업로드 되었습니다.')
-      : null
-    })
-    .catch(err => {
-      if(err.status === 401) {
-        alert('올바르지 않은 사용자 입니다.')
-        navigate('/')
-      } else if (err.status === 404) {
-        alert('올바르지 않은 경로의 접근입니다.')
-        navigate('/')
-      } 
-    })
-  }
+  };
 
   // const handleImgUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
   //   if (!e.target.files) {
@@ -200,9 +167,9 @@ const ProfileImg = () => {
           {/* 이미지 업로드 예시 */}
           <li className="w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P">
             {
-              myDetailData?.image === '' || !myDetailData?.image
-              ? <img src="/src/assets/defaultProfileImg.svg" alt="예시이미지" className="w-full h-full object-cover absolute" />
-              : <img src={myDetailData?.image} alt="예시이미지" className="w-full h-full object-cover absolute" />
+              myData?.image === '' || !myData?.image
+              ? <img src="/src/assets/defaultProfileImg.svg" alt="기본 프로필 사진" className="w-full h-full object-cover absolute" />
+              : <img src={myData?.image} alt={`${myData?.fullName}님의 사진`} className="w-full h-full object-cover absolute" />
             }
             {/* 삭제...버튼...? */}
             <p className="absolute top-0 right-0 cursor-pointer">❌</p>
