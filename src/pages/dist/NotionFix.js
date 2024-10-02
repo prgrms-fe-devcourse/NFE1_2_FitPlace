@@ -211,7 +211,7 @@ var NotionFix = function () {
         setFormData(function (prev) { return (__assign(__assign({}, prev), { channel: category })); });
     }, []);
     var handleSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var channelId, meetingTime, customJsonData, submitData, response, data, error_4;
+        var channelId, meetingTime, imagesToSubmit, customJsonData, submitData, response, data, error_4;
         var _a;
         return __generator(this, function (_b) {
             switch (_b.label) {
@@ -220,6 +220,7 @@ var NotionFix = function () {
                     meetingTime = formData.isTimeFlexible
                         ? formData.meetingDate + ", \uC2DC\uAC04 \uBB34\uAD00"
                         : formData.meetingDate + " " + formData.meetingStartTime + " - " + formData.meetingEndTime;
+                    imagesToSubmit = __spreadArrays(imageUrls, formData.images);
                     customJsonData = {
                         title: formData.title,
                         currentMember: formData.currentMember,
@@ -227,7 +228,7 @@ var NotionFix = function () {
                         meetingTime: meetingTime,
                         meetingSpot: formData.meetingSpot,
                         channel: formData.channel,
-                        image: formData.images
+                        image: imagesToSubmit
                     };
                     submitData = new FormData();
                     submitData.append("title", JSON.stringify(customJsonData));

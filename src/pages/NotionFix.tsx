@@ -188,6 +188,8 @@ const NotionFix: React.FC = () => {
       ? `${formData.meetingDate}, 시간 무관`
       : `${formData.meetingDate} ${formData.meetingStartTime} - ${formData.meetingEndTime}`;
 
+    const imagesToSubmit = [...imageUrls, ...formData.images];
+
     const customJsonData = {
       title: formData.title,
       currentMember: formData.currentMember,
@@ -195,7 +197,7 @@ const NotionFix: React.FC = () => {
       meetingTime: meetingTime,
       meetingSpot: formData.meetingSpot,
       channel: formData.channel,
-      image: formData.images, //이미지 업로드 부분
+      image: imagesToSubmit, //이미지 업로드 부분
     };
 
     const submitData = new FormData();
