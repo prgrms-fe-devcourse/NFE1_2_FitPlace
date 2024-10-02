@@ -93,7 +93,7 @@ const NotionPage = () => {
   if (!postData) {
     return <div>Loading...</div>; // 데이터 로딩 중 표시
   }
-
+  //게시글 삭제 코드 입니다. 충돌 방지--------------------------------------------------------
   const Delete_post = async () => {
     try {
       await axios.delete(
@@ -113,7 +113,7 @@ const NotionPage = () => {
       console.log("게시글 삭제 실패", error);
     }
   };
-
+  //-------------------------------------------
   return (
     <>
       <Header />
@@ -159,8 +159,10 @@ const NotionPage = () => {
                 )}
 
                 <div className="text-xs text-[#898989] flex gap-2">
-                  <button>수정</button>|
-                  <button onClick={() => setDeleteModal(true)}>삭제</button>
+                  <Link to="/notionFix">
+                    <button>수정</button>
+                  </Link>
+                  |<button onClick={() => setDeleteModal(true)}>삭제</button>
                 </div>
               </div>
 

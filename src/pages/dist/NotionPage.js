@@ -114,6 +114,7 @@ var NotionPage = function () {
     if (!postData) {
         return react_1["default"].createElement("div", null, "Loading..."); // 데이터 로딩 중 표시
     }
+    //게시글 삭제 코드 입니다. 충돌 방지--------------------------------------------------------
     var Delete_post = function () { return __awaiter(void 0, void 0, void 0, function () {
         var error_2;
         return __generator(this, function (_a) {
@@ -140,6 +141,7 @@ var NotionPage = function () {
             }
         });
     }); };
+    //-------------------------------------------
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "bg-white w-[640px] h-full" },
@@ -160,7 +162,8 @@ var NotionPage = function () {
                         react_1["default"].createElement("div", { className: "flex justify-between" },
                             postData.currentMember === postData.meetingCapacity ? (react_1["default"].createElement("p", { className: "text-sm text-rose-600 font-bold" }, "\uBAA8\uC9D1 \uB9C8\uAC10")) : (react_1["default"].createElement("p", { className: "text-sm text-[#AFE327] font-bold" }, "\uBAA8\uC9D1 \uC911")),
                             react_1["default"].createElement("div", { className: "text-xs text-[#898989] flex gap-2" },
-                                react_1["default"].createElement("button", null, "\uC218\uC815"),
+                                react_1["default"].createElement(react_router_dom_2.Link, { to: "/notionFix" },
+                                    react_1["default"].createElement("button", null, "\uC218\uC815")),
                                 "|",
                                 react_1["default"].createElement("button", { onClick: function () { return setDeleteModal(true); } }, "\uC0AD\uC81C"))),
                         react_1["default"].createElement("h3", { className: "text-2xl font-bold" }, postData.actualTitle),
