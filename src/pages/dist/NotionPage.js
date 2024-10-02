@@ -48,18 +48,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var react_1 = require("react");
+var react_router_dom_1 = require("react-router-dom");
 var icon_user_profile_svg_1 = require("../assets/icon_user_profile.svg");
 var favorite_svg_1 = require("../assets/favorite.svg");
 var commentIcon_svg_1 = require("../assets/commentIcon.svg");
 var NotionItem_1 = require("../components/NotionItem");
 var Button_1 = require("../components/Button");
 var Header_1 = require("../components/Header");
-var react_router_dom_1 = require("react-router-dom");
 var react_router_dom_2 = require("react-router-dom");
+var react_router_dom_3 = require("react-router-dom");
+var axios_1 = require("axios");
 var NotionPage = function () {
+    var navigate = react_router_dom_1.useNavigate();
     var _a = react_1.useState(false), deleteModal = _a[0], setDeleteModal = _a[1];
     var modalBackground = react_1.useRef();
-    var id = react_router_dom_2.useParams().id;
+    var id = react_router_dom_3.useParams().id;
     var _b = react_1.useState(null), postData = _b[0], setPostData = _b[1];
     var _c = react_1.useState({}), PrevData = _c[0], setPrevData = _c[1]; //파싱하기 전의 데이터
     var parsePostData = function (post) {
@@ -111,6 +114,32 @@ var NotionPage = function () {
     if (!postData) {
         return react_1["default"].createElement("div", null, "Loading..."); // 데이터 로딩 중 표시
     }
+    var Delete_post = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, axios_1["default"]["delete"]("https://kdt.frontend.5th.programmers.co.kr:5009/posts/delete/", {
+                            headers: {
+                                Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDE0ODU5fQ.Al40jxy-6yrAoANrY3fQA1joeNw08-fjByus_ZfxXSk"
+                            },
+                            data: {
+                                id: id
+                            }
+                        })];
+                case 1:
+                    _a.sent();
+                    navigate("/");
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_2 = _a.sent();
+                    console.log("게시글 삭제 실패", error_2);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "bg-white w-[640px] h-full" },
@@ -124,7 +153,7 @@ var NotionPage = function () {
                         react_1["default"].createElement("div", null,
                             react_1["default"].createElement("p", null, "\uAC8C\uC2DC\uAE00\uC744 \uC0AD\uC81C\uD560\uAE4C\uC694?"),
                             react_1["default"].createElement("div", { className: "flex gap-5 mt-2" },
-                                react_1["default"].createElement(Button_1["default"], { label: "\uC0AD\uC81C", size: "mid", color: "green" }),
+                                react_1["default"].createElement(Button_1["default"], { label: "\uC0AD\uC81C", size: "mid", color: "green", onClick: Delete_post }),
                                 react_1["default"].createElement(Button_1["default"], { label: "\uCDE8\uC18C", size: "mid", color: "green", onClick: function () { return setDeleteModal(false); } })))))),
                 react_1["default"].createElement("section", null,
                     react_1["default"].createElement("div", null,
@@ -178,7 +207,7 @@ var NotionPage = function () {
                             react_1["default"].createElement("button", null,
                                 react_1["default"].createElement("img", { src: favorite_svg_1["default"], alt: "\uC88B\uC544\uC694\uBC84\uD2BC" }))),
                         react_1["default"].createElement("div", { className: "w-8" },
-                            react_1["default"].createElement(react_router_dom_1.Link, { to: "/notion/" + id + "/comments" },
+                            react_1["default"].createElement(react_router_dom_2.Link, { to: "/notion/" + id + "/comments" },
                                 react_1["default"].createElement("button", null,
                                     react_1["default"].createElement("img", { src: commentIcon_svg_1["default"], alt: "\uBA54\uC138\uC9C0\uBC84\uD2BC" }))))))))));
 };

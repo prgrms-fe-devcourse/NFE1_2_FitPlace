@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/FitPlaceLogo.svg";
 import iconUser from "../assets/icon_user_profile.svg";
 import favorite from "../assets/favorite.svg";
@@ -8,6 +9,7 @@ import Button from "../components/Button";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 interface ParsedPost {
   _id: string;
@@ -30,6 +32,7 @@ interface ParsedPost {
 }
 
 const NotionPage = () => {
+  const navigate = useNavigate();
   const [deleteModal, setDeleteModal] = useState(false);
   const modalBackground = useRef();
   const { id } = useParams();
@@ -91,6 +94,26 @@ const NotionPage = () => {
     return <div>Loading...</div>; // 데이터 로딩 중 표시
   }
 
+  const Delete_post = async () => {
+    try {
+      await axios.delete(
+        `https://kdt.frontend.5th.programmers.co.kr:5009/posts/delete/`,
+        {
+          headers: {
+            Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDE0ODU5fQ.Al40jxy-6yrAoANrY3fQA1joeNw08-fjByus_ZfxXSk`,
+          },
+          data: {
+            id: id,
+          },
+        }
+      );
+
+      navigate("/");
+    } catch (error) {
+      console.log("게시글 삭제 실패", error);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -109,7 +132,12 @@ const NotionPage = () => {
                 <div>
                   <p>게시글을 삭제할까요?</p>
                   <div className="flex gap-5 mt-2">
-                    <Button label="삭제" size="mid" color="green" />
+                    <Button
+                      label="삭제"
+                      size="mid"
+                      color="green"
+                      onClick={Delete_post}
+                    />
                     <Button
                       label="취소"
                       size="mid"
