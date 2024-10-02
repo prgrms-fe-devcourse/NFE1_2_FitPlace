@@ -3,6 +3,7 @@ import Button from "../../components/Button";
 import { useEffect, useState } from "react";
 import axios, { AxiosHeaders } from "axios";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 interface ResData {
   banned: boolean
@@ -39,12 +40,22 @@ const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const ProfileNickname = () => {
   const cookie = new Cookies();
+  const navigate = useNavigate();
 
   const [myToken, setMyToken] = useState("");
   const [nickname, setNickname] = useState('');
 
   const myInfo = useTypedSelector((state) => state.currentUser);
-  const myDetailData: UserData = JSON.parse(myInfo.fullName);
+  let myDetailData: UserData | null = null
+  
+  useEffect(() => {
+    try {
+      myDetailData = JSON.parse(myInfo.fullName);
+    } catch(err) {
+      alert('잘못된 접근입니다.')
+      navigate('/')
+    }
+  }, [myInfo])
 
   useEffect(() => {
     setMyToken(cookie.get("token").replace(/bearer\s+/g, ""));
@@ -54,17 +65,37 @@ const ProfileNickname = () => {
     const putData = { ...myDetailData };
     putData.fullName = nickname
     const submitData = { fullName: JSON.stringify(putData) }
-    axios.put(
-      "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",submitData ,
-      {
-        headers: {
-          Authorization: `bearer ${myToken}`,
-          'Content-Type': 'application/json'
+    if(nickname.length > 9 || nickname.length < 3 || nickname.includes(' ')) {
+      return alert('닉네임은 2 ~ 8자 사이여야 하며 공백이 없어야합니다.')
+    } else {
+      axios.put(
+        "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",submitData ,
+        {
+          headers: {
+            // Authorization: `bearer ${myToken}`,
+            Authorization: `bearer fnejkwfjklwehfkjqebnkjbnqejkvnlqeklkevjvkljeqkljekl`,
+            'Content-Type': 'application/json'
+          }
         }
-      }
-    )
-    .then(res => res.status === 200 ? alert('수정이 완료되었습니다') : null)
-    .catch(err => console.error(err))
+      )
+      .then(res => {
+        if(res.status === 200) {
+          alert('수정이 완료되었습니다')
+          navigate('/')
+        } else {
+          return null
+        }
+      })
+      .catch(err => {
+        if(err.status === 401) {
+          alert('올바르지 않은 사용자 입니다.')
+          navigate('/')
+        } else if (err.status === 404) {
+          alert('올바르지 않은 경로의 접근입니다.')
+          navigate('/')
+        }
+      })
+    }
   };
 
   return (
@@ -84,6 +115,14 @@ const ProfileNickname = () => {
           className="px-4 py-5 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none rounded-lg shadow w-full font-bold text-xl placeholder:text-greenColor"
           onChange={(e) => setNickname(e.target.value)}
         />
+
+        {
+          nickname.length > 9 || nickname.length < 3 || nickname.includes(' ')
+          ? <p className="text-red-600 font-bold text-lg">
+              닉네임은 2 ~ 8자 사이여야 하며 공백이 없어야합니다.
+            </p>
+          : null
+        }
       </div>
 
       {/* 하단 저장 버튼 */}
