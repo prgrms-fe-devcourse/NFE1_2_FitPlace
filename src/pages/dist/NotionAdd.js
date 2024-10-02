@@ -273,6 +273,8 @@ var NotionAdd = function () {
                         imageUrls.map(function (url, index) { return (react_1["default"].createElement("img", { key: index, src: url, alt: "uploaded-" + index, className: "w-[160px] h-[140px] mt-4" })); }),
                         react_1["default"].createElement("label", { htmlFor: "image", className: "w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-4" }, "+ \uC0AC\uC9C4 \uC5C5\uB85C\uB4DC"),
                         react_1["default"].createElement("input", { type: "file", id: "image", name: "image", accept: "image/*", onChange: handleFileChange, className: "absolute hidden" }))),
+                imageUrls && imageUrls.length > 0 && (react_1["default"].createElement("div", { className: "flex flex-col items-center" },
+                    react_1["default"].createElement("button", { className: "w-1/2 bg-gray-300 my-3 h-10 text-sm hover:bg-gray-400 hover:rounded-2xl transition-all", onClick: function () { return setImageUrls([]); } }, "\uC0AC\uC9C4 \uCD08\uAE30\uD654"))),
                 react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC784 \uB4F1\uB85D", size: "full", color: "green", onClick: handleSubmit })))));
 };
 exports["default"] = NotionAdd;

@@ -380,6 +380,7 @@ const NotionAdd: React.FC = () => {
               >
                 + 사진 업로드
               </label>
+
               <input
                 type="file"
                 id="image"
@@ -390,6 +391,17 @@ const NotionAdd: React.FC = () => {
               />
             </div>
           </div>
+          {/*사진 초기화하기 */}
+          {imageUrls && imageUrls.length > 0 && (
+            <div className="flex flex-col items-center">
+              <button
+                className="w-1/2 bg-gray-300 my-3 h-10 text-sm hover:bg-gray-400 hover:rounded-2xl transition-all"
+                onClick={() => setImageUrls([])}
+              >
+                사진 초기화
+              </button>
+            </div>
+          )}
 
           {/* 모임 등록 버튼 */}
           <Button
