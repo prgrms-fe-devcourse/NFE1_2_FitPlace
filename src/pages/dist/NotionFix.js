@@ -61,6 +61,7 @@ var NotionCategory_1 = require("../components/NotionCategory");
 var KakaoMap_1 = require("./KakaoMap");
 var react_router_dom_1 = require("react-router-dom");
 var react_router_dom_2 = require("react-router-dom");
+var axios_1 = require("axios");
 var INITIAL_FORM_STATE = {
     title: "",
     channel: "",
@@ -82,12 +83,41 @@ var NotionFix = function () {
     var _a = react_1.useState(INITIAL_FORM_STATE), formData = _a[0], setFormData = _a[1];
     var _b = react_1.useState(null), selectedLocation = _b[0], setSelectedLocation = _b[1];
     var _c = react_1.useState([]), channels = _c[0], setChannels = _c[1];
+    var _d = react_1.useState(), original_data = _d[0], setOriginal_data = _d[1];
+    var Get_post_info = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/posts/" + id)];
+                case 1:
+                    response = _a.sent();
+                    setOriginal_data(JSON.parse(response.data.title));
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    console.log(error_1);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    react_1.useEffect(function () {
+        Get_post_info();
+    }, []);
+    react_1.useEffect(function () {
+        console.log(original_data);
+    }, [original_data]);
+    react_1.useEffect(function () {
+        setFormData(function (prev) { return (__assign(__assign({}, prev), { title: original_data === null || original_data === void 0 ? void 0 : original_data.title, channel: original_data === null || original_data === void 0 ? void 0 : original_data.channel, currentMember: original_data === null || original_data === void 0 ? void 0 : original_data.currentMember, meetingCapacity: original_data === null || original_data === void 0 ? void 0 : original_data.meetingCapacity, meetingTime: original_data === null || original_data === void 0 ? void 0 : original_data.meetingTime, meetingSpot: original_data === null || original_data === void 0 ? void 0 : original_data.meetingSpot, meetingInfo: original_data === null || original_data === void 0 ? void 0 : original_data.meetingInfo })); });
+    }, [original_data]);
     //이미지 업로드 부분(충돌 방지 주석)---------------------------------------------------------------
-    var _d = react_1.useState(null), previewUrl = _d[0], setPreviewUrl = _d[1];
-    var _e = react_1.useState([]), imageFiles = _e[0], setImageFiles = _e[1]; // 선택된 파일들
-    var _f = react_1.useState([]), imageUrls = _f[0], setImageUrls = _f[1]; // 업로드된 이미지 URL들
+    var _e = react_1.useState(null), previewUrl = _e[0], setPreviewUrl = _e[1];
+    var _f = react_1.useState([]), imageFiles = _f[0], setImageFiles = _f[1]; // 선택된 파일들
+    var _g = react_1.useState([]), imageUrls = _g[0], setImageUrls = _g[1]; // 업로드된 이미지 URL들
     var handleFileChange = react_1.useCallback(function (e) { return __awaiter(void 0, void 0, void 0, function () {
-        var files, newFiles_2, newUrls_1, formData_1, _i, newFiles_1, file, response, data, error_1;
+        var files, newFiles_2, newUrls_1, formData_1, _i, newFiles_1, file, response, data, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -119,8 +149,8 @@ var NotionFix = function () {
                     newUrls_1.push(data.secure_url); // 업로드된 이미지 URL 추가
                     return [3 /*break*/, 6];
                 case 5:
-                    error_1 = _a.sent();
-                    console.error("이미지 업로드 실패:", error_1);
+                    error_2 = _a.sent();
+                    console.error("이미지 업로드 실패:", error_2);
                     return [3 /*break*/, 6];
                 case 6:
                     _i++;
@@ -145,7 +175,7 @@ var NotionFix = function () {
         }
     }, []);
     var fetchChannels = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response, data, error_2;
+        var response, data, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -162,8 +192,8 @@ var NotionFix = function () {
                     setChannels(data);
                     return [3 /*break*/, 4];
                 case 3:
-                    error_2 = _a.sent();
-                    console.error("Error fetching channels:", error_2);
+                    error_3 = _a.sent();
+                    console.error("Error fetching channels:", error_3);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
             }
@@ -180,7 +210,7 @@ var NotionFix = function () {
         setFormData(function (prev) { return (__assign(__assign({}, prev), { channel: category })); });
     }, []);
     var handleSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var channelId, meetingTime, customJsonData, submitData, response, data, error_3;
+        var channelId, meetingTime, customJsonData, submitData, response, data, error_4;
         var _a;
         return __generator(this, function (_b) {
             switch (_b.label) {
@@ -224,9 +254,9 @@ var NotionFix = function () {
                     console.log("Post", data);
                     return [3 /*break*/, 5];
                 case 4:
-                    error_3 = _b.sent();
+                    error_4 = _b.sent();
                     console.log(submitData);
-                    console.error("Error: ", error_3 instanceof Error ? error_3.message : String(error_3));
+                    console.error("Error: ", error_4 instanceof Error ? error_4.message : String(error_4));
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
             }

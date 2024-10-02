@@ -64,15 +64,15 @@ var NotionPage = function () {
     var modalBackground = react_1.useRef();
     var id = react_router_dom_3.useParams().id;
     var _b = react_1.useState(null), postData = _b[0], setPostData = _b[1];
-    var _c = react_1.useState({}), PrevData = _c[0], setPrevData = _c[1]; //파싱하기 전의 데이터
+    var _c = react_1.useState({}), PrevData = _c[0], setPrevData = _c[1];
     var parsePostData = function (post) {
         try {
             var parsedTitle = JSON.parse(post.title);
-            return __assign(__assign({}, post), { actualTitle: parsedTitle.title, meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10), currentMember: parseInt(parsedTitle.currentMember, 10), channel: parsedTitle.channel, meetingDate: parsedTitle.meetingDate, meetingStartTime: parsedTitle.meetingStartTime, meetingEndTime: parsedTitle.meetingEndTime, isTimeFlexible: parsedTitle.isTimeFlexible, meetingInfo: parsedTitle.meetingInfo, meetingSpot: parsedTitle.meetingSpot, image: parsedTitle.image });
+            return __assign(__assign({}, post), { actualTitle: parsedTitle.title, meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10), currentMember: parseInt(parsedTitle.currentMember, 10), channel: parsedTitle.channel, meetingDate: parsedTitle.meetingDate, meetingTime: parsedTitle.meetingTime, isTimeFlexible: parsedTitle.isTimeFlexible, meetingInfo: parsedTitle.meetingInfo, meetingSpot: parsedTitle.meetingSpot, image: parsedTitle.image });
         }
         catch (error) {
             console.error("Error parsing post title:", error);
-            return post; // 파싱에 실패하면 원본 데이터 반환
+            return post;
         }
     };
     react_1.useEffect(function () {
@@ -112,7 +112,7 @@ var NotionPage = function () {
         fetchPostData();
     }, []);
     if (!postData) {
-        return react_1["default"].createElement("div", null, "Loading..."); // 데이터 로딩 중 표시
+        return react_1["default"].createElement("div", null, "Loading...");
     }
     //게시글 삭제 코드 입니다. 충돌 방지--------------------------------------------------------
     var Delete_post = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -175,7 +175,7 @@ var NotionPage = function () {
                             react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingSpot || "장소 없음")),
                         react_1["default"].createElement("div", { className: "flex gap-5" },
                             react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC77C\uC2DC"),
-                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingDate || "시간 무관")))),
+                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingTime || "시간 무관")))),
                 react_1["default"].createElement("section", { className: "mt-7" },
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement(NotionItem_1["default"], { content: postData.meetingInfo })),

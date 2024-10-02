@@ -80,10 +80,9 @@ var NotionAdd = function () {
     var _a = react_1.useState(INITIAL_FORM_STATE), formData = _a[0], setFormData = _a[1];
     var _b = react_1.useState(null), selectedLocation = _b[0], setSelectedLocation = _b[1];
     var _c = react_1.useState([]), channels = _c[0], setChannels = _c[1];
-    //이미지 업로드 부분(충돌 방지 주석)---------------------------------------------------------------
     var _d = react_1.useState(null), previewUrl = _d[0], setPreviewUrl = _d[1];
-    var _e = react_1.useState([]), imageFiles = _e[0], setImageFiles = _e[1]; // 선택된 파일들
-    var _f = react_1.useState([]), imageUrls = _f[0], setImageUrls = _f[1]; // 업로드된 이미지 URL들
+    var _e = react_1.useState([]), imageFiles = _e[0], setImageFiles = _e[1];
+    var _f = react_1.useState([]), imageUrls = _f[0], setImageUrls = _f[1];
     var handleFileChange = react_1.useCallback(function (e) { return __awaiter(void 0, void 0, void 0, function () {
         var files, newFiles_2, newUrls_1, formData_1, _i, newFiles_1, file, response, data, error_1;
         return __generator(this, function (_a) {
@@ -92,7 +91,7 @@ var NotionAdd = function () {
                     files = e.target.files;
                     if (!files) return [3 /*break*/, 8];
                     newFiles_2 = Array.from(files);
-                    setImageFiles(function (prev) { return __spreadArrays(prev, newFiles_2); }); // 기존 파일에 추가
+                    setImageFiles(function (prev) { return __spreadArrays(prev, newFiles_2); });
                     newUrls_1 = [];
                     formData_1 = new FormData();
                     _i = 0, newFiles_1 = newFiles_2;
@@ -114,7 +113,7 @@ var NotionAdd = function () {
                     return [4 /*yield*/, response.json()];
                 case 4:
                     data = _a.sent();
-                    newUrls_1.push(data.secure_url); // 업로드된 이미지 URL 추가
+                    newUrls_1.push(data.secure_url);
                     return [3 /*break*/, 6];
                 case 5:
                     error_1 = _a.sent();
@@ -124,14 +123,13 @@ var NotionAdd = function () {
                     _i++;
                     return [3 /*break*/, 1];
                 case 7:
-                    setImageUrls(function (prev) { return __spreadArrays(prev, newUrls_1); }); // 기존 URL에 추가
-                    setFormData(function (prev) { return (__assign(__assign({}, prev), { images: __spreadArrays(prev.images, newUrls_1) })); }); // 폼 데이터에 이미지 URL 배열 저장
+                    setImageUrls(function (prev) { return __spreadArrays(prev, newUrls_1); });
+                    setFormData(function (prev) { return (__assign(__assign({}, prev), { images: __spreadArrays(prev.images, newUrls_1) })); });
                     _a.label = 8;
                 case 8: return [2 /*return*/];
             }
         });
     }); }, []);
-    // 이미지 업로드 부분 여기까지---------------------------------------------------------------
     var navigate = react_router_dom_1.useNavigate();
     react_1.useEffect(function () {
         fetchChannels();
@@ -214,6 +212,7 @@ var NotionAdd = function () {
                     if (!response.ok) {
                         throw new Error("HTTP error : " + response.status);
                     }
+                    navigate("/");
                     return [4 /*yield*/, response.json()];
                 case 3:
                     data = _b.sent();

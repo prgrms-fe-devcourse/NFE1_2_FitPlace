@@ -5,6 +5,7 @@ import NotionCategory from "../components/NotionCategory";
 import KakaoMap from "./KakaoMap";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 interface FormData {
   title: string;
@@ -54,6 +55,40 @@ const NotionFix: React.FC = () => {
   } | null>(null);
 
   const [channels, setChannels] = useState<Channel[]>([]);
+
+  const [original_data, setOriginal_data] = useState();
+
+  const Get_post_info = async () => {
+    try {
+      const response = await axios.get(
+        `https://kdt.frontend.5th.programmers.co.kr:5009/posts/${id}`
+      );
+      setOriginal_data(JSON.parse(response.data.title));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    Get_post_info();
+  }, []);
+
+  useEffect(() => {
+    console.log(original_data);
+  }, [original_data]);
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      title: original_data?.title, // 기존 제목을 기본 값으로 설정
+      channel: original_data?.channel,
+      currentMember: original_data?.currentMember,
+      meetingCapacity: original_data?.meetingCapacity,
+      meetingTime: original_data?.meetingTime,
+      meetingSpot: original_data?.meetingSpot,
+      meetingInfo: original_data?.meetingInfo,
+    }));
+  }, [original_data]);
 
   //이미지 업로드 부분(충돌 방지 주석)---------------------------------------------------------------
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);

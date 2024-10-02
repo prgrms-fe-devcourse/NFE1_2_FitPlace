@@ -38,7 +38,7 @@ const NotionPage = () => {
   const { id } = useParams();
 
   const [postData, setPostData] = useState<ParsedPost | null>(null);
-  const [PrevData, setPrevData] = useState({}); 
+  const [PrevData, setPrevData] = useState({});
 
   const parsePostData = (post: any): ParsedPost => {
     try {
@@ -50,8 +50,7 @@ const NotionPage = () => {
         currentMember: parseInt(parsedTitle.currentMember, 10),
         channel: parsedTitle.channel,
         meetingDate: parsedTitle.meetingDate,
-        meetingStartTime: parsedTitle.meetingStartTime,
-        meetingEndTime: parsedTitle.meetingEndTime,
+        meetingTime: parsedTitle.meetingTime,
         isTimeFlexible: parsedTitle.isTimeFlexible,
         meetingInfo: parsedTitle.meetingInfo,
         meetingSpot: parsedTitle.meetingSpot,
@@ -59,7 +58,7 @@ const NotionPage = () => {
       };
     } catch (error) {
       console.error("Error parsing post title:", error);
-      return post; 
+      return post;
     }
   };
 
@@ -181,7 +180,7 @@ const NotionPage = () => {
               <div className="flex gap-5">
                 <p className="text-lg font-bold">일시</p>
                 <p className="text-sm text-[#7e7e7e]">
-                  {postData.meetingDate || "시간 무관"}
+                  {postData.meetingTime || "시간 무관"}
                 </p>
               </div>
             </div>
