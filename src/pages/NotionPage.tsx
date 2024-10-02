@@ -8,7 +8,7 @@ import Button from "../components/Button";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { PostType } from "../types/models";
+import { Channel, PostType } from "../types/models";
 import { useSelector } from "react-redux";
 
 interface ParsedPost {
@@ -50,7 +50,7 @@ const NotionPage = () => {
                 ...post,
                 actualTitle: parsedTitle.title,
                 meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10),
-                currentMember: currentMember,
+                currentMember: parsedTitle.currentMember,
                 channel: parsedTitle.channel,
                 meetingDate: parsedTitle.meetingDate,
                 meetingStartTime: parsedTitle.meetingStartTime,
@@ -78,68 +78,80 @@ const NotionPage = () => {
 
                 const data = await response.json();
                 setPrevData(data);
-                // const parsedData = parsePostData(data);
-                setPostData(JSON.parse(data.title));
+
+                const parsedData = parsePostData(data);
+                setPostData(parsedData);
             } catch (error) {
                 console.error("Error fetching post data:", error);
             }
         };
 
         fetchPostData();
-    }, []);
+    }, [currentMember]);
 
+    useEffect(() => {}, [currentMember]);
     if (!postData) {
         return <div>Loading...</div>; // 데이터 로딩 중 표시
     }
 
-    // 참가신청 클릭 시 실행함수
+    // 참가신청 클릭 시-----------------------------------------------------------
+
+    const channelId = PrevData?.channel._id;
+
     const handleJoin = () => {
-        const userName = "현재 로그인한 사용자 이름"; // 실제 로그인 시스템에서 가져와야 함
+        const userName = "현재사용자"; // 실제 로그인 시스템에서 가져와야 함
         if (!currentMember.includes(userName)) {
-            setCurrentMember([...currentMember, userName]);
             // 여기에 서버로 업데이트된 정보를 보내는 API 호출 추가
+            setCurrentMember([...currentMember, userName]);
+            handleCurrentMember();
         } else {
             alert("이미 참가 신청하셨습니다.");
         }
     };
 
-    useEffect(() => {
-        if (currentMember !== postData.currentMember) {
-        }
-    }, [currentMember]);
-
-    const updatePostData = async (postData, image, token) => {
-        const channelId =
-            channels.find((ch) => ch.name === postData.channel)?._id || "";
-
-        const requestBody = {
-            postId: postId,
-            title: JSON.stringify(parsePostData),
-            currentMember: currentMember,
-            image: null,
-            channelId: channelId,
-        };
-
+    const updatePostData = async (updatedTitleString: string) => {
         try {
+            const reqBody = {
+                postId: postId,
+                title: updatedTitleString,
+                channelId: channelId,
+                image: null,
+                imageToDeletePublicId: null,
+            };
+
             const response = await fetch(`${API_URL}/posts/update`, {
                 method: "PUT",
                 headers: {
-                    Authorization: `bearer ${token}`,
+                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs`,
                 },
-                body: requestBody,
+                body: JSON.stringify(reqBody),
             });
 
             if (!response.ok) {
                 throw new Error("서버 업데이트 실패");
             }
-
-            const updatedPost = await response.json();
-            return updatedPost;
+            console.log("서버 업데이트");
         } catch (error) {
             console.error("서버 업데이트 중 오류 발생:", error);
             throw error;
         }
     };
+
+    const handleCurrentMember = async () => {
+        try {
+            postData.currentMember = currentMember;
+            const updatedTitleString = JSON.stringify(postData);
+
+            const updatedPost = await updatePostData(updatedTitleString);
+
+            console.log("업데이트된 게시물:", updatedPost);
+            // 성공 처리
+        } catch (error) {
+            console.error("게시물 업데이트 실패:", error);
+            // 오류 처리
+        }
+    };
+
     return (
         <>
             <Header />
@@ -268,12 +280,6 @@ const NotionPage = () => {
                         </div>
                         <div>{/* 지도 자리 */}</div>
                     </section>
-
-                    <p>
-                        멤버 {currentMember.length} / {postData.meetingCapacity}
-                        명
-                    </p>
-                    <p>참가자: {currentMember.join(", ")}</p>
                     <div className="mt-5 flex justify-between">
                         <div className="w-10/12">
                             <Button
