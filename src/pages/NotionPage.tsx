@@ -160,9 +160,14 @@ const NotionPage = () => {
             <div>
               <NotionItem content={postData.meetingInfo} />
             </div>
-            {PrevData.image ? (
-              <div className="flex w-[160px] h-[150px] border-2 border-solid rounded-xl">
-                <img src={PrevData.image} alt="게시글사진" id="notionImg" />
+            {postData.image ? (
+              <div className="flex justify-center">
+                <img
+                  className="w-96 h-96"
+                  src={postData.image}
+                  alt="게시글사진"
+                  id="notionImg"
+                />
               </div>
             ) : (
               <p className="my-10">사진이 없습니다.</p>
