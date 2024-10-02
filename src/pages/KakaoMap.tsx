@@ -8,9 +8,9 @@ declare global {
 
 interface KakaoMapProps {
   isMarkerFixed: boolean;
-  location: { lat: number; lng: number }; 
-  onCenterChange?: (lat: number, lng: number) => void; 
-  style?: CSSProperties; 
+  location: { lat: number; lng: number };
+  onCenterChange?: (lat: number, lng: number) => void;
+  style?: CSSProperties;
 }
 
 const KakaoMap: React.FC<KakaoMapProps> = ({ isMarkerFixed, location, onCenterChange, style }) => {
