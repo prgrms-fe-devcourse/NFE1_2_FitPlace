@@ -9,6 +9,7 @@ import Header from "../components/Header";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { PostType } from "../types/models";
+import { useSelector } from "react-redux";
 
 interface ParsedPost {
     _id: string;
@@ -16,10 +17,8 @@ interface ParsedPost {
     meetingCapacity: number;
     currentMember: string[];
     channel: string;
-    meetingDate: string;
+    meetingTime: string;
     meetingInfo: string;
-    meetingStartTime: string;
-    meetingEndTime: string;
     isTimeFlexible: boolean;
     meetingSpot: string;
     image: string | null;
@@ -31,13 +30,18 @@ interface ParsedPost {
 }
 
 const NotionPage = () => {
+    const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
+
     const { id } = useParams();
+    const postId = id;
     const modalBackground = useRef();
 
     const [deleteModal, setDeleteModal] = useState(false);
     const [PrevData, setPrevData] = useState<PostType | null>(null); //파싱하기 전의 데이터
+
     const [postData, setPostData] = useState<ParsedPost | null>(null);
     const [currentMember, setCurrentMember] = useState<string[]>([]);
+    const [channels, setChannels] = useState<Channel[]>([]);
 
     const parsePostData = (post: any): ParsedPost => {
         try {
@@ -46,7 +50,7 @@ const NotionPage = () => {
                 ...post,
                 actualTitle: parsedTitle.title,
                 meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10),
-                currentMember: parsedTitle.currentMember,
+                currentMember: currentMember,
                 channel: parsedTitle.channel,
                 meetingDate: parsedTitle.meetingDate,
                 meetingStartTime: parsedTitle.meetingStartTime,
@@ -64,9 +68,6 @@ const NotionPage = () => {
     useEffect(() => {
         const fetchPostData = async () => {
             try {
-                const API_URL =
-                    "https://kdt.frontend.5th.programmers.co.kr:5009";
-                const postId = id;
                 const response = await fetch(`${API_URL}/posts/${postId}`, {
                     headers: {},
                 });
@@ -77,8 +78,8 @@ const NotionPage = () => {
 
                 const data = await response.json();
                 setPrevData(data);
-                const parsedData = parsePostData(data);
-                setPostData(parsedData);
+                // const parsedData = parsePostData(data);
+                setPostData(JSON.parse(data.title));
             } catch (error) {
                 console.error("Error fetching post data:", error);
             }
@@ -91,7 +92,7 @@ const NotionPage = () => {
         return <div>Loading...</div>; // 데이터 로딩 중 표시
     }
 
-    // 참가신청 버튼
+    // 참가신청 클릭 시 실행함수
     const handleJoin = () => {
         const userName = "현재 로그인한 사용자 이름"; // 실제 로그인 시스템에서 가져와야 함
         if (!currentMember.includes(userName)) {
@@ -99,6 +100,44 @@ const NotionPage = () => {
             // 여기에 서버로 업데이트된 정보를 보내는 API 호출 추가
         } else {
             alert("이미 참가 신청하셨습니다.");
+        }
+    };
+
+    useEffect(() => {
+        if (currentMember !== postData.currentMember) {
+        }
+    }, [currentMember]);
+
+    const updatePostData = async (postData, image, token) => {
+        const channelId =
+            channels.find((ch) => ch.name === postData.channel)?._id || "";
+
+        const requestBody = {
+            postId: postId,
+            title: JSON.stringify(parsePostData),
+            currentMember: currentMember,
+            image: null,
+            channelId: channelId,
+        };
+
+        try {
+            const response = await fetch(`${API_URL}/posts/update`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `bearer ${token}`,
+                },
+                body: requestBody,
+            });
+
+            if (!response.ok) {
+                throw new Error("서버 업데이트 실패");
+            }
+
+            const updatedPost = await response.json();
+            return updatedPost;
+        } catch (error) {
+            console.error("서버 업데이트 중 오류 발생:", error);
+            throw error;
         }
     };
     return (
@@ -178,7 +217,7 @@ const NotionPage = () => {
                             <div className="flex gap-5">
                                 <p className="text-lg font-bold">일시</p>
                                 <p className="text-sm text-[#7e7e7e]">
-                                    {postData.meetingDate || "시간 무관"}
+                                    {postData.meetingTime || ""}
                                 </p>
                             </div>
                         </div>

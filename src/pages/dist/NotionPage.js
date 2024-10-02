@@ -64,16 +64,19 @@ var Header_1 = require("../components/Header");
 var react_router_dom_1 = require("react-router-dom");
 var react_router_dom_2 = require("react-router-dom");
 var NotionPage = function () {
+    var API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
     var id = react_router_dom_2.useParams().id;
+    var postId = id;
     var modalBackground = react_1.useRef();
     var _a = react_1.useState(false), deleteModal = _a[0], setDeleteModal = _a[1];
     var _b = react_1.useState(null), PrevData = _b[0], setPrevData = _b[1]; //파싱하기 전의 데이터
     var _c = react_1.useState(null), postData = _c[0], setPostData = _c[1];
     var _d = react_1.useState([]), currentMember = _d[0], setCurrentMember = _d[1];
+    var _e = react_1.useState([]), channels = _e[0], setChannels = _e[1];
     var parsePostData = function (post) {
         try {
             var parsedTitle = JSON.parse(post.title);
-            return __assign(__assign({}, post), { actualTitle: parsedTitle.title, meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10), currentMember: parsedTitle.currentMember, channel: parsedTitle.channel, meetingDate: parsedTitle.meetingDate, meetingStartTime: parsedTitle.meetingStartTime, meetingEndTime: parsedTitle.meetingEndTime, isTimeFlexible: parsedTitle.isTimeFlexible, meetingSpot: parsedTitle.meetingSpot, image: parsedTitle.image });
+            return __assign(__assign({}, post), { actualTitle: parsedTitle.title, meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10), currentMember: currentMember, channel: parsedTitle.channel, meetingDate: parsedTitle.meetingDate, meetingStartTime: parsedTitle.meetingStartTime, meetingEndTime: parsedTitle.meetingEndTime, isTimeFlexible: parsedTitle.isTimeFlexible, meetingSpot: parsedTitle.meetingSpot, image: parsedTitle.image });
         }
         catch (error) {
             console.error("Error parsing post title:", error);
@@ -82,13 +85,11 @@ var NotionPage = function () {
     };
     react_1.useEffect(function () {
         var fetchPostData = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var API_URL, postId, response, data, parsedData, error_1;
+            var response, data, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
-                        postId = id;
                         return [4 /*yield*/, fetch(API_URL + "/posts/" + postId, {
                                 headers: {}
                             })];
@@ -101,8 +102,8 @@ var NotionPage = function () {
                     case 2:
                         data = _a.sent();
                         setPrevData(data);
-                        parsedData = parsePostData(data);
-                        setPostData(parsedData);
+                        // const parsedData = parsePostData(data);
+                        setPostData(JSON.parse(data.title));
                         return [3 /*break*/, 4];
                     case 3:
                         error_1 = _a.sent();
@@ -117,7 +118,7 @@ var NotionPage = function () {
     if (!postData) {
         return react_1["default"].createElement("div", null, "Loading..."); // 데이터 로딩 중 표시
     }
-    // 참가신청 버튼
+    // 참가신청 클릭 시 실행함수
     var handleJoin = function () {
         var userName = "현재 로그인한 사용자 이름"; // 실제 로그인 시스템에서 가져와야 함
         if (!currentMember.includes(userName)) {
@@ -128,6 +129,51 @@ var NotionPage = function () {
             alert("이미 참가 신청하셨습니다.");
         }
     };
+    react_1.useEffect(function () {
+        if (currentMember !== postData.currentMember) {
+        }
+    }, [currentMember]);
+    var updatePostData = function (postData, image, token) { return __awaiter(void 0, void 0, void 0, function () {
+        var channelId, requestBody, response, updatedPost, error_2;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    channelId = ((_a = channels.find(function (ch) { return ch.name === postData.channel; })) === null || _a === void 0 ? void 0 : _a._id) || "";
+                    requestBody = {
+                        postId: postId,
+                        title: JSON.stringify(parsePostData),
+                        currentMember: currentMember,
+                        image: null,
+                        channelId: channelId
+                    };
+                    _b.label = 1;
+                case 1:
+                    _b.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, fetch(API_URL + "/posts/update", {
+                            method: "PUT",
+                            headers: {
+                                Authorization: "bearer " + token
+                            },
+                            body: requestBody
+                        })];
+                case 2:
+                    response = _b.sent();
+                    if (!response.ok) {
+                        throw new Error("서버 업데이트 실패");
+                    }
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    updatedPost = _b.sent();
+                    return [2 /*return*/, updatedPost];
+                case 4:
+                    error_2 = _b.sent();
+                    console.error("서버 업데이트 중 오류 발생:", error_2);
+                    throw error_2;
+                case 5: return [2 /*return*/];
+            }
+        });
+    }); };
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "bg-white w-[640px] h-full" },
@@ -163,7 +209,7 @@ var NotionPage = function () {
                             react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingSpot || "장소 없음")),
                         react_1["default"].createElement("div", { className: "flex gap-5" },
                             react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC77C\uC2DC"),
-                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingDate || "시간 무관")))),
+                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingTime || "")))),
                 react_1["default"].createElement("section", { className: "mt-7" },
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement(NotionItem_1["default"], { content: postData.meetingInfo })),
