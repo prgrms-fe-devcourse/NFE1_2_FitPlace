@@ -1,38 +1,66 @@
-import React, { useState } from "react";
-import KakaoMap from "./KakaoMap"; // KakaoMap 컴포넌트 임포트
+import React, { useEffect, useState } from "react";
+import KakaoMap from "./KakaoMap";
 import Header from "../components/Header";
+import { useNavigate } from "react-router-dom";
 
 const LocationSetting = () => {
   const [inputValue, setInputValue] = useState("");
-  const [isMarkerFixed, setIsMarkerFixed] = useState(false); 
-  const [isEditable, setIsEditable] = useState(true); 
+  const [isMarkerFixed, setIsMarkerFixed] = useState(false);
+  const [isEditable, setIsEditable] = useState(true);
+  const [currentPosition, setCurrentPosition] = useState({
+    lat: 37.556135, // 초기값: 서울역 좌표
+    lng: 126.972608,
+  });
+  const navigate = useNavigate();
 
-  // 저장 후 마커 및 입력칸 고정하기
+  useEffect(() => {
+    const savedLocation = sessionStorage.getItem("selectedLocation");
+    if (savedLocation) {
+      const locationData = JSON.parse(savedLocation);
+      setInputValue(locationData.address);
+      setCurrentPosition({
+        lat: locationData.lat,
+        lng: locationData.lng,
+      });
+      setIsMarkerFixed(true);
+      setIsEditable(false); 
+    }
+  }, []);
+
   const handleSave = () => {
     if (inputValue.trim() === "") {
-      alert("장소를 입력해주세요."); //경고 메세지
+      alert("장소를 입력해주세요.");
     } else {
-      setIsMarkerFixed(true); 
-      setIsEditable(false); 
+      setIsMarkerFixed(true);
+      setIsEditable(false);
+
+      sessionStorage.setItem("selectedLocation", JSON.stringify({
+        address: inputValue,
+        lat: currentPosition.lat,
+        lng: currentPosition.lng
+      }));
+
+      navigate("/notionAdd");
     }
   };
 
-  // 수정 후 마커 및 입력칸 수정하기
   const handleEdit = () => {
-    setIsMarkerFixed(false); 
-    setIsEditable(true); 
+    setIsMarkerFixed(false);
+    setIsEditable(true);
+  };
+
+  const handleMapCenterChange = (lat: number, lng: number) => {
+    setCurrentPosition({ lat, lng });
   };
 
   return (
     <>
       <Header />
       <div className="w-140 h-full mx-auto bg-white">
-        {/* 제목 */}
         <div className="pt-5 px-4 pb-2">
           <h2 className="text-xl font-bold">장소를 선택해주세요.</h2>
         </div>
 
-        {/* 입력칸 */}
         <div className="p-4">
           <input
             type="text"
@@ -43,12 +71,14 @@ const LocationSetting = () => {
             disabled={!isEditable} 
           />
 
-          {/* KakaoMap 지도 */}
           <div className="mb-8">
-            <KakaoMap isMarkerFixed={isMarkerFixed} />
+            <KakaoMap
+              isMarkerFixed={isMarkerFixed}
+              location={currentPosition}
+              onCenterChange={handleMapCenterChange} 
+            />
           </div>
 
-          {/* 저장 및 수정 버튼 */}
           {isEditable ? (
             <button
               className="w-full bg-[#AFE327] text-white p-4 rounded-lg"
