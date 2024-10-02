@@ -88,6 +88,7 @@ const NotionFix: React.FC = () => {
       meetingSpot: original_data?.meetingSpot,
       meetingInfo: original_data?.meetingInfo,
     }));
+    setImageUrls(original_data?.image || []); // 기존 이미지 URL로 초기화
   }, [original_data]);
 
   //이미지 업로드 부분(충돌 방지 주석)---------------------------------------------------------------

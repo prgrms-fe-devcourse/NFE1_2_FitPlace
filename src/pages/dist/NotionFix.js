@@ -111,6 +111,7 @@ var NotionFix = function () {
     }, [original_data]);
     react_1.useEffect(function () {
         setFormData(function (prev) { return (__assign(__assign({}, prev), { title: original_data === null || original_data === void 0 ? void 0 : original_data.title, channel: original_data === null || original_data === void 0 ? void 0 : original_data.channel, currentMember: original_data === null || original_data === void 0 ? void 0 : original_data.currentMember, meetingCapacity: original_data === null || original_data === void 0 ? void 0 : original_data.meetingCapacity, meetingTime: original_data === null || original_data === void 0 ? void 0 : original_data.meetingTime, meetingSpot: original_data === null || original_data === void 0 ? void 0 : original_data.meetingSpot, meetingInfo: original_data === null || original_data === void 0 ? void 0 : original_data.meetingInfo })); });
+        setImageUrls((original_data === null || original_data === void 0 ? void 0 : original_data.image) || []); // 기존 이미지 URL로 초기화
     }, [original_data]);
     //이미지 업로드 부분(충돌 방지 주석)---------------------------------------------------------------
     var _e = react_1.useState(null), previewUrl = _e[0], setPreviewUrl = _e[1];
