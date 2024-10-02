@@ -46,6 +46,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 exports.__esModule = true;
 var react_1 = require("react");
 var Button_1 = require("../components/Button");
@@ -63,14 +70,68 @@ var INITIAL_FORM_STATE = {
     meetingEndTime: "",
     isTimeFlexible: false,
     meetingSpot: "",
-    image: null,
+    images: [],
     meetingInfo: ""
 };
 var API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
+var CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+var UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 var NotionAdd = function () {
     var _a = react_1.useState(INITIAL_FORM_STATE), formData = _a[0], setFormData = _a[1];
     var _b = react_1.useState(null), selectedLocation = _b[0], setSelectedLocation = _b[1];
     var _c = react_1.useState([]), channels = _c[0], setChannels = _c[1];
+    //이미지 업로드 부분(충돌 방지 주석)---------------------------------------------------------------
+    var _d = react_1.useState(null), previewUrl = _d[0], setPreviewUrl = _d[1];
+    var _e = react_1.useState([]), imageFiles = _e[0], setImageFiles = _e[1]; // 선택된 파일들
+    var _f = react_1.useState([]), imageUrls = _f[0], setImageUrls = _f[1]; // 업로드된 이미지 URL들
+    var handleFileChange = react_1.useCallback(function (e) { return __awaiter(void 0, void 0, void 0, function () {
+        var files, newFiles_2, newUrls_1, formData_1, _i, newFiles_1, file, response, data, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    files = e.target.files;
+                    if (!files) return [3 /*break*/, 8];
+                    newFiles_2 = Array.from(files);
+                    setImageFiles(function (prev) { return __spreadArrays(prev, newFiles_2); }); // 기존 파일에 추가
+                    newUrls_1 = [];
+                    formData_1 = new FormData();
+                    _i = 0, newFiles_1 = newFiles_2;
+                    _a.label = 1;
+                case 1:
+                    if (!(_i < newFiles_1.length)) return [3 /*break*/, 7];
+                    file = newFiles_1[_i];
+                    formData_1.append("file", file);
+                    formData_1.append("upload_preset", UPLOAD_PRESET);
+                    _a.label = 2;
+                case 2:
+                    _a.trys.push([2, 5, , 6]);
+                    return [4 /*yield*/, fetch("https://api.cloudinary.com/v1_1/" + CLOUD_NAME + "/image/upload", {
+                            method: "POST",
+                            body: formData_1
+                        })];
+                case 3:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 4:
+                    data = _a.sent();
+                    newUrls_1.push(data.secure_url); // 업로드된 이미지 URL 추가
+                    return [3 /*break*/, 6];
+                case 5:
+                    error_1 = _a.sent();
+                    console.error("이미지 업로드 실패:", error_1);
+                    return [3 /*break*/, 6];
+                case 6:
+                    _i++;
+                    return [3 /*break*/, 1];
+                case 7:
+                    setImageUrls(function (prev) { return __spreadArrays(prev, newUrls_1); }); // 기존 URL에 추가
+                    setFormData(function (prev) { return (__assign(__assign({}, prev), { images: __spreadArrays(prev.images, newUrls_1) })); }); // 폼 데이터에 이미지 URL 배열 저장
+                    _a.label = 8;
+                case 8: return [2 /*return*/];
+            }
+        });
+    }); }, []);
+    // 이미지 업로드 부분 여기까지---------------------------------------------------------------
     var navigate = react_router_dom_1.useNavigate();
     react_1.useEffect(function () {
         fetchChannels();
@@ -82,7 +143,7 @@ var NotionAdd = function () {
         }
     }, []);
     var fetchChannels = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response, data, error_1;
+        var response, data, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -99,8 +160,8 @@ var NotionAdd = function () {
                     setChannels(data);
                     return [3 /*break*/, 4];
                 case 3:
-                    error_1 = _a.sent();
-                    console.error("Error fetching channels:", error_1);
+                    error_2 = _a.sent();
+                    console.error("Error fetching channels:", error_2);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
             }
@@ -117,7 +178,7 @@ var NotionAdd = function () {
         setFormData(function (prev) { return (__assign(__assign({}, prev), { channel: category })); });
     }, []);
     var handleSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var channelId, meetingTime, customJsonData, submitData, response, data, error_2;
+        var channelId, meetingTime, customJsonData, submitData, response, data, error_3;
         var _a;
         return __generator(this, function (_b) {
             switch (_b.label) {
@@ -132,7 +193,8 @@ var NotionAdd = function () {
                         meetingCapacity: formData.meetingCapacity,
                         meetingTime: meetingTime,
                         meetingSpot: formData.meetingSpot,
-                        channel: formData.channel
+                        channel: formData.channel,
+                        image: formData.images
                     };
                     submitData = new FormData();
                     submitData.append("title", JSON.stringify(customJsonData));
@@ -158,8 +220,8 @@ var NotionAdd = function () {
                     console.log("Post", data);
                     return [3 /*break*/, 5];
                 case 4:
-                    error_2 = _b.sent();
-                    console.error("Error: ", error_2 instanceof Error ? error_2.message : String(error_2));
+                    error_3 = _b.sent();
+                    console.error("Error: ", error_3 instanceof Error ? error_3.message : String(error_3));
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
             }
@@ -207,8 +269,12 @@ var NotionAdd = function () {
                     react_1["default"].createElement("input", { type: "text", id: "meetingInfo", name: "meetingInfo", value: formData.meetingInfo, onChange: handleChange, placeholder: "\uBAA8\uC784 \uC124\uBA85\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694.", className: "border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5" })),
                 react_1["default"].createElement("div", { className: "mb-6" },
                     react_1["default"].createElement("p", { className: "font-bold text-xl mt-6" }, "\uC0AC\uC9C4 \uB4F1\uB85D"),
-                    react_1["default"].createElement("label", { htmlFor: "image", className: "w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-2.5" }, "+ \uC0AC\uC9C4 \uC5C5\uB85C\uB4DC"),
-                    react_1["default"].createElement("input", { type: "file", id: "image", name: "image", className: "absolute hidden" })),
+                    react_1["default"].createElement("div", { className: "flex flex-wrap" },
+                        imageUrls.map(function (url, index) { return (react_1["default"].createElement("img", { key: index, src: url, alt: "uploaded-" + index, className: "w-[160px] h-[140px] mt-4" })); }),
+                        react_1["default"].createElement("label", { htmlFor: "image", className: "w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-4" }, "+ \uC0AC\uC9C4 \uC5C5\uB85C\uB4DC"),
+                        react_1["default"].createElement("input", { type: "file", id: "image", name: "image", accept: "image/*", onChange: handleFileChange, className: "absolute hidden" }))),
+                imageUrls && imageUrls.length > 0 && (react_1["default"].createElement("div", { className: "flex flex-col items-center" },
+                    react_1["default"].createElement("button", { className: "w-1/2 bg-gray-300 my-3 h-10 text-sm hover:bg-gray-400 hover:rounded-2xl transition-all", onClick: function () { return setImageUrls([]); } }, "\uC0AC\uC9C4 \uCD08\uAE30\uD654"))),
                 react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC784 \uB4F1\uB85D", size: "full", color: "green", onClick: handleSubmit })))));
 };
 exports["default"] = NotionAdd;

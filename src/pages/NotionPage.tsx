@@ -21,7 +21,7 @@ interface ParsedPost {
   meetingEndTime: string;
   isTimeFlexible: boolean;
   meetingSpot: string;
-  image: string | null;
+  image: [];
   author: string;
   createdAt: string;
   updatedAt: string;
@@ -160,10 +160,17 @@ const NotionPage = () => {
             <div>
               <NotionItem content={postData.meetingInfo} />
             </div>
-            {PrevData.image ? (
-              <div className="flex w-[160px] h-[150px] border-2 border-solid rounded-xl">
-                <img src={PrevData.image} alt="게시글사진" id="notionImg" />
-              </div>
+            {postData.image && postData.image.length > 0 ? (
+              postData.image.map((URL, i) => (
+                <div className="flex flex-wrap justify-center border-2 border-gray-200 my-2">
+                  <img
+                    className="w-96 h-96"
+                    src={URL}
+                    alt="게시글사진"
+                    id="notionImg"
+                  />
+                </div>
+              ))
             ) : (
               <p className="my-10">사진이 없습니다.</p>
             )}
