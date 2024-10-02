@@ -1,8 +1,9 @@
 import React, { useState, useCallback, ChangeEvent, useEffect } from "react";
-import arrowforward from "../assets/arrowforward.svg";
 import Button from "../components/Button";
 import Header from "../components/Header";
 import NotionCategory from "../components/NotionCategory";
+import KakaoMap from "./KakaoMap"; 
+import { useNavigate } from "react-router-dom";
 
 interface FormData {
     title: string;
@@ -42,11 +43,28 @@ const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
 
 const NotionAdd: React.FC = () => {
     const [formData, setFormData] = useState<FormData>(INITIAL_FORM_STATE);
+    const [selectedLocation, setSelectedLocation] = useState<{
+        address: string;
+        lat: number;
+        lng: number;
+    } | null>(null); 
 
     const [channels, setChannels] = useState<Channel[]>([]);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         fetchChannels();
+
+        const savedLocation = sessionStorage.getItem("selectedLocation");
+        if (savedLocation) {
+            const locationData = JSON.parse(savedLocation);
+            setSelectedLocation(locationData); 
+            setFormData((prev) => ({
+                ...prev,
+                meetingSpot: locationData.address,
+            }));
+        }
     }, []);
 
     const fetchChannels = async () => {
@@ -57,7 +75,6 @@ const NotionAdd: React.FC = () => {
             }
             const data = await response.json();
             setChannels(data);
-            console.log(data);
         } catch (error) {
             console.error("Error fetching channels:", error);
         }
@@ -74,41 +91,13 @@ const NotionAdd: React.FC = () => {
         []
     );
 
-    const handleFileChange = useCallback(
-        (e: ChangeEvent<HTMLInputElement>) => {},
-        []
-    );
-
     const handleCategorySelect = useCallback((category: string) => {
         setFormData((prev) => ({ ...prev, channel: category }));
     }, []);
 
-    const handleTimeFlexibleChange = useCallback(
-        (e: ChangeEvent<HTMLInputElement>) => {
-            const { checked } = e.target;
-            setFormData((prev) => ({
-                ...prev,
-                isTimeFlexible: checked,
-                meetingStartTime: checked ? "" : prev.meetingStartTime,
-                meetingEndTime: checked ? "" : prev.meetingEndTime,
-            }));
-        },
-        []
-    );
-
-    const getChannelId = (selectedChannel: string): string => {
-        const channel = channels.find((ch) => ch.name === selectedChannel);
-        if (channel) {
-            return channel._id;
-        }
-        const otherChannel = channels.find((ch) => ch.name === "기타");
-        return otherChannel ? otherChannel._id : "";
-    };
-
     const handleSubmit = async () => {
-        const channelId = getChannelId(formData.channel);
+        const channelId = channels.find((ch) => ch.name === formData.channel)?._id || "";
 
-        // meetingTime 문자열 생성
         const meetingTime = formData.isTimeFlexible
             ? `${formData.meetingDate}, 시간 무관`
             : `${formData.meetingDate} ${formData.meetingStartTime} - ${formData.meetingEndTime}`;
@@ -117,21 +106,20 @@ const NotionAdd: React.FC = () => {
             title: formData.title,
             currentMember: formData.currentMember,
             meetingCapacity: formData.meetingCapacity,
-            meetingTime: meetingTime, // 하나의 속성으로 합침
+            meetingTime: meetingTime,
             meetingSpot: formData.meetingSpot,
             channel: formData.channel,
         };
 
         const submitData = new FormData();
         submitData.append("title", JSON.stringify(customJsonData));
-
         submitData.append("channelId", channelId);
 
         try {
             const response = await fetch(`${API_URL}/posts/create`, {
                 method: "POST",
                 headers: {
-                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs`,
+                    Authorization: `bearer YOUR_TOKEN`,
                 },
                 body: submitData,
             });
@@ -150,11 +138,16 @@ const NotionAdd: React.FC = () => {
         }
     };
 
+    const handleLocationClick = () => {
+        navigate("/map");
+    };
+
     return (
         <>
             <Header />
             <div className="bg-white w-[640px] h-full">
                 <form className="m-5">
+                    {/* 모임 이름 */}
                     <div>
                         <label
                             htmlFor="title"
@@ -173,6 +166,7 @@ const NotionAdd: React.FC = () => {
                         />
                     </div>
 
+                    {/* 모임 인원 */}
                     <div>
                         <label
                             htmlFor="meetingCapacity"
@@ -191,6 +185,7 @@ const NotionAdd: React.FC = () => {
                         />
                     </div>
 
+                    {/* 운동 종목 */}
                     <div>
                         <h3 className="font-bold text-xl mt-6">운동 종목</h3>
                         <div className="mt-2.5">
@@ -198,6 +193,7 @@ const NotionAdd: React.FC = () => {
                         </div>
                     </div>
 
+                    {/* 모임 날짜 */}
                     <div>
                         <label
                             htmlFor="meetingDate"
@@ -215,6 +211,7 @@ const NotionAdd: React.FC = () => {
                         />
                     </div>
 
+                    {/* 시간 무관 여부 */}
                     <div>
                         <label
                             htmlFor="isTimeFlexible"
@@ -225,7 +222,7 @@ const NotionAdd: React.FC = () => {
                                 id="isTimeFlexible"
                                 name="isTimeFlexible"
                                 checked={formData.isTimeFlexible}
-                                onChange={handleTimeFlexibleChange}
+                                onChange={handleChange}
                                 className="mr-2"
                             />
                             시간 무관
@@ -270,6 +267,7 @@ const NotionAdd: React.FC = () => {
                         </>
                     )}
 
+                    {/* 모임 장소 */}
                     <div>
                         <label
                             htmlFor="meetingSpot"
@@ -277,19 +275,30 @@ const NotionAdd: React.FC = () => {
                         >
                             모임 장소
                         </label>
-                        <input
-                            type="text"
-                            id="meetingSpot"
-                            name="meetingSpot"
-                            value={formData.meetingSpot}
-                            onChange={handleChange}
-                            placeholder="모임 장소를 입력해주세요."
-                            className="border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5"
-                        />
+                        <div
+                            className="cursor-pointer relative mt-2.5 border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] flex items-center px-3"
+                            onClick={handleLocationClick}
+                        >
+                            <span>{selectedLocation?.address || "모임 장소를 입력해주세요."}</span>
+                        </div>
                     </div>
+
+                    {/* 지도 표시 */}
+                    {selectedLocation && (
+                        <div className="mt-4">
+                            <KakaoMap
+                                isMarkerFixed={true}
+                                location={selectedLocation}
+                                style={{ height: "300px" }} // 높이를 300px로 설정
+                            />
+                        </div>
+                    )}
+
+
+                    {/* 모임 설명 */}
                     <div>
                         <label
-                            htmlFor="meetingSpot"
+                            htmlFor="meetingInfo"
                             className="flex font-bold text-xl mt-6"
                         >
                             모임 설명
@@ -304,6 +313,8 @@ const NotionAdd: React.FC = () => {
                             className="border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5"
                         />
                     </div>
+
+                    {/* 사진 등록 */}
                     <div className="mb-6">
                         <p className="font-bold text-xl mt-6">사진 등록</p>
                         <label
@@ -320,6 +331,7 @@ const NotionAdd: React.FC = () => {
                         />
                     </div>
 
+                    {/* 모임 등록 버튼 */}
                     <Button
                         label="모임 등록"
                         size="full"
