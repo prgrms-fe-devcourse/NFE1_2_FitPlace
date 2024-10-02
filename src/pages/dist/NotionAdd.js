@@ -270,8 +270,7 @@ var NotionAdd = function () {
                 react_1["default"].createElement("div", { className: "mb-6" },
                     react_1["default"].createElement("p", { className: "font-bold text-xl mt-6" }, "\uC0AC\uC9C4 \uB4F1\uB85D"),
                     react_1["default"].createElement("div", { className: "flex flex-wrap" },
-                        previewUrl && (react_1["default"].createElement("div", { className: "mt-4 mx-4" },
-                            react_1["default"].createElement("img", { src: previewUrl, alt: "\uBBF8\uB9AC\uBCF4\uAE30", className: "w-[160px] h-[140px]" }))),
+                        imageUrls.map(function (url, index) { return (react_1["default"].createElement("img", { key: index, src: url, alt: "uploaded-" + index, className: "w-[160px] h-[140px] mt-4" })); }),
                         react_1["default"].createElement("label", { htmlFor: "image", className: "w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-4" }, "+ \uC0AC\uC9C4 \uC5C5\uB85C\uB4DC"),
                         react_1["default"].createElement("input", { type: "file", id: "image", name: "image", accept: "image/*", onChange: handleFileChange, className: "absolute hidden" }))),
                 react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC784 \uB4F1\uB85D", size: "full", color: "green", onClick: handleSubmit })))));

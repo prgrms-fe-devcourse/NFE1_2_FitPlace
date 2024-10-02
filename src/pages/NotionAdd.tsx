@@ -365,15 +365,15 @@ const NotionAdd: React.FC = () => {
           <div className="mb-6">
             <p className="font-bold text-xl mt-6">사진 등록</p>
             <div className="flex flex-wrap">
-              {previewUrl && (
-                <div className="mt-4 mx-4">
-                  <img
-                    src={previewUrl}
-                    alt="미리보기"
-                    className="w-[160px] h-[140px]"
-                  />
-                </div>
-              )}
+              {imageUrls.map((url, index) => (
+                <img
+                  key={index}
+                  src={url}
+                  alt={`uploaded-${index}`}
+                  className="w-[160px] h-[140px] mt-4"
+                />
+              ))}
+
               <label
                 htmlFor="image"
                 className="w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-4"
