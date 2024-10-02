@@ -2,13 +2,13 @@ import React, { useState, useCallback, ChangeEvent, useEffect } from "react";
 import Button from "../components/Button";
 import Header from "../components/Header";
 import NotionCategory from "../components/NotionCategory";
-import KakaoMap from "./KakaoMap"; 
+import KakaoMap from "./KakaoMap";
 import { useNavigate } from "react-router-dom";
 
 interface FormData {
     title: string;
     channel: string;
-    currentMember: number;
+    currentMember: string[];
     meetingCapacity: number;
     meetingDate: string;
     meetingStartTime: string;
@@ -28,7 +28,7 @@ interface Channel {
 const INITIAL_FORM_STATE: FormData = {
     title: "",
     channel: "",
-    currentMember: 0,
+    currentMember: [],
     meetingCapacity: 0,
     meetingDate: "",
     meetingStartTime: "",
@@ -47,7 +47,7 @@ const NotionAdd: React.FC = () => {
         address: string;
         lat: number;
         lng: number;
-    } | null>(null); 
+    } | null>(null);
 
     const [channels, setChannels] = useState<Channel[]>([]);
 
@@ -59,7 +59,7 @@ const NotionAdd: React.FC = () => {
         const savedLocation = sessionStorage.getItem("selectedLocation");
         if (savedLocation) {
             const locationData = JSON.parse(savedLocation);
-            setSelectedLocation(locationData); 
+            setSelectedLocation(locationData);
             setFormData((prev) => ({
                 ...prev,
                 meetingSpot: locationData.address,
@@ -96,7 +96,8 @@ const NotionAdd: React.FC = () => {
     }, []);
 
     const handleSubmit = async () => {
-        const channelId = channels.find((ch) => ch.name === formData.channel)?._id || "";
+        const channelId =
+            channels.find((ch) => ch.name === formData.channel)?._id || "";
 
         const meetingTime = formData.isTimeFlexible
             ? `${formData.meetingDate}, 시간 무관`
@@ -279,7 +280,10 @@ const NotionAdd: React.FC = () => {
                             className="cursor-pointer relative mt-2.5 border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] flex items-center px-3"
                             onClick={handleLocationClick}
                         >
-                            <span>{selectedLocation?.address || "모임 장소를 입력해주세요."}</span>
+                            <span>
+                                {selectedLocation?.address ||
+                                    "모임 장소를 입력해주세요."}
+                            </span>
                         </div>
                     </div>
 
@@ -293,7 +297,6 @@ const NotionAdd: React.FC = () => {
                             />
                         </div>
                     )}
-
 
                     {/* 모임 설명 */}
                     <div>

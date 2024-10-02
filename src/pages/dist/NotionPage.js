@@ -81,9 +81,7 @@ var NotionPage = function () {
                         API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
                         postId = id;
                         return [4 /*yield*/, fetch(API_URL + "/posts/" + postId, {
-                                headers: {
-                                    Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDE0ODU5fQ.Al40jxy-6yrAoANrY3fQA1joeNw08-fjByus_ZfxXSk"
-                                }
+                                headers: {}
                             })];
                     case 1:
                         response = _a.sent();
@@ -123,7 +121,9 @@ var NotionPage = function () {
                             react_1["default"].createElement("p", null, "\uAC8C\uC2DC\uAE00\uC744 \uC0AD\uC81C\uD560\uAE4C\uC694?"),
                             react_1["default"].createElement("div", { className: "flex gap-5 mt-2" },
                                 react_1["default"].createElement(Button_1["default"], { label: "\uC0AD\uC81C", size: "mid", color: "green" }),
-                                react_1["default"].createElement(Button_1["default"], { label: "\uCDE8\uC18C", size: "mid", color: "green", onClick: function () { return setDeleteModal(false); } })))))),
+                                react_1["default"].createElement(Button_1["default"], { label: "\uCDE8\uC18C", size: "mid", color: "green", onClick: function () {
+                                        return setDeleteModal(false);
+                                    } })))))),
                 react_1["default"].createElement("h1", null, postData.actualTitle),
                 react_1["default"].createElement("p", null, postData.channel),
                 react_1["default"].createElement("p", null,
@@ -139,10 +139,11 @@ var NotionPage = function () {
                 react_1["default"].createElement("p", null,
                     "\uBA64\uBC84 ",
                     postData.currentMember,
-                    "\uBA85 / ",
+                    "\uBA85 /",
+                    " ",
                     postData.meetingCapacity,
                     "\uBA85"),
-                postData.image && react_1["default"].createElement("img", { src: postData.image, alt: "\uBAA8\uC784 \uC774\uBBF8\uC9C0" }),
+                postData.image && (react_1["default"].createElement("img", { src: postData.image, alt: "\uBAA8\uC784 \uC774\uBBF8\uC9C0" })),
                 react_1["default"].createElement("section", null,
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement("div", { className: "flex justify-between" },
