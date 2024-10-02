@@ -16,6 +16,7 @@ interface ParsedPost {
   currentMember: number;
   channel: string;
   meetingDate: string;
+  meetingInfo: string;
   meetingStartTime: string;
   meetingEndTime: string;
   isTimeFlexible: boolean;
@@ -49,6 +50,7 @@ const NotionPage = () => {
         meetingStartTime: parsedTitle.meetingStartTime,
         meetingEndTime: parsedTitle.meetingEndTime,
         isTimeFlexible: parsedTitle.isTimeFlexible,
+        meetingInfo: parsedTitle.meetingInfo,
         meetingSpot: parsedTitle.meetingSpot,
         image: parsedTitle.image,
       };
@@ -119,25 +121,15 @@ const NotionPage = () => {
               </div>
             </div>
           )}
-
-          {/* data 출력테스트
-          <h1>{postData.actualTitle}</h1>
-          <p>{postData.channel}</p>
-          <p>장소: {postData.meetingSpot}</p>
-          <p>
-            일시: {postData.meetingDate}{" "}
-            {postData.isTimeFlexible
-              ? "시간 무관"
-              : `${postData.meetingStartTime} - ${postData.meetingEndTime}`}
-          </p>
-          <p>
-            멤버 {postData.currentMember}명 / {postData.meetingCapacity}명
-          </p>
-          {postData.image && <img src={postData.image} alt="모임 이미지" />} */}
           <section>
             <div>
               <div className="flex justify-between">
-                <p className="text-sm text-[#AFE327]">모집중!</p>
+                {postData.currentMember === postData.meetingCapacity ? (
+                  <p className="text-sm text-rose-600 font-bold">모집 마감</p>
+                ) : (
+                  <p className="text-sm text-[#AFE327] font-bold">모집 중</p>
+                )}
+
                 <div className="text-xs text-[#898989] flex gap-2">
                   <button>수정</button>|
                   <button onClick={() => setDeleteModal(true)}>삭제</button>
@@ -168,9 +160,13 @@ const NotionPage = () => {
             <div>
               <NotionItem content={postData.meetingInfo} />
             </div>
-            <div className="flex w-[160px] h-[150px] border-2 border-solid rounded-xl">
-              <img src={PrevData.image} alt="게시글사진" id="notionImg" />
-            </div>
+            {PrevData.image ? (
+              <div className="flex w-[160px] h-[150px] border-2 border-solid rounded-xl">
+                <img src={PrevData.image} alt="게시글사진" id="notionImg" />
+              </div>
+            ) : (
+              <p className="my-10">사진이 없습니다.</p>
+            )}
           </section>
           <section className="mt-11 flex flex-col gap-5">
             <div>
@@ -193,7 +189,9 @@ const NotionPage = () => {
           <section className="mt-14">
             <div className="flex flex-col gap-4">
               <p className="text-lg font-bold">운동장소</p>
-              <p className="text-sm text-[#7e7e7e]">영훈국제중학교</p>
+              <p className="text-sm text-[#7e7e7e]">
+                {postData.meetingSpot || "장소 없음"}
+              </p>
             </div>
             <div>{/* 지도 자리 */}</div>
           </section>

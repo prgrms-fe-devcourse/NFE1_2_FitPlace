@@ -65,7 +65,7 @@ var NotionPage = function () {
     var parsePostData = function (post) {
         try {
             var parsedTitle = JSON.parse(post.title);
-            return __assign(__assign({}, post), { actualTitle: parsedTitle.title, meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10), currentMember: parseInt(parsedTitle.currentMember, 10), channel: parsedTitle.channel, meetingDate: parsedTitle.meetingDate, meetingStartTime: parsedTitle.meetingStartTime, meetingEndTime: parsedTitle.meetingEndTime, isTimeFlexible: parsedTitle.isTimeFlexible, meetingSpot: parsedTitle.meetingSpot, image: parsedTitle.image });
+            return __assign(__assign({}, post), { actualTitle: parsedTitle.title, meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10), currentMember: parseInt(parsedTitle.currentMember, 10), channel: parsedTitle.channel, meetingDate: parsedTitle.meetingDate, meetingStartTime: parsedTitle.meetingStartTime, meetingEndTime: parsedTitle.meetingEndTime, isTimeFlexible: parsedTitle.isTimeFlexible, meetingInfo: parsedTitle.meetingInfo, meetingSpot: parsedTitle.meetingSpot, image: parsedTitle.image });
         }
         catch (error) {
             console.error("Error parsing post title:", error);
@@ -129,7 +129,7 @@ var NotionPage = function () {
                 react_1["default"].createElement("section", null,
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement("div", { className: "flex justify-between" },
-                            react_1["default"].createElement("p", { className: "text-sm text-[#AFE327]" }, "\uBAA8\uC9D1\uC911!"),
+                            postData.currentMember === postData.meetingCapacity ? (react_1["default"].createElement("p", { className: "text-sm text-rose-600 font-bold" }, "\uBAA8\uC9D1 \uB9C8\uAC10")) : (react_1["default"].createElement("p", { className: "text-sm text-[#AFE327] font-bold" }, "\uBAA8\uC9D1 \uC911")),
                             react_1["default"].createElement("div", { className: "text-xs text-[#898989] flex gap-2" },
                                 react_1["default"].createElement("button", null, "\uC218\uC815"),
                                 "|",
@@ -147,8 +147,8 @@ var NotionPage = function () {
                 react_1["default"].createElement("section", { className: "mt-7" },
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement(NotionItem_1["default"], { content: postData.meetingInfo })),
-                    react_1["default"].createElement("div", { className: "flex w-[160px] h-[150px] border-2 border-solid rounded-xl" },
-                        react_1["default"].createElement("img", { src: PrevData.image, alt: "\uAC8C\uC2DC\uAE00\uC0AC\uC9C4", id: "notionImg" }))),
+                    PrevData.image ? (react_1["default"].createElement("div", { className: "flex w-[160px] h-[150px] border-2 border-solid rounded-xl" },
+                        react_1["default"].createElement("img", { src: PrevData.image, alt: "\uAC8C\uC2DC\uAE00\uC0AC\uC9C4", id: "notionImg" }))) : (react_1["default"].createElement("p", { className: "my-10" }, "\uC0AC\uC9C4\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."))),
                 react_1["default"].createElement("section", { className: "mt-11 flex flex-col gap-5" },
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement("p", { className: "text-lg font-bold" },
@@ -168,7 +168,7 @@ var NotionPage = function () {
                 react_1["default"].createElement("section", { className: "mt-14" },
                     react_1["default"].createElement("div", { className: "flex flex-col gap-4" },
                         react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC6B4\uB3D9\uC7A5\uC18C"),
-                        react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, "\uC601\uD6C8\uAD6D\uC81C\uC911\uD559\uAD50")),
+                        react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingSpot || "장소 없음")),
                     react_1["default"].createElement("div", null)),
                 react_1["default"].createElement("div", { className: "mt-5 flex justify-between" },
                     react_1["default"].createElement("div", { className: "w-10/12" },
