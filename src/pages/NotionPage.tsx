@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 
 interface ParsedPost {
     _id: string;
-    actualTitle: string;
+    title: string;
     meetingCapacity: number;
     currentMember: string[]; // 모집인원 참가신청
     channel: string;
@@ -41,14 +41,13 @@ const NotionPage = () => {
 
     const [postData, setPostData] = useState<ParsedPost | null>(null);
     const [currentMember, setCurrentMember] = useState<string[]>([]);
-    const [channels, setChannels] = useState<Channel[]>([]);
 
     const parsePostData = (post: any): ParsedPost => {
         try {
             const parsedTitle = JSON.parse(post.title);
             return {
                 ...post,
-                actualTitle: parsedTitle.title,
+                title: parsedTitle.title,
                 meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10),
                 currentMember: parsedTitle.currentMember,
                 channel: parsedTitle.channel,
@@ -103,7 +102,9 @@ const NotionPage = () => {
         if (!currentMember.includes(userName)) {
             // 여기에 서버로 업데이트된 정보를 보내는 API 호출 추가
             setCurrentMember([...currentMember, userName]);
-            handleCurrentMember();
+            console.log(userName);
+            handleCurrentMember([...currentMember, userName]);
+            console.log([...currentMember, userName]);
         } else {
             alert("이미 참가 신청하셨습니다.");
         }
@@ -122,7 +123,7 @@ const NotionPage = () => {
             const response = await fetch(`${API_URL}/posts/update`, {
                 method: "PUT",
                 headers: {
-                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs`,
+                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3ODc2Njg2fQ.O3_t47pHP0SeUQt3jUNTezVVLTHQhqCzOnHf4iqrtZ8`,
                 },
                 body: JSON.stringify(reqBody),
             });
@@ -131,20 +132,34 @@ const NotionPage = () => {
                 throw new Error("서버 업데이트 실패");
             }
             console.log("서버 업데이트");
+            return response;
         } catch (error) {
             console.error("서버 업데이트 중 오류 발생:", error);
             throw error;
         }
     };
 
-    const handleCurrentMember = async () => {
+    const handleCurrentMember = async (members: string[]) => {
         try {
-            postData.currentMember = currentMember;
-            const updatedTitleString = JSON.stringify(postData);
+            postData.currentMember = members;
+
+            const updatedData = {
+                title: postData.title,
+                meetingCapacity: postData.meetingCapacity,
+                currentMember: postData.currentMember,
+                channel: postData.channel,
+                meetingTime: postData.meetingTime,
+                isTimeFlexible: postData.isTimeFlexible,
+                meetingSpot: postData.meetingSpot,
+                image: postData.image,
+            };
+
+            const updatedTitleString = JSON.stringify(updatedData);
+            console.log("업데이트한 타이틀스트링", updatedTitleString);
 
             const updatedPost = await updatePostData(updatedTitleString);
 
-            console.log("업데이트된 게시물:", updatedPost);
+            if (updatedPost) console.log("업데이트된 게시물", updatedPost);
             // 성공 처리
         } catch (error) {
             console.error("게시물 업데이트 실패:", error);
@@ -213,7 +228,7 @@ const NotionPage = () => {
                             </div>
 
                             <h3 className="text-2xl font-bold">
-                                {postData.actualTitle}
+                                {postData.title}
                             </h3>
                             <p className="text-lg text-[#666666] pt-2.5"></p>
                         </div>

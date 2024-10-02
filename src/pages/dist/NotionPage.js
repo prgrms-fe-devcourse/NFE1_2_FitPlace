@@ -72,11 +72,10 @@ var NotionPage = function () {
     var _b = react_1.useState(null), PrevData = _b[0], setPrevData = _b[1]; //파싱하기 전의 데이터
     var _c = react_1.useState(null), postData = _c[0], setPostData = _c[1];
     var _d = react_1.useState([]), currentMember = _d[0], setCurrentMember = _d[1];
-    var _e = react_1.useState([]), channels = _e[0], setChannels = _e[1];
     var parsePostData = function (post) {
         try {
             var parsedTitle = JSON.parse(post.title);
-            return __assign(__assign({}, post), { actualTitle: parsedTitle.title, meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10), currentMember: parsedTitle.currentMember, channel: parsedTitle.channel, meetingDate: parsedTitle.meetingDate, meetingStartTime: parsedTitle.meetingStartTime, meetingEndTime: parsedTitle.meetingEndTime, isTimeFlexible: parsedTitle.isTimeFlexible, meetingSpot: parsedTitle.meetingSpot, image: parsedTitle.image });
+            return __assign(__assign({}, post), { title: parsedTitle.title, meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10), currentMember: parsedTitle.currentMember, channel: parsedTitle.channel, meetingDate: parsedTitle.meetingDate, meetingStartTime: parsedTitle.meetingStartTime, meetingEndTime: parsedTitle.meetingEndTime, isTimeFlexible: parsedTitle.isTimeFlexible, meetingSpot: parsedTitle.meetingSpot, image: parsedTitle.image });
         }
         catch (error) {
             console.error("Error parsing post title:", error);
@@ -126,7 +125,9 @@ var NotionPage = function () {
         if (!currentMember.includes(userName)) {
             // 여기에 서버로 업데이트된 정보를 보내는 API 호출 추가
             setCurrentMember(__spreadArrays(currentMember, [userName]));
-            handleCurrentMember();
+            console.log(userName);
+            handleCurrentMember(__spreadArrays(currentMember, [userName]));
+            console.log(__spreadArrays(currentMember, [userName]));
         }
         else {
             alert("이미 참가 신청하셨습니다.");
@@ -148,7 +149,7 @@ var NotionPage = function () {
                     return [4 /*yield*/, fetch(API_URL + "/posts/update", {
                             method: "PUT",
                             headers: {
-                                Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs"
+                                Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3ODc2Njg2fQ.O3_t47pHP0SeUQt3jUNTezVVLTHQhqCzOnHf4iqrtZ8"
                             },
                             body: JSON.stringify(reqBody)
                         })];
@@ -158,7 +159,7 @@ var NotionPage = function () {
                         throw new Error("서버 업데이트 실패");
                     }
                     console.log("서버 업데이트");
-                    return [3 /*break*/, 3];
+                    return [2 /*return*/, response];
                 case 2:
                     error_2 = _a.sent();
                     console.error("서버 업데이트 중 오류 발생:", error_2);
@@ -167,18 +168,30 @@ var NotionPage = function () {
             }
         });
     }); };
-    var handleCurrentMember = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var updatedTitleString, updatedPost, error_3;
+    var handleCurrentMember = function (members) { return __awaiter(void 0, void 0, void 0, function () {
+        var updatedData, updatedTitleString, updatedPost, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    postData.currentMember = currentMember;
-                    updatedTitleString = JSON.stringify(postData);
+                    postData.currentMember = members;
+                    updatedData = {
+                        title: postData.title,
+                        meetingCapacity: postData.meetingCapacity,
+                        currentMember: postData.currentMember,
+                        channel: postData.channel,
+                        meetingTime: postData.meetingTime,
+                        isTimeFlexible: postData.isTimeFlexible,
+                        meetingSpot: postData.meetingSpot,
+                        image: postData.image
+                    };
+                    updatedTitleString = JSON.stringify(updatedData);
+                    console.log("업데이트한 타이틀스트링", updatedTitleString);
                     return [4 /*yield*/, updatePostData(updatedTitleString)];
                 case 1:
                     updatedPost = _a.sent();
-                    console.log("업데이트된 게시물:", updatedPost);
+                    if (updatedPost)
+                        console.log("업데이트된 게시물", updatedPost);
                     return [3 /*break*/, 3];
                 case 2:
                     error_3 = _a.sent();
@@ -214,7 +227,7 @@ var NotionPage = function () {
                                 react_1["default"].createElement("button", null, "\uC218\uC815"),
                                 "|",
                                 react_1["default"].createElement("button", { onClick: function () { return setDeleteModal(true); } }, "\uC0AD\uC81C"))),
-                        react_1["default"].createElement("h3", { className: "text-2xl font-bold" }, postData.actualTitle),
+                        react_1["default"].createElement("h3", { className: "text-2xl font-bold" }, postData.title),
                         react_1["default"].createElement("p", { className: "text-lg text-[#666666] pt-2.5" }))),
                 react_1["default"].createElement("section", { className: "mt-7" },
                     react_1["default"].createElement("div", { className: "flex flex-col gap-3" },
