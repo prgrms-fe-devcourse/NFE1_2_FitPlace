@@ -4,103 +4,69 @@ import { useEffect, useState } from "react";
 import axios, { AxiosHeaders } from "axios";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-interface ResData {
-  banned: boolean
-  comments: []
-  createdAt: string
-  email: string
-  emailVerified: boolean
-  followers: []
-  following: []
-  fullName: string
-  isOnline: boolean
-  likes: []
-  messages: []
-  notifications: []
-  posts: []
-  role: string
-  updatedAt: string
-  __v: number;
-  _id: string
-}
 interface UserData {
   fullName: string;
   birth: number;
   userId: string;
-  description?: string;
-  location?: string;
+  description: string;
+  location: string;
+  image: string;
 }
-
-interface RootState {
-  currentUser: ResData;
-}
-
-const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const ProfileNickname = () => {
   const cookie = new Cookies();
   const navigate = useNavigate();
 
   const [myToken, setMyToken] = useState("");
-  const [nickname, setNickname] = useState('');
-  const [myDetailData, setMyDetailData] = useState<UserData | null>(null)
-
-  const myInfo = useTypedSelector((state) => state.currentUser);
-  
-  useEffect(() => {
-    try {
-      setMyDetailData(JSON.parse(myInfo.fullName));
-    } catch(err) {
-      alert('잘못된 접근입니다.')
-      navigate('/login')
-    }
-  }, [myInfo])
+  const [nickname, setNickname] = useState("");
+  const [myData, setMyData] = useState<UserData>();
 
   useEffect(() => {
     setMyToken(cookie.get("token").replace(/bearer\s+/g, ""));
-  }, [cookie]);
-
-  const handleEdit = () => {
-    const putData = { 
-      fullName: myDetailData?.fullName,
-      description: myDetailData?.description,
-      birth: myDetailData?.birth,
-      location: myDetailData?.location,
-      userId: myDetailData?.userId,
-     };
-    putData.fullName = nickname
-    const submitData = { fullName: JSON.stringify(putData) }
-    if(nickname.length > 9 || nickname.length < 3 || nickname.includes(' ')) {
-      return alert('닉네임은 2 ~ 8자 사이여야 하며 공백이 없어야합니다.')
-    } else {
-      axios.put(
-        "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",submitData ,
-        {
+    try {
+      axios
+        .get("https://kdt.frontend.5th.programmers.co.kr:5009/auth-user", {
           headers: {
             Authorization: `bearer ${myToken}`,
-            // Authorization: `bearer fnejkwfjklwehfkjqebnkjbnqejkvnlqeklkevjvkljeqkljekl`,
-            'Content-Type': 'application/json'
+          },
+        })
+        .then((res) => {
+          setMyData(JSON.parse(res.data.fullName));
+        });
+    } catch (err) {
+      console.log(err);
+      navigate("/");
+    }
+  }, [cookie]);
+
+  // 수정할 닉네임 서버로 전송
+  const handleEdit = async () => {
+    if (nickname.length > 9 || nickname.length < 3 || nickname.includes(" ")) {
+      alert("닉네임은 2 ~ 8자 사이여야 하며 공백이 없어야합니다.");
+    } else {
+      const putData = { ...myData };
+      putData.fullName = nickname;
+      const submitData = JSON.stringify(putData);
+      await axios
+        .put(
+          "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",
+          {
+            fullName: submitData,
+          },
+          {
+            headers: {
+              Authorization: `bearer ${myToken}`,
+            },
           }
-        }
-      )
-      .then(res => {
-        if(res.status === 200) {
-          alert('수정이 완료되었습니다')
-          navigate('/')
-        } else {
-          return null
-        }
-      })
-      .catch(err => {
-        if(err.status === 401) {
-          alert('올바르지 않은 사용자 입니다.')
-          navigate('/')
-        } else if (err.status === 404) {
-          alert('올바르지 않은 경로의 접근입니다.')
-          navigate('/')
-        }
-      })
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            alert("수정 되었습니다.");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
@@ -122,18 +88,18 @@ const ProfileNickname = () => {
           onChange={(e) => setNickname(e.target.value)}
         />
 
-        {
-          nickname.length > 9 || nickname.length < 3 || nickname.includes(' ')
-          ? <p className="text-red-600 font-bold text-lg">
-              닉네임은 2 ~ 8자 사이여야 하며 공백이 없어야합니다.
-            </p>
-          : null
-        }
+        {nickname.length > 9 ||
+        nickname.length < 3 ||
+        nickname.includes(" ") ? (
+          <p className="text-red-600 font-bold text-lg">
+            닉네임은 2 ~ 8자 사이여야 하며 공백이 없어야합니다.
+          </p>
+        ) : null}
       </div>
 
       {/* 하단 저장 버튼 */}
       <div className="text-center absolute bottom-8 w-[calc(100%_-_1.5rem)]">
-        <Button label="저장" size="full" color="green" onClick={handleEdit}/>
+        <Button label="저장" size="full" color="green" onClick={handleEdit} />
       </div>
     </div>
   );

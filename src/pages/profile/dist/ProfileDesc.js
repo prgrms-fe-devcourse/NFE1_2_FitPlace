@@ -32,7 +32,8 @@ var ProfileDesc = function () {
             description: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.description,
             birth: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.birth,
             location: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.location,
-            userId: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.userId
+            userId: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.userId,
+            image: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.image
         };
         putData.description = textValue;
         var submitData = { fullName: JSON.stringify(putData) };

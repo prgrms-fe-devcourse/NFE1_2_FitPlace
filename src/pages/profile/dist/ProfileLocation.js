@@ -43,7 +43,8 @@ var ProfileLocation = function () {
             description: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.description,
             birth: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.birth,
             location: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.location,
-            userId: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.userId
+            userId: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.userId,
+            image: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.image
         };
         putData.location = locaValue + ' ' + cityValue;
         var submitData = { fullName: JSON.stringify(putData) };

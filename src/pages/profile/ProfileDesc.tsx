@@ -28,8 +28,9 @@ interface UserData {
   fullName: string;
   birth: number;
   userId: string;
-  description?: string;
-  location?: string;
+  description: string;
+  location: string;
+  image: string;
 }
 
 interface RootState {
@@ -69,6 +70,7 @@ const ProfileDesc = () => {
       birth: myDetailData?.birth,
       location: myDetailData?.location,
       userId: myDetailData?.userId,
+      image: myDetailData?.image,
      };
     putData.description = textValue
     const submitData = { fullName: JSON.stringify(putData) }

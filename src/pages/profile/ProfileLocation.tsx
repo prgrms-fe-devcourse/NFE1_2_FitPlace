@@ -30,8 +30,9 @@ interface UserData {
   fullName: string;
   birth: number;
   userId: string;
-  description?: string;
-  location?: string;
+  description: string;
+  location: string;
+  image: string;
 }
 
 interface RootState {
@@ -82,6 +83,7 @@ const ProfileLocation = () => {
       birth: myDetailData?.birth,
       location: myDetailData?.location,
       userId: myDetailData?.userId,
+      image: myDetailData?.image,
      };
     putData.location = locaValue + ' ' + cityValue
     const submitData = { fullName: JSON.stringify(putData) }

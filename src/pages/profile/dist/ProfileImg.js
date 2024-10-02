@@ -40,14 +40,30 @@ var react_1 = require("react");
 var Button_1 = require("../../components/Button");
 var axios_1 = require("axios");
 var react_cookie_1 = require("react-cookie");
+var react_redux_1 = require("react-redux");
+var react_router_dom_1 = require("react-router-dom");
+var useTypedSelector = react_redux_1.useSelector;
 var ProfileImg = function () {
     var cookie = new react_cookie_1.Cookies();
-    var _a = react_1.useState(''), imgUrl = _a[0], setImgUrl = _a[1];
-    var _b = react_1.useState(''), myToken = _b[0], setMyToken = _b[1];
+    var navigate = react_router_dom_1.useNavigate();
+    var imgUrl = '';
+    var _a = react_1.useState(''), myToken = _a[0], setMyToken = _a[1];
+    var myInfo = useTypedSelector(function (state) { return state.currentUser; });
+    var _b = react_1.useState(null), myDetailData = _b[0], setMyDetailData = _b[1];
+    react_1.useEffect(function () {
+        try {
+            setMyDetailData(JSON.parse(myInfo.fullName));
+        }
+        catch (err) {
+            alert('잘못된 접근 입니다.');
+            navigate('/login');
+        }
+    }, [myInfo]);
     react_1.useEffect(function () {
         setMyToken(cookie.get("token").replace(/bearer\s+/g, ""));
     }, [cookie]);
-    var handleImgUpload = function (e) { return __awaiter(void 0, void 0, void 0, function () {
+    console.log(myDetailData);
+    var uploadImg = function (e) { return __awaiter(void 0, void 0, void 0, function () {
         var file, formData, response, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -66,7 +82,8 @@ var ProfileImg = function () {
                     return [4 /*yield*/, axios_1["default"].post("https://api.cloudinary.com/v1_1/" + import.meta.env.VITE_CLOUD_NAME + "/upload", formData)];
                 case 3:
                     response = _a.sent();
-                    setImgUrl(response.data.secure_url);
+                    imgUrl = response.data.secure_url;
+                    putImg(imgUrl);
                     return [3 /*break*/, 5];
                 case 4:
                     err_1 = _a.sent();
@@ -76,65 +93,98 @@ var ProfileImg = function () {
             }
         });
     }); };
-    react_1.useEffect(function () {
-        imgUrlToBinary(imgUrl).then(function (binaryData) {
-            console.log(imgUrl);
-            console.log(binaryData);
-            if (binaryData) {
-                postBinaryImg(binaryData);
-            }
-        });
-    }, [imgUrl]);
-    var imgUrlToBinary = function (url) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, blob_1, err_2;
+    var putImg = function (imgUrl) { return __awaiter(void 0, void 0, void 0, function () {
+        var putData, submitData;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, axios_1["default"].get(url, { responseType: 'blob' })];
-                case 1:
-                    response = _a.sent();
-                    blob_1 = response.data;
-                    return [2 /*return*/, new Promise(function (res, rej) {
-                            var reader = new FileReader();
-                            reader.onloadend = function () { return res(reader.result); };
-                            reader.onerror = rej;
-                            reader.readAsDataURL(blob_1);
-                        })];
-                case 2:
-                    err_2 = _a.sent();
-                    console.log(err_2);
-                    return [2 /*return*/, null];
-                case 3: return [2 /*return*/];
-            }
+            putData = {
+                fullName: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.fullName,
+                description: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.description,
+                birth: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.birth,
+                location: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.location,
+                userId: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.userId,
+                image: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.image
+            };
+            putData.image = imgUrl;
+            submitData = JSON.stringify(putData);
+            axios_1["default"].put("https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user", submitData, {
+                headers: {
+                    Authorization: "bearer " + myToken,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(function (res) {
+                res.status === 200
+                    ? alert('사진이 업로드 되었습니다.')
+                    : null;
+            })["catch"](function (err) {
+                if (err.status === 401) {
+                    alert('올바르지 않은 사용자 입니다.');
+                    navigate('/');
+                }
+                else if (err.status === 404) {
+                    alert('올바르지 않은 경로의 접근입니다.');
+                    navigate('/');
+                }
+            });
+            return [2 /*return*/];
         });
     }); };
-    var postBinaryImg = function (binaryData) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, err_3;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, axios_1["default"].post('https://kdt.frontend.5th.programmers.co.kr:5009/users/upload-photo', {
-                            isCover: false,
-                            image: binaryData
-                        }, {
-                            headers: {
-                                Authorization: "bearer " + myToken
-                            }
-                        })];
-                case 1:
-                    response = _a.sent();
-                    console.log(response.data);
-                    return [3 /*break*/, 3];
-                case 2:
-                    err_3 = _a.sent();
-                    console.log(err_3);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
-            }
-        });
-    }); };
+    // const handleImgUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    //   if (!e.target.files) {
+    //     return
+    //   } else {
+    //     const file = e.target.files[0];
+    //     const formData = new FormData();
+    //     formData.append('file', file);
+    //     formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+    //     formData.append('api_key', import.meta.env.VITE_CLOUDINARY_API_KEY);
+    //     try {
+    //       const response = await axios.post(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUD_NAME}/upload`, formData);
+    //       setImgUrl(response.data.secure_url);
+    //     } catch(err) {
+    //       console.log(err)
+    //     }
+    //   }
+    // }
+    // useEffect(() => {
+    //   imgUrlToBinary(imgUrl).then((binaryData) => {
+    //     console.log(imgUrl)
+    //     console.log(binaryData)
+    //     if (binaryData) {
+    //       postBinaryImg(binaryData)
+    //     }
+    //   })
+    // }, [imgUrl])
+    // const imgUrlToBinary = async (url: string) => {
+    //   try {
+    //     const response = await axios.get(url, { responseType: 'blob' });
+    //     const blob = response.data;
+    //     return new Promise((res, rej) => {
+    //       const reader = new FileReader();
+    //       reader.onloadend = () => res(reader.result);
+    //       reader.onerror = rej;
+    //       reader.readAsDataURL(blob);
+    //     })
+    //   } catch (err) {
+    //     console.log(err)
+    //     return null;
+    //   }
+    // }
+    // const postBinaryImg = async (binaryData: unknown) => {
+    //   try {
+    //     const response = await axios.post('https://kdt.frontend.5th.programmers.co.kr:5009/users/upload-photo', {
+    //       isCover: false,
+    //       image: binaryData
+    //     }, {
+    //         headers: {
+    //           Authorization: `bearer ${myToken}`
+    //         }
+    //       });
+    //       console.log(response.data);
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // }
     return (React.createElement("form", { className: "w-140 min-h-screen bg-white p-3 flex flex-col justify-start relative" },
         React.createElement("div", { className: "edit__head-top" },
             React.createElement("p", { className: "font-bold text-xl" }, "\uD504\uB85C\uD544 \uC0AC\uC9C4\uC744 \uB4F1\uB85D\uD574\uC8FC\uC138\uC694."),
@@ -142,15 +192,14 @@ var ProfileImg = function () {
         React.createElement("div", { className: "edit__head-btm mt-6" },
             React.createElement("ul", { className: "flex justify-start items-start flex-wrap gap-4" },
                 React.createElement("li", { className: "w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P" },
-                    React.createElement("img", { src: "/src/assets/defaultProfileImg.svg", alt: "\uC608\uC2DC\uC774\uBBF8\uC9C0", className: "w-full h-full object-cover absolute" }),
-                    React.createElement("p", { className: "absolute top-0 right-0 cursor-pointer" }, "\u274C")),
-                React.createElement("li", { className: "w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P" },
-                    React.createElement("img", { src: "/src/assets/defaultProfileImg.svg", alt: "\uC608\uC2DC\uC774\uBBF8\uC9C0", className: "w-full h-full object-cover absolute" }),
+                    (myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.image) === '' || !(myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.image)
+                        ? React.createElement("img", { src: "/src/assets/defaultProfileImg.svg", alt: "\uC608\uC2DC\uC774\uBBF8\uC9C0", className: "w-full h-full object-cover absolute" })
+                        : React.createElement("img", { src: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.image, alt: "\uC608\uC2DC\uC774\uBBF8\uC9C0", className: "w-full h-full object-cover absolute" }),
                     React.createElement("p", { className: "absolute top-0 right-0 cursor-pointer" }, "\u274C")),
                 React.createElement("li", { className: "bg-gray-100 hover:bg-gray-200 w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P" },
                     React.createElement("label", { htmlFor: "imgUploadInput", className: "w-full h-full absolute flex justify-center items-center cursor-pointer" },
                         React.createElement("p", { className: "text-greenColor font-bold text-xl" }, "+ \uC0AC\uC9C4 \uC5C5\uB85C\uB4DC")),
-                    React.createElement("input", { type: "file", name: "", id: "imgUploadInput", className: "hidden", accept: "image/jpeg, image/png, image/webp", onChange: handleImgUpload })))),
+                    React.createElement("input", { type: "file", name: "", id: "imgUploadInput", className: "hidden", accept: "image/jpeg, image/png, image/webp", onChange: uploadImg })))),
         React.createElement("div", { className: "text-center absolute bottom-8 w-[calc(100%_-_1.5rem)]" },
             React.createElement(Button_1["default"], { label: "\uC800\uC7A5", size: "full", color: "green" }))));
 };
