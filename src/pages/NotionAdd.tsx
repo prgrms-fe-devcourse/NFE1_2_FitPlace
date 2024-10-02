@@ -120,7 +120,7 @@ const NotionAdd: React.FC = () => {
             const response = await fetch(`${API_URL}/posts/create`, {
                 method: "POST",
                 headers: {
-                    Authorization: `bearer YOUR_TOKEN`,
+                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg`,
                 },
                 body: submitData,
             });
