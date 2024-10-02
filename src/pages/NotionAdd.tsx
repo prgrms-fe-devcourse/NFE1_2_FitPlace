@@ -15,7 +15,7 @@ interface FormData {
     meetingEndTime: string;
     isTimeFlexible: boolean;
     meetingSpot: string;
-    image: string | null;
+    images: string[];
     meetingInfo: string;
 }
 
@@ -35,11 +35,13 @@ const INITIAL_FORM_STATE: FormData = {
     meetingEndTime: "",
     isTimeFlexible: false,
     meetingSpot: "",
-    image: null,
+    images: [],
     meetingInfo: "",
 };
 
 const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
+const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 const NotionAdd: React.FC = () => {
     const [formData, setFormData] = useState<FormData>(INITIAL_FORM_STATE);
@@ -50,6 +52,51 @@ const NotionAdd: React.FC = () => {
     } | null>(null);
 
     const [channels, setChannels] = useState<Channel[]>([]);
+
+    //이미지 업로드 부분(충돌 방지 주석)---------------------------------------------------------------
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [imageFiles, setImageFiles] = useState<File[]>([]); // 선택된 파일들
+    const [imageUrls, setImageUrls] = useState<string[]>([]); // 업로드된 이미지 URL들
+
+    const handleFileChange = useCallback(
+        async (e: ChangeEvent<HTMLInputElement>) => {
+            const files = e.target.files;
+            if (files) {
+                const newFiles = Array.from(files);
+                setImageFiles((prev) => [...prev, ...newFiles]); // 기존 파일에 추가
+
+                const newUrls: string[] = [];
+                const formData = new FormData();
+
+                for (const file of newFiles) {
+                    formData.append("file", file);
+                    formData.append("upload_preset", UPLOAD_PRESET);
+
+                    try {
+                        const response = await fetch(
+                            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+                            {
+                                method: "POST",
+                                body: formData,
+                            }
+                        );
+                        const data = await response.json();
+                        newUrls.push(data.secure_url); // 업로드된 이미지 URL 추가
+                    } catch (error) {
+                        console.error("이미지 업로드 실패:", error);
+                    }
+                }
+                setImageUrls((prev) => [...prev, ...newUrls]); // 기존 URL에 추가
+                setFormData((prev) => ({
+                    ...prev,
+                    images: [...prev.images, ...newUrls],
+                })); // 폼 데이터에 이미지 URL 배열 저장
+            }
+        },
+        []
+    );
+
+    // 이미지 업로드 부분 여기까지---------------------------------------------------------------
 
     const navigate = useNavigate();
 
@@ -110,6 +157,7 @@ const NotionAdd: React.FC = () => {
             meetingTime: meetingTime,
             meetingSpot: formData.meetingSpot,
             channel: formData.channel,
+            image: formData.images, //이미지 업로드 부분
         };
 
         const submitData = new FormData();
@@ -320,19 +368,44 @@ const NotionAdd: React.FC = () => {
                     {/* 사진 등록 */}
                     <div className="mb-6">
                         <p className="font-bold text-xl mt-6">사진 등록</p>
-                        <label
-                            htmlFor="image"
-                            className="w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-2.5"
-                        >
-                            + 사진 업로드
-                        </label>
-                        <input
-                            type="file"
-                            id="image"
-                            name="image"
-                            className="absolute hidden"
-                        />
+                        <div className="flex flex-wrap">
+                            {imageUrls.map((url, index) => (
+                                <img
+                                    key={index}
+                                    src={url}
+                                    alt={`uploaded-${index}`}
+                                    className="w-[160px] h-[140px] mt-4"
+                                />
+                            ))}
+
+                            <label
+                                htmlFor="image"
+                                className="w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-4"
+                            >
+                                + 사진 업로드
+                            </label>
+
+                            <input
+                                type="file"
+                                id="image"
+                                name="image"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="absolute hidden"
+                            />
+                        </div>
                     </div>
+                    {/*사진 초기화하기 */}
+                    {imageUrls && imageUrls.length > 0 && (
+                        <div className="flex flex-col items-center">
+                            <button
+                                className="w-1/2 bg-gray-300 my-3 h-10 text-sm hover:bg-gray-400 hover:rounded-2xl transition-all"
+                                onClick={() => setImageUrls([])}
+                            >
+                                사진 초기화
+                            </button>
+                        </div>
+                    )}
 
                     {/* 모임 등록 버튼 */}
                     <Button
