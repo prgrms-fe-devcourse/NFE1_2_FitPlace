@@ -220,7 +220,7 @@ var NotionFix = function () {
                     meetingTime = formData.isTimeFlexible
                         ? formData.meetingDate + ", \uC2DC\uAC04 \uBB34\uAD00"
                         : formData.meetingDate + " " + formData.meetingStartTime + " - " + formData.meetingEndTime;
-                    imagesToSubmit = __spreadArrays(imageUrls, formData.images);
+                    imagesToSubmit = __spreadArrays(original_data === null || original_data === void 0 ? void 0 : original_data.image, formData.images);
                     customJsonData = {
                         title: formData.title,
                         currentMember: formData.currentMember,

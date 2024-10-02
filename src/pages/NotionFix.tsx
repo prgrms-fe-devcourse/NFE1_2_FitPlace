@@ -188,7 +188,7 @@ const NotionFix: React.FC = () => {
       ? `${formData.meetingDate}, 시간 무관`
       : `${formData.meetingDate} ${formData.meetingStartTime} - ${formData.meetingEndTime}`;
 
-    const imagesToSubmit = [...imageUrls, ...formData.images];
+    const imagesToSubmit = [...original_data?.image, ...formData.images];
 
     const customJsonData = {
       title: formData.title,
