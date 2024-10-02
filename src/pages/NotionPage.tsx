@@ -35,7 +35,7 @@ const NotionPage = () => {
   const { id } = useParams();
 
   const [postData, setPostData] = useState<ParsedPost | null>(null);
-  const [PrevData, setPrevData] = useState({}); //파싱하기 전의 데이터
+  const [PrevData, setPrevData] = useState({}); 
 
   const parsePostData = (post: any): ParsedPost => {
     try {
@@ -56,7 +56,7 @@ const NotionPage = () => {
       };
     } catch (error) {
       console.error("Error parsing post title:", error);
-      return post; // 파싱에 실패하면 원본 데이터 반환
+      return post; 
     }
   };
 
@@ -88,7 +88,7 @@ const NotionPage = () => {
   }, []);
 
   if (!postData) {
-    return <div>Loading...</div>; // 데이터 로딩 중 표시
+    return <div>Loading...</div>;
   }
 
   return (
