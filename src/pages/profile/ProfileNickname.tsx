@@ -53,7 +53,7 @@ const ProfileNickname = () => {
       myDetailData = JSON.parse(myInfo.fullName);
     } catch(err) {
       alert('잘못된 접근입니다.')
-      navigate('/')
+      navigate('/login')
     }
   }, [myInfo])
 
@@ -62,7 +62,13 @@ const ProfileNickname = () => {
   }, [cookie]);
 
   const handleEdit = () => {
-    const putData = { ...myDetailData };
+    const putData = { 
+      fullName: myDetailData?.fullName,
+      description: myDetailData?.description,
+      birth: myDetailData?.birth,
+      location: myDetailData?.location,
+      userId: myDetailData?.userId,
+     };
     putData.fullName = nickname
     const submitData = { fullName: JSON.stringify(putData) }
     if(nickname.length > 9 || nickname.length < 3 || nickname.includes(' ')) {
@@ -72,8 +78,8 @@ const ProfileNickname = () => {
         "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",submitData ,
         {
           headers: {
-            // Authorization: `bearer ${myToken}`,
-            Authorization: `bearer fnejkwfjklwehfkjqebnkjbnqejkvnlqeklkevjvkljeqkljekl`,
+            Authorization: `bearer ${myToken}`,
+            // Authorization: `bearer fnejkwfjklwehfkjqebnkjbnqejkvnlqeklkevjvkljeqkljekl`,
             'Content-Type': 'application/json'
           }
         }

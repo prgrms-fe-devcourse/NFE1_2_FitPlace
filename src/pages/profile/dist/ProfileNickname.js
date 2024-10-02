@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 exports.__esModule = true;
 var react_cookie_1 = require("react-cookie");
 var Button_1 = require("../../components/Button");
@@ -31,14 +20,20 @@ var ProfileNickname = function () {
         }
         catch (err) {
             alert('잘못된 접근입니다.');
-            navigate('/');
+            navigate('/login');
         }
     }, [myInfo]);
     react_1.useEffect(function () {
         setMyToken(cookie.get("token").replace(/bearer\s+/g, ""));
     }, [cookie]);
     var handleEdit = function () {
-        var putData = __assign({}, myDetailData);
+        var putData = {
+            fullName: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.fullName,
+            description: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.description,
+            birth: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.birth,
+            location: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.location,
+            userId: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.userId
+        };
         putData.fullName = nickname;
         var submitData = { fullName: JSON.stringify(putData) };
         if (nickname.length > 9 || nickname.length < 3 || nickname.includes(' ')) {
@@ -47,8 +42,8 @@ var ProfileNickname = function () {
         else {
             axios_1["default"].put("https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user", submitData, {
                 headers: {
-                    // Authorization: `bearer ${myToken}`,
-                    Authorization: "bearer fnejkwfjklwehfkjqebnkjbnqejkvnlqeklkevjvkljeqkljekl",
+                    Authorization: "bearer " + myToken,
+                    // Authorization: `bearer fnejkwfjklwehfkjqebnkjbnqejkvnlqeklkevjvkljeqkljekl`,
                     'Content-Type': 'application/json'
                 }
             })

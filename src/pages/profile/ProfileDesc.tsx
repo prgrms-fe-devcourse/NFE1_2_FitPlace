@@ -3,6 +3,7 @@ import Button from "../../components/Button";
 import { Cookies } from "react-cookie";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface ResData {
   banned: boolean
@@ -40,19 +41,35 @@ const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 const ProfileDesc = () => {
 
   const cookie = new Cookies();
+  const navigate = useNavigate();
 
   const [myToken, setMyToken] = useState("");
   const [textValue, setTextValue] = useState('');
 
   const myInfo = useTypedSelector((state) => state.currentUser);
-  const myDetailData: UserData = JSON.parse(myInfo.fullName);
+  let myDetailData: UserData | null = null
+  
+  useEffect(() => {
+    try {
+      myDetailData = JSON.parse(myInfo.fullName);
+    } catch(err) {
+      alert('잘못된 접근입니다.')
+      navigate('/login')
+    }
+  }, [myInfo])
 
   useEffect(() => {
     setMyToken(cookie.get('token').replace(/bearer\s+/g, ""));
   }, [cookie])
 
   const handleEdit = () => {
-    const putData = { ...myDetailData };
+    const putData = { 
+      fullName: myDetailData?.fullName,
+      description: myDetailData?.description,
+      birth: myDetailData?.birth,
+      location: myDetailData?.location,
+      userId: myDetailData?.userId,
+     };
     putData.description = textValue
     const submitData = { fullName: JSON.stringify(putData) }
     axios.put(

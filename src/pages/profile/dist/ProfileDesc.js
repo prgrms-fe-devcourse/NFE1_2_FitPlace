@@ -1,33 +1,39 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 exports.__esModule = true;
 var react_1 = require("react");
 var Button_1 = require("../../components/Button");
 var react_cookie_1 = require("react-cookie");
 var react_redux_1 = require("react-redux");
 var axios_1 = require("axios");
+var react_router_dom_1 = require("react-router-dom");
 var useTypedSelector = react_redux_1.useSelector;
 var ProfileDesc = function () {
     var cookie = new react_cookie_1.Cookies();
+    var navigate = react_router_dom_1.useNavigate();
     var _a = react_1.useState(""), myToken = _a[0], setMyToken = _a[1];
     var _b = react_1.useState(''), textValue = _b[0], setTextValue = _b[1];
     var myInfo = useTypedSelector(function (state) { return state.currentUser; });
-    var myDetailData = JSON.parse(myInfo.fullName);
+    var myDetailData = null;
+    react_1.useEffect(function () {
+        try {
+            myDetailData = JSON.parse(myInfo.fullName);
+        }
+        catch (err) {
+            alert('잘못된 접근입니다.');
+            navigate('/login');
+        }
+    }, [myInfo]);
     react_1.useEffect(function () {
         setMyToken(cookie.get('token').replace(/bearer\s+/g, ""));
     }, [cookie]);
     var handleEdit = function () {
-        var putData = __assign({}, myDetailData);
+        var putData = {
+            fullName: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.fullName,
+            description: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.description,
+            birth: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.birth,
+            location: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.location,
+            userId: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.userId
+        };
         putData.description = textValue;
         var submitData = { fullName: JSON.stringify(putData) };
         axios_1["default"].put("https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user", submitData, {

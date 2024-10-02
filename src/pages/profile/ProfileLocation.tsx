@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Cookies } from "react-cookie";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface ResData {
   banned: boolean
@@ -42,6 +43,7 @@ const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 const ProfileLocation = () => {
 
   const cookie = new Cookies();
+  const navigate = useNavigate()
 
   const [locaNum, setLocaNum] = useState(0);
   const [cityNum, setCityNum] = useState<number | null>(null);
@@ -51,7 +53,16 @@ const ProfileLocation = () => {
   const [cityValue, setCityValue] = useState('');
 
   const myInfo = useTypedSelector((state) => state.currentUser);
-  const myDetailData: UserData = JSON.parse(myInfo.fullName);
+  let myDetailData: UserData | null = null
+
+  useEffect(() => {
+    try {
+      myDetailData = JSON.parse(myInfo.fullName);
+    } catch (err) {
+      alert('잘못된 접근 입니다.')
+      navigate('/login')
+    }
+  }, [myInfo])
 
   // 도, 광역시 선택시 시군구 스크롤 최상단으로
   const myRef = useRef<HTMLUListElement>(null);
@@ -65,7 +76,13 @@ const ProfileLocation = () => {
   }, [cookie])
 
   const handleEdit = () => {
-    const putData = { ...myDetailData };
+    const putData = { 
+      fullName: myDetailData?.fullName,
+      description: myDetailData?.description,
+      birth: myDetailData?.birth,
+      location: myDetailData?.location,
+      userId: myDetailData?.userId,
+     };
     putData.location = locaValue + ' ' + cityValue
     const submitData = { fullName: JSON.stringify(putData) }
     if (!cityValue || cityValue.length === 0 || cityValue === '') {
@@ -146,6 +163,7 @@ const ProfileLocation = () => {
           label="저장"
           size="full"
           color="green"
+          onClick={handleEdit}
         />
       </div>
     </div>

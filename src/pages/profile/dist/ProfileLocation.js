@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 exports.__esModule = true;
 var location_1 = require("../../data/location");
 var Button_1 = require("../../components/Button");
@@ -17,16 +6,27 @@ var react_1 = require("react");
 var react_cookie_1 = require("react-cookie");
 var react_redux_1 = require("react-redux");
 var axios_1 = require("axios");
+var react_router_dom_1 = require("react-router-dom");
 var useTypedSelector = react_redux_1.useSelector;
 var ProfileLocation = function () {
     var cookie = new react_cookie_1.Cookies();
+    var navigate = react_router_dom_1.useNavigate();
     var _a = react_1.useState(0), locaNum = _a[0], setLocaNum = _a[1];
     var _b = react_1.useState(null), cityNum = _b[0], setCityNum = _b[1];
     var _c = react_1.useState(''), myToken = _c[0], setMyToken = _c[1];
     var _d = react_1.useState(''), locaValue = _d[0], setLocaValue = _d[1];
     var _e = react_1.useState(''), cityValue = _e[0], setCityValue = _e[1];
     var myInfo = useTypedSelector(function (state) { return state.currentUser; });
-    var myDetailData = JSON.parse(myInfo.fullName);
+    var myDetailData = null;
+    react_1.useEffect(function () {
+        try {
+            myDetailData = JSON.parse(myInfo.fullName);
+        }
+        catch (err) {
+            alert('잘못된 접근 입니다.');
+            navigate('/login');
+        }
+    }, [myInfo]);
     // 도, 광역시 선택시 시군구 스크롤 최상단으로
     var myRef = react_1.useRef(null);
     var scrollTop = function () {
@@ -38,7 +38,13 @@ var ProfileLocation = function () {
         setMyToken(cookie.get("token").replace(/bearer\s+/g, ""));
     }, [cookie]);
     var handleEdit = function () {
-        var putData = __assign({}, myDetailData);
+        var putData = {
+            fullName: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.fullName,
+            description: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.description,
+            birth: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.birth,
+            location: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.location,
+            userId: myDetailData === null || myDetailData === void 0 ? void 0 : myDetailData.userId
+        };
         putData.location = locaValue + ' ' + cityValue;
         var submitData = { fullName: JSON.stringify(putData) };
         if (!cityValue || cityValue.length === 0 || cityValue === '') {
@@ -79,6 +85,6 @@ var ProfileLocation = function () {
                             React.createElement("img", { src: "/src/assets/check.svg", alt: "\uC120\uD0DD\uB418\uC5C8\uC2B5\uB2C8\uB2E4", className: "absolute bottom-1/2 right-12 translate-y-1/2" })) : null));
                 })))),
         React.createElement("div", { className: "text-center absolute bottom-8 w-[calc(100%_-_1.5rem)]" },
-            React.createElement(Button_1["default"], { label: "\uC800\uC7A5", size: "full", color: "green" }))));
+            React.createElement(Button_1["default"], { label: "\uC800\uC7A5", size: "full", color: "green", onClick: handleEdit }))));
 };
 exports["default"] = ProfileLocation;
