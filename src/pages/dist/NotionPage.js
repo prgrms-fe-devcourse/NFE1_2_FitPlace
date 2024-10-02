@@ -55,6 +55,7 @@ var commentIcon_svg_1 = require("../assets/commentIcon.svg");
 var NotionItem_1 = require("../components/NotionItem");
 var Button_1 = require("../components/Button");
 var Header_1 = require("../components/Header");
+var KakaoMap_1 = require("./KakaoMap"); // KakaoMap 컴포넌트 불러오기
 var react_router_dom_2 = require("react-router-dom");
 var react_router_dom_3 = require("react-router-dom");
 var axios_1 = require("axios");
@@ -65,9 +66,16 @@ var NotionPage = function () {
     var id = react_router_dom_3.useParams().id;
     var _b = react_1.useState(null), postData = _b[0], setPostData = _b[1];
     var _c = react_1.useState({}), PrevData = _c[0], setPrevData = _c[1];
+    var _d = react_1.useState(null), location = _d[0], setLocation = _d[1];
     var parsePostData = function (post) {
         try {
             var parsedTitle = JSON.parse(post.title);
+            var _a = parsedTitle.meetingSpot.split(","), address = _a[0], lat = _a[1], lng = _a[2];
+            setLocation({
+                address: address,
+                lat: parseFloat(lat),
+                lng: parseFloat(lng)
+            });
             return __assign(__assign({}, post), { actualTitle: parsedTitle.title, meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10), currentMember: parseInt(parsedTitle.currentMember, 10), channel: parsedTitle.channel, meetingDate: parsedTitle.meetingDate, meetingTime: parsedTitle.meetingTime, isTimeFlexible: parsedTitle.isTimeFlexible, meetingInfo: parsedTitle.meetingInfo, meetingSpot: parsedTitle.meetingSpot, image: parsedTitle.image });
         }
         catch (error) {
@@ -97,7 +105,6 @@ var NotionPage = function () {
                         return [4 /*yield*/, response.json()];
                     case 2:
                         data = _a.sent();
-                        setPrevData(data);
                         parsedData = parsePostData(data);
                         setPostData(parsedData);
                         return [3 /*break*/, 4];
@@ -110,7 +117,7 @@ var NotionPage = function () {
             });
         }); };
         fetchPostData();
-    }, []);
+    }, [id]);
     if (!postData) {
         return react_1["default"].createElement("div", null, "Loading...");
     }
@@ -172,14 +179,14 @@ var NotionPage = function () {
                     react_1["default"].createElement("div", { className: "flex flex-col gap-3" },
                         react_1["default"].createElement("div", { className: "flex gap-5" },
                             react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC7A5\uC18C"),
-                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingSpot || "장소 없음")),
+                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, (location === null || location === void 0 ? void 0 : location.address) || "장소 없음")),
                         react_1["default"].createElement("div", { className: "flex gap-5" },
                             react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC77C\uC2DC"),
                             react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingTime || "시간 무관")))),
                 react_1["default"].createElement("section", { className: "mt-7" },
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement(NotionItem_1["default"], { content: postData.meetingInfo })),
-                    postData.image && postData.image.length > 0 ? (postData.image.map(function (URL, i) { return (react_1["default"].createElement("div", { className: "flex flex-wrap justify-center border-2 border-gray-200 my-2" },
+                    postData.image && postData.image.length > 0 ? (postData.image.map(function (URL, i) { return (react_1["default"].createElement("div", { className: "flex flex-wrap justify-center border-2 border-gray-200 my-2", key: i },
                         react_1["default"].createElement("img", { className: "w-96 h-96", src: URL, alt: "\uAC8C\uC2DC\uAE00\uC0AC\uC9C4", id: "notionImg" }))); })) : (react_1["default"].createElement("p", { className: "my-10" }, "\uC0AC\uC9C4\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."))),
                 react_1["default"].createElement("section", { className: "mt-11 flex flex-col gap-5" },
                     react_1["default"].createElement("div", null,
@@ -200,8 +207,9 @@ var NotionPage = function () {
                 react_1["default"].createElement("section", { className: "mt-14" },
                     react_1["default"].createElement("div", { className: "flex flex-col gap-4" },
                         react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC6B4\uB3D9\uC7A5\uC18C"),
-                        react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingSpot || "장소 없음")),
-                    react_1["default"].createElement("div", null)),
+                        react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, (location === null || location === void 0 ? void 0 : location.address) || "장소 없음")),
+                    location && (react_1["default"].createElement("div", { className: "mt-4" },
+                        react_1["default"].createElement(KakaoMap_1["default"], { isMarkerFixed: true, location: { lat: location.lat, lng: location.lng }, style: { height: "300px" } })))),
                 react_1["default"].createElement("div", { className: "mt-5 flex justify-between" },
                     react_1["default"].createElement("div", { className: "w-10/12" },
                         react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uC2E0\uCCAD\uD558\uAE30", size: "full", color: "green" })),

@@ -7,6 +7,7 @@ import commentIcon from "../assets/commentIcon.svg";
 import NotionItem from "../components/NotionItem";
 import Button from "../components/Button";
 import Header from "../components/Header";
+import KakaoMap from "./KakaoMap"; // KakaoMap 컴포넌트 불러오기
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -39,10 +40,24 @@ const NotionPage = () => {
 
   const [postData, setPostData] = useState<ParsedPost | null>(null);
   const [PrevData, setPrevData] = useState({});
+  const [location, setLocation] = useState<{
+    address: string;
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   const parsePostData = (post: any): ParsedPost => {
     try {
       const parsedTitle = JSON.parse(post.title);
+
+      const [address, lat, lng] = parsedTitle.meetingSpot.split(",");
+
+      setLocation({
+        address,
+        lat: parseFloat(lat),
+        lng: parseFloat(lng),
+      });
+
       return {
         ...post,
         actualTitle: parsedTitle.title,
@@ -78,7 +93,6 @@ const NotionPage = () => {
         }
 
         const data = await response.json();
-        setPrevData(data);
         const parsedData = parsePostData(data);
         setPostData(parsedData);
       } catch (error) {
@@ -87,7 +101,7 @@ const NotionPage = () => {
     };
 
     fetchPostData();
-  }, []);
+  }, [id]);
 
   if (!postData) {
     return <div>Loading...</div>;
@@ -173,8 +187,9 @@ const NotionPage = () => {
             <div className="flex flex-col gap-3">
               <div className="flex gap-5">
                 <p className="text-lg font-bold">장소</p>
+                {/* 장소명만 표시 */}
                 <p className="text-sm text-[#7e7e7e]">
-                  {postData.meetingSpot || "장소 없음"}
+                  {location?.address || "장소 없음"}
                 </p>
               </div>
               <div className="flex gap-5">
@@ -191,7 +206,10 @@ const NotionPage = () => {
             </div>
             {postData.image && postData.image.length > 0 ? (
               postData.image.map((URL, i) => (
-                <div className="flex flex-wrap justify-center border-2 border-gray-200 my-2">
+                <div
+                  className="flex flex-wrap justify-center border-2 border-gray-200 my-2"
+                  key={i}
+                >
                   <img
                     className="w-96 h-96"
                     src={URL}
@@ -226,10 +244,19 @@ const NotionPage = () => {
             <div className="flex flex-col gap-4">
               <p className="text-lg font-bold">운동장소</p>
               <p className="text-sm text-[#7e7e7e]">
-                {postData.meetingSpot || "장소 없음"}
+                {location?.address || "장소 없음"}
               </p>
             </div>
-            <div>{/* 지도 자리 */}</div>
+            {/* 지도 표시 */}
+            {location && (
+              <div className="mt-4">
+                <KakaoMap
+                  isMarkerFixed={true}
+                  location={{ lat: location.lat, lng: location.lng }}
+                  style={{ height: "300px" }}
+                />
+              </div>
+            )}
           </section>
           <div className="mt-5 flex justify-between">
             <div className="w-10/12">

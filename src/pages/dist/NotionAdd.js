@@ -60,6 +60,8 @@ var Header_1 = require("../components/Header");
 var NotionCategory_1 = require("../components/NotionCategory");
 var KakaoMap_1 = require("./KakaoMap");
 var react_router_dom_1 = require("react-router-dom");
+var react_redux_1 = require("react-redux");
+var react_cookie_1 = require("react-cookie");
 var INITIAL_FORM_STATE = {
     title: "",
     channel: "",
@@ -130,15 +132,33 @@ var NotionAdd = function () {
             }
         });
     }); }, []);
+    var _g = react_1.useState(false), isRegistered = _g[0], setIsRegistered = _g[1];
+    var _h = react_1.useState(null), newPostId = _h[0], setNewPostId = _h[1];
     var navigate = react_router_dom_1.useNavigate();
+    var token = react_redux_1.useSelector(function (state) { return state.userToken; });
+    var cookies = new react_cookie_1.Cookies();
+    var saveFormDataToStorage = function (data) {
+        sessionStorage.setItem("notionAddFormData", JSON.stringify(data));
+    };
+    var resetForm = function () {
+        sessionStorage.removeItem("notionAddFormData");
+        sessionStorage.removeItem("selectedLocation");
+        setFormData(INITIAL_FORM_STATE);
+        setSelectedLocation(null);
+    };
     react_1.useEffect(function () {
-        fetchChannels();
+        var savedFormData = sessionStorage.getItem("notionAddFormData");
+        if (savedFormData) {
+            setFormData(JSON.parse(savedFormData));
+        }
         var savedLocation = sessionStorage.getItem("selectedLocation");
         if (savedLocation) {
-            var locationData_1 = JSON.parse(savedLocation);
-            setSelectedLocation(locationData_1);
-            setFormData(function (prev) { return (__assign(__assign({}, prev), { meetingSpot: locationData_1.address })); });
+            var locationData = JSON.parse(savedLocation);
+            var locationString_1 = locationData.address + "," + locationData.lat + "," + locationData.lng;
+            setSelectedLocation(locationData);
+            setFormData(function (prev) { return (__assign(__assign({}, prev), { meetingSpot: locationString_1 })); });
         }
+        fetchChannels();
     }, []);
     var fetchChannels = function () { return __awaiter(void 0, void 0, void 0, function () {
         var response, data, error_2;
@@ -166,21 +186,30 @@ var NotionAdd = function () {
         });
     }); };
     var handleChange = react_1.useCallback(function (e) {
-        var _a = e.target, name = _a.name, value = _a.value, type = _a.type;
-        setFormData(function (prev) {
-            var _a;
-            return (__assign(__assign({}, prev), (_a = {}, _a[name] = type === "number" ? parseInt(value, 10) : value, _a)));
-        });
-    }, []);
+        var _a;
+        var _b = e.target, name = _b.name, value = _b.value, type = _b.type;
+        var updatedFormData = __assign(__assign({}, formData), (_a = {}, _a[name] = type === "number" ? parseInt(value, 10) : value, _a));
+        setFormData(updatedFormData);
+        saveFormDataToStorage(updatedFormData);
+    }, [formData]);
     var handleCategorySelect = react_1.useCallback(function (category) {
         setFormData(function (prev) { return (__assign(__assign({}, prev), { channel: category })); });
-    }, []);
+        saveFormDataToStorage(__assign(__assign({}, formData), { channel: category }));
+    }, [formData]);
+    var handleLocationClick = function () {
+        navigate("/map");
+    };
     var handleSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var channelId, meetingTime, customJsonData, submitData, response, data, error_3;
+        var cookieToken, channelId, meetingTime, customJsonData, submitData, response, data, error_3;
         var _a;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
+                    cookieToken = cookies.get("token");
+                    if (!token && !cookieToken) {
+                        console.error("토큰이 없습니다. 로그인이 필요합니다.");
+                        return [2 /*return*/];
+                    }
                     channelId = ((_a = channels.find(function (ch) { return ch.name === formData.channel; })) === null || _a === void 0 ? void 0 : _a._id) || "";
                     meetingTime = formData.isTimeFlexible
                         ? formData.meetingDate + ", \uC2DC\uAC04 \uBB34\uAD00"
@@ -203,7 +232,7 @@ var NotionAdd = function () {
                     return [4 /*yield*/, fetch(API_URL + "/posts/create", {
                             method: "POST",
                             headers: {
-                                Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg"
+                                Authorization: "" + (cookieToken || token)
                             },
                             body: submitData
                         })];
@@ -216,7 +245,10 @@ var NotionAdd = function () {
                     return [4 /*yield*/, response.json()];
                 case 3:
                     data = _b.sent();
-                    console.log("Post", data);
+                    console.log("Post 등록 완료:", data);
+                    setNewPostId(data._id);
+                    setIsRegistered(true);
+                    resetForm();
                     return [3 /*break*/, 5];
                 case 4:
                     error_3 = _b.sent();
@@ -226,9 +258,6 @@ var NotionAdd = function () {
             }
         });
     }); };
-    var handleLocationClick = function () {
-        navigate("/map");
-    };
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "bg-white w-[640px] h-full" },
@@ -274,6 +303,16 @@ var NotionAdd = function () {
                         react_1["default"].createElement("input", { type: "file", id: "image", name: "image", accept: "image/*", onChange: handleFileChange, className: "absolute hidden" }))),
                 imageUrls && imageUrls.length > 0 && (react_1["default"].createElement("div", { className: "flex flex-col items-center" },
                     react_1["default"].createElement("button", { className: "w-1/2 bg-gray-300 my-3 h-10 text-sm hover:bg-gray-400 hover:rounded-2xl transition-all", onClick: function () { return setImageUrls([]); } }, "\uC0AC\uC9C4 \uCD08\uAE30\uD654"))),
-                react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC784 \uB4F1\uB85D", size: "full", color: "green", onClick: handleSubmit })))));
+                react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC784 \uB4F1\uB85D", size: "full", color: "green", onClick: handleSubmit }))),
+        isRegistered && (react_1["default"].createElement("div", { className: "fixed inset-0 flex justify-center items-center backdrop-blur-sm bg-opacity-50" },
+            react_1["default"].createElement("div", { className: "bg-white p-5 border rounded-xl shadow-md" },
+                react_1["default"].createElement("div", { className: "flex justify-between items-center" },
+                    react_1["default"].createElement("p", { className: "text-lg font-bold mr-4" }, "\uBAA8\uC784\uC774 \uC131\uACF5\uC801\uC73C\uB85C \uB4F1\uB85D\uB418\uC5C8\uC2B5\uB2C8\uB2E4!"),
+                    react_1["default"].createElement(Button_1["default"], { label: "\uC0C1\uC138\uBCF4\uAE30", size: "mid", color: "green", onClick: function () {
+                            setIsRegistered(false);
+                            if (newPostId) {
+                                navigate("/notion/" + newPostId);
+                            }
+                        } })))))));
 };
 exports["default"] = NotionAdd;
