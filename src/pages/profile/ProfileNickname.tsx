@@ -44,13 +44,13 @@ const ProfileNickname = () => {
 
   const [myToken, setMyToken] = useState("");
   const [nickname, setNickname] = useState('');
+  const [myDetailData, setMyDetailData] = useState<UserData | null>(null)
 
   const myInfo = useTypedSelector((state) => state.currentUser);
-  let myDetailData: UserData | null = null
   
   useEffect(() => {
     try {
-      myDetailData = JSON.parse(myInfo.fullName);
+      setMyDetailData(JSON.parse(myInfo.fullName));
     } catch(err) {
       alert('잘못된 접근입니다.')
       navigate('/login')

@@ -17,10 +17,10 @@ var ProfileLocation = function () {
     var _d = react_1.useState(''), locaValue = _d[0], setLocaValue = _d[1];
     var _e = react_1.useState(''), cityValue = _e[0], setCityValue = _e[1];
     var myInfo = useTypedSelector(function (state) { return state.currentUser; });
-    var myDetailData = null;
+    var _f = react_1.useState(null), myDetailData = _f[0], setMyDetailData = _f[1];
     react_1.useEffect(function () {
         try {
-            myDetailData = JSON.parse(myInfo.fullName);
+            setMyDetailData(JSON.parse(myInfo.fullName));
         }
         catch (err) {
             alert('잘못된 접근 입니다.');

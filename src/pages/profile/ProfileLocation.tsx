@@ -53,11 +53,11 @@ const ProfileLocation = () => {
   const [cityValue, setCityValue] = useState('');
 
   const myInfo = useTypedSelector((state) => state.currentUser);
-  let myDetailData: UserData | null = null
+  const [myDetailData, setMyDetailData] = useState<UserData | null>(null)
 
   useEffect(() => {
     try {
-      myDetailData = JSON.parse(myInfo.fullName);
+      setMyDetailData(JSON.parse(myInfo.fullName));
     } catch (err) {
       alert('잘못된 접근 입니다.')
       navigate('/login')

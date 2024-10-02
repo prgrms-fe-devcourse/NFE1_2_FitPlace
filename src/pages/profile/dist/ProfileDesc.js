@@ -12,11 +12,11 @@ var ProfileDesc = function () {
     var navigate = react_router_dom_1.useNavigate();
     var _a = react_1.useState(""), myToken = _a[0], setMyToken = _a[1];
     var _b = react_1.useState(''), textValue = _b[0], setTextValue = _b[1];
+    var _c = react_1.useState(null), myDetailData = _c[0], setMyDetailData = _c[1];
     var myInfo = useTypedSelector(function (state) { return state.currentUser; });
-    var myDetailData = null;
     react_1.useEffect(function () {
         try {
-            myDetailData = JSON.parse(myInfo.fullName);
+            setMyDetailData(JSON.parse(myInfo.fullName));
         }
         catch (err) {
             alert('잘못된 접근입니다.');
