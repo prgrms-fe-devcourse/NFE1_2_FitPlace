@@ -2,7 +2,7 @@ import Button from "../../components/Button";
 
 const ProfileImg = () => {
   return (
-    <div className="w-140 min-h-screen bg-white p-3 flex flex-col justify-start relative">
+    <form className="w-140 min-h-screen bg-white p-3 flex flex-col justify-start relative">
       {/* 상단 안내문구 */}
       <div className="edit__head-top">
         <p className="font-bold text-xl">프로필 사진을 등록해주세요.</p>
@@ -49,7 +49,7 @@ const ProfileImg = () => {
           color="green"
         />
       </div>
-    </div>
+    </form>
   );
 };
 
