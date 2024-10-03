@@ -288,7 +288,7 @@ const NotionPage = () => {
                     <section className="mt-11 flex flex-col gap-5">
                         <div>
                             <p className="text-lg font-bold">
-                                멤버 {currentMember.length} /{" "}
+                                멤버 {postData.currentMember.length} /{" "}
                                 {postData.meetingCapacity}명
                             </p>
                         </div>
