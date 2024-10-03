@@ -4,6 +4,8 @@ import Header from "../components/Header";
 import NotionCategory from "../components/NotionCategory";
 import KakaoMap from "./KakaoMap";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Cookies } from "react-cookie";
 
 interface FormData {
     title: string;
@@ -50,68 +52,88 @@ const NotionAdd: React.FC = () => {
         lat: number;
         lng: number;
     } | null>(null);
-
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
     const [channels, setChannels] = useState<Channel[]>([]);
-
-    //이미지 업로드 부분(충돌 방지 주석)---------------------------------------------------------------
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const [imageFiles, setImageFiles] = useState<File[]>([]); // 선택된 파일들
-    const [imageUrls, setImageUrls] = useState<string[]>([]); // 업로드된 이미지 URL들
-
-    const handleFileChange = useCallback(
-        async (e: ChangeEvent<HTMLInputElement>) => {
-            const files = e.target.files;
-            if (files) {
-                const newFiles = Array.from(files);
-                setImageFiles((prev) => [...prev, ...newFiles]); // 기존 파일에 추가
-
-                const newUrls: string[] = [];
-                const formData = new FormData();
-
-                for (const file of newFiles) {
-                    formData.append("file", file);
-                    formData.append("upload_preset", UPLOAD_PRESET);
-
-                    try {
-                        const response = await fetch(
-                            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-                            {
-                                method: "POST",
-                                body: formData,
-                            }
-                        );
-                        const data = await response.json();
-                        newUrls.push(data.secure_url); // 업로드된 이미지 URL 추가
-                    } catch (error) {
-                        console.error("이미지 업로드 실패:", error);
-                    }
-                }
-                setImageUrls((prev) => [...prev, ...newUrls]); // 기존 URL에 추가
-                setFormData((prev) => ({
-                    ...prev,
-                    images: [...prev.images, ...newUrls],
-                })); // 폼 데이터에 이미지 URL 배열 저장
-            }
-        },
-        []
-    );
-
-    // 이미지 업로드 부분 여기까지---------------------------------------------------------------
-
+    const [isRegistered, setIsRegistered] = useState(false);
+    const [newPostId, setNewPostId] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchChannels();
+    const token = useSelector((state: any) => state.userToken);
+    const cookies = new Cookies();
 
+    const saveFormDataToStorage = (data: FormData) => {
+        sessionStorage.setItem("notionAddFormData", JSON.stringify(data));
+    };
+
+    const resetForm = () => {
+        sessionStorage.removeItem("notionAddFormData");
+        sessionStorage.removeItem("selectedLocation");
+        setFormData(INITIAL_FORM_STATE);
+        setSelectedLocation(null);
+    };
+
+    useEffect(() => {
+        const savedFormData = sessionStorage.getItem("notionAddFormData");
+        if (savedFormData) {
+            setFormData(JSON.parse(savedFormData));
+        }
+
+        //이미지 업로드 부분(충돌 방지 주석)---------------------------------------------------------------
+        const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+        const [imageFiles, setImageFiles] = useState<File[]>([]); // 선택된 파일들
+        const [imageUrls, setImageUrls] = useState<string[]>([]); // 업로드된 이미지 URL들
+
+        const handleFileChange = useCallback(
+            async (e: ChangeEvent<HTMLInputElement>) => {
+                const files = e.target.files;
+                if (files) {
+                    const newFiles = Array.from(files);
+                    setImageFiles((prev) => [...prev, ...newFiles]); // 기존 파일에 추가
+
+                    const newUrls: string[] = [];
+                    const formData = new FormData();
+
+                    for (const file of newFiles) {
+                        formData.append("file", file);
+                        formData.append("upload_preset", UPLOAD_PRESET);
+
+                        try {
+                            const response = await fetch(
+                                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+                                {
+                                    method: "POST",
+                                    body: formData,
+                                }
+                            );
+                            const data = await response.json();
+                            newUrls.push(data.secure_url); // 업로드된 이미지 URL 추가
+                        } catch (error) {
+                            console.error("이미지 업로드 실패:", error);
+                        }
+                    }
+                    setImageUrls((prev) => [...prev, ...newUrls]); // 기존 URL에 추가
+                    setFormData((prev) => ({
+                        ...prev,
+                        images: [...prev.images, ...newUrls],
+                    })); // 폼 데이터에 이미지 URL 배열 저장
+                }
+            },
+            []
+        );
+
+        // 이미지 업로드 부분 여기까지---------------------------------------------------------------
         const savedLocation = sessionStorage.getItem("selectedLocation");
         if (savedLocation) {
             const locationData = JSON.parse(savedLocation);
+            const locationString = `${locationData.address},${locationData.lat},${locationData.lng}`;
             setSelectedLocation(locationData);
             setFormData((prev) => ({
                 ...prev,
-                meetingSpot: locationData.address,
+                meetingSpot: locationString,
             }));
         }
+
+        fetchChannels();
     }, []);
 
     const fetchChannels = async () => {
@@ -130,19 +152,72 @@ const NotionAdd: React.FC = () => {
     const handleChange = useCallback(
         (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             const { name, value, type } = e.target;
-            setFormData((prev) => ({
-                ...prev,
+            const updatedFormData = {
+                ...formData,
                 [name]: type === "number" ? parseInt(value, 10) : value,
-            }));
+            };
+            setFormData(updatedFormData);
+            saveFormDataToStorage(updatedFormData);
+        },
+        [formData]
+    );
+
+    const handleCategorySelect = useCallback(
+        (category: string) => {
+            setFormData((prev) => ({ ...prev, channel: category }));
+            saveFormDataToStorage({ ...formData, channel: category });
+        },
+        [formData]
+    );
+
+    const handleFileChange = useCallback(
+        async (e: ChangeEvent<HTMLInputElement>) => {
+            const files = e.target.files;
+            if (files) {
+                const newFiles = Array.from(files);
+                const newUrls: string[] = [];
+                const formData = new FormData();
+
+                for (const file of newFiles) {
+                    formData.append("file", file);
+                    formData.append("upload_preset", UPLOAD_PRESET);
+
+                    try {
+                        const response = await fetch(
+                            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+                            {
+                                method: "POST",
+                                body: formData,
+                            }
+                        );
+                        const data = await response.json();
+                        newUrls.push(data.secure_url);
+                    } catch (error) {
+                        console.error("이미지 업로드 실패:", error);
+                    }
+                }
+                setImageUrls((prev) => [...prev, ...newUrls]);
+                setFormData((prev) => ({
+                    ...prev,
+                    images: [...prev.images, ...newUrls],
+                }));
+            }
         },
         []
     );
 
-    const handleCategorySelect = useCallback((category: string) => {
-        setFormData((prev) => ({ ...prev, channel: category }));
-    }, []);
+    const handleLocationClick = () => {
+        navigate("/map");
+    };
 
     const handleSubmit = async () => {
+        const cookieToken = cookies.get("token");
+
+        if (!token && !cookieToken) {
+            console.error("토큰이 없습니다. 로그인이 필요합니다.");
+            return;
+        }
+
         const channelId =
             channels.find((ch) => ch.name === formData.channel)?._id || "";
 
@@ -157,7 +232,7 @@ const NotionAdd: React.FC = () => {
             meetingTime: meetingTime,
             meetingSpot: formData.meetingSpot,
             channel: formData.channel,
-            image: formData.images, //이미지 업로드 부분
+            image: formData.images,
         };
 
         const submitData = new FormData();
@@ -168,7 +243,7 @@ const NotionAdd: React.FC = () => {
             const response = await fetch(`${API_URL}/posts/create`, {
                 method: "POST",
                 headers: {
-                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg`,
+                    Authorization: `${cookieToken || token}`,
                 },
                 body: submitData,
             });
@@ -178,17 +253,16 @@ const NotionAdd: React.FC = () => {
             }
 
             const data = await response.json();
-            console.log("Post", data);
+            console.log("Post 등록 완료:", data);
+            setNewPostId(data._id);
+            setIsRegistered(true);
+            resetForm();
         } catch (error) {
             console.error(
                 "Error: ",
                 error instanceof Error ? error.message : String(error)
             );
         }
-    };
-
-    const handleLocationClick = () => {
-        navigate("/map");
     };
 
     return (
@@ -341,7 +415,7 @@ const NotionAdd: React.FC = () => {
                             <KakaoMap
                                 isMarkerFixed={true}
                                 location={selectedLocation}
-                                style={{ height: "300px" }} // 높이를 300px로 설정
+                                style={{ height: "300px" }}
                             />
                         </div>
                     )}
@@ -395,6 +469,7 @@ const NotionAdd: React.FC = () => {
                             />
                         </div>
                     </div>
+
                     {/*사진 초기화하기 */}
                     {imageUrls && imageUrls.length > 0 && (
                         <div className="flex flex-col items-center">
@@ -416,6 +491,30 @@ const NotionAdd: React.FC = () => {
                     />
                 </form>
             </div>
+
+            {/* 모임 등록 성공 표시 */}
+            {isRegistered && (
+                <div className="fixed inset-0 flex justify-center items-center backdrop-blur-sm bg-opacity-50">
+                    <div className="bg-white p-5 border rounded-xl shadow-md">
+                        <div className="flex justify-between items-center">
+                            <p className="text-lg font-bold mr-4">
+                                모임이 성공적으로 등록되었습니다!
+                            </p>
+                            <Button
+                                label="상세보기"
+                                size="mid"
+                                color="green"
+                                onClick={() => {
+                                    setIsRegistered(false);
+                                    if (newPostId) {
+                                        navigate(`/notion/${newPostId}`);
+                                    }
+                                }}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
