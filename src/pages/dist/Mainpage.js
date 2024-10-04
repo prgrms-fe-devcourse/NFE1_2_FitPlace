@@ -90,15 +90,16 @@ var Mainpage = function () {
         Popular_Channel();
         Popular_post();
     }, []);
-    var Sort_Channel = channel
-        .sort(function (a, b) { return b.posts.length - a.posts.length; })
-        .slice(0, 5); //post가 많은 순서대로 정렬.
+    var Sort_Channel = channel;
     var Sort_Post = post
         .sort(function (a, b) { return b.likes.length - a.likes.length; })
         .slice(0, 6);
     react_1.useEffect(function () {
         console.log("post:", Sort_Post);
     }, [Sort_Post]);
+    react_1.useEffect(function () {
+        console.log("channel", Sort_Channel);
+    }, [Sort_Channel]);
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "w-140 min-h-screen bg-white p-3" },
@@ -106,14 +107,14 @@ var Mainpage = function () {
                 react_1["default"].createElement("button", { className: "w-full" },
                     react_1["default"].createElement(Search_bar_1["default"], { placeholder: "\uAC80\uC0C9" }))),
             Sort_Channel.length > 0 && (react_1["default"].createElement("section", { className: "mt-11" },
-                react_1["default"].createElement("p", { className: "font-bold mt-11 text-xl mb-3" }, "\uC778\uAE30\uC885\uBAA9"),
+                react_1["default"].createElement("p", { className: "font-bold mt-11 text-xl mb-3" }, "\uC778\uAE30 \uC885\uBAA9"),
                 react_1["default"].createElement("div", { className: "flex" },
-                    react_1["default"].createElement(Popular_sports_1["default"], { name: Sort_Channel[0].name, description: Sort_Channel[0].description, postLength: Sort_Channel[0].posts.length }),
-                    react_1["default"].createElement(Popular_sports_1["default"], { name: Sort_Channel[1].name, description: Sort_Channel[1].description, postLength: Sort_Channel[1].posts.length }),
-                    react_1["default"].createElement(Popular_sports_1["default"], { name: Sort_Channel[2].name, description: Sort_Channel[2].description, postLength: Sort_Channel[2].posts.length })),
+                    react_1["default"].createElement(Popular_sports_1["default"], { name: Sort_Channel[13].name, description: Sort_Channel[0].description, postLength: Sort_Channel[0].posts.length }),
+                    react_1["default"].createElement(Popular_sports_1["default"], { name: Sort_Channel[14].name, description: Sort_Channel[1].description, postLength: Sort_Channel[1].posts.length }),
+                    react_1["default"].createElement(Popular_sports_1["default"], { name: Sort_Channel[15].name, description: Sort_Channel[2].description, postLength: Sort_Channel[2].posts.length })),
                 react_1["default"].createElement("div", { className: "flex mx-24" },
-                    react_1["default"].createElement(Popular_sports_1["default"], { name: Sort_Channel[3].name, description: Sort_Channel[3].description, postLength: Sort_Channel[3].posts.length }),
-                    react_1["default"].createElement(Popular_sports_1["default"], { name: Sort_Channel[4].name, description: Sort_Channel[4].description, postLength: Sort_Channel[4].posts.length })))),
+                    react_1["default"].createElement(Popular_sports_1["default"], { name: Sort_Channel[11].name, description: Sort_Channel[3].description, postLength: Sort_Channel[3].posts.length }),
+                    react_1["default"].createElement(Popular_sports_1["default"], { name: Sort_Channel[12].name, description: Sort_Channel[4].description, postLength: Sort_Channel[4].posts.length })))),
             react_1["default"].createElement("section", null,
                 react_1["default"].createElement("p", { className: "font-bold mt-11 text-xl mb-3" }, "\uC778\uAE30 \uBAA8\uC784"),
                 react_1["default"].createElement("div", { className: "h-1/2" }, Sort_Post.length > 0 &&

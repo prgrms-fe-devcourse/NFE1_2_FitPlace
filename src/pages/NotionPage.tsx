@@ -130,7 +130,7 @@ const NotionPage = () => {
   return (
     <>
       <Header />
-      <div className="bg-white w-[640px] h-full">
+      <div className="bg-white w-[640px] min-h-screen">
         <div id="container" className="m-5 relative">
           {deleteModal && (
             <div className="flex justify-center absolute w-full h-full backdrop-blur-sm items-center">

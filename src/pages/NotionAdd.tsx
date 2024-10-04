@@ -202,6 +202,20 @@ const NotionAdd: React.FC = () => {
     submitData.append("title", JSON.stringify(customJsonData));
     submitData.append("channelId", channelId);
 
+    if (!formData.title) {
+      alert("제목을 입력해주세요!");
+      return;
+    } else if (formData.meetingCapacity === 0) {
+      alert("모집 인원을 입력해주세요!");
+      return;
+    } else if (!formData.channel) {
+      alert("종목을 선택해주세요!");
+      return;
+    } else if (!formData.meetingSpot) {
+      alert("운동할 위치를 지정해주세요!");
+      return;
+    }
+
     try {
       const response = await fetch(`${API_URL}/posts/create`, {
         method: "POST",
