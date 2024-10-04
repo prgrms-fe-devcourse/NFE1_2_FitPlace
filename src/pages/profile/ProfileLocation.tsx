@@ -49,35 +49,39 @@ const ProfileLocation = () => {
 
   // 도, 광역시 선택시 시군구 스크롤 최상단으로
   const myRef = useRef<HTMLUListElement>(null);
-
   const scrollTop = () => {
     if (myRef.current) {myRef.current.scrollTop = 0}
   }
 
+  // 업데이트 하는 값
   const handleEdit = async () => {
-    const putData = { ...myData };
-    putData.location = locaValue + ' ' + cityValue;
-    const submitData = JSON.stringify(putData);
-    await axios
-      .put(
-        "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",
-        {
-          fullName: submitData,
-        },
-        {
-          headers: {
-            Authorization: `bearer ${myToken}`,
+    if(locaValue !== '' && cityValue !== '') {
+      const putData = { ...myData };
+      putData.location = locaValue + ' ' + cityValue;
+      const submitData = JSON.stringify(putData);
+      await axios
+        .put(
+          "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",
+          {
+            fullName: submitData,
           },
-        }
-      )
-      .then((res) => {
-        if (res.status === 200) {
-          alert("수정 되었습니다.");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+          {
+            headers: {
+              Authorization: `bearer ${myToken}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            alert("수정 되었습니다.");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      return alert('지역을 선택해주십시요.')
+    }
   };
 
   return (

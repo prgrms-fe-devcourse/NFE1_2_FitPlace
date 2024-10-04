@@ -57,7 +57,8 @@ var ProfileDesc = function () {
     var navigate = react_router_dom_1.useNavigate();
     var _a = react_1.useState(""), myToken = _a[0], setMyToken = _a[1];
     var _b = react_1.useState(""), textValue = _b[0], setTextValue = _b[1];
-    var _c = react_1.useState(), myData = _c[0], setMyData = _c[1];
+    var _c = react_1.useState(0), textLength = _c[0], setTextLength = _c[1];
+    var _d = react_1.useState(), myData = _d[0], setMyData = _d[1];
     react_1.useEffect(function () {
         setMyToken(cookie.get("token").replace(/bearer\s+/g, ""));
         try {
@@ -81,6 +82,9 @@ var ProfileDesc = function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    if (!(textValue.length < 20 || textValue.length > 300)) return [3 /*break*/, 1];
+                    return [2 /*return*/, alert('소개글은 20자에서 300자 사이여야 합니다.')];
+                case 1:
                     putData = __assign({}, myData);
                     putData.description = textValue;
                     submitData = JSON.stringify(putData);
@@ -99,9 +103,10 @@ var ProfileDesc = function () {
                         })["catch"](function (err) {
                             console.log(err);
                         })];
-                case 1:
+                case 2:
                     _a.sent();
-                    return [2 /*return*/];
+                    _a.label = 3;
+                case 3: return [2 /*return*/];
             }
         });
     }); };
@@ -109,7 +114,13 @@ var ProfileDesc = function () {
         React.createElement("div", { className: "edit__head-top" },
             React.createElement("p", { className: "font-bold text-xl" }, "\uC18C\uAC1C\uAE00\uC744 \uC791\uC131\uD574\uC8FC\uC138\uC694.")),
         React.createElement("div", { className: "edit__head-btm mt-6" },
-            React.createElement("textarea", { name: "", id: "", value: textValue, onChange: function (e) { return setTextValue(e.target.value); }, placeholder: "\uC785\uB825\uD574\uC8FC\uC138\uC694", className: "px-4 py-5 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none rounded-lg shadow w-full font-bold text-xl placeholder:text-greenColor min-h-52 resize-none" })),
+            React.createElement("textarea", { name: "", id: "", value: textValue, onChange: function (e) {
+                    setTextValue(e.target.value);
+                    setTextLength(e.target.value.length);
+                }, placeholder: "\uC785\uB825\uD574\uC8FC\uC138\uC694", className: "px-4 py-5 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none rounded-lg shadow w-full font-bold text-xl placeholder:text-greenColor min-h-52 resize-none" }),
+            React.createElement("p", { className: "text-gray-400 text-right" },
+                textLength,
+                " / 300")),
         React.createElement("div", { className: "text-center absolute bottom-8 w-[calc(100%_-_1.5rem)]" },
             React.createElement(Button_1["default"], { label: "\uC800\uC7A5", size: "full", color: "green", onClick: handleEdit }))));
 };

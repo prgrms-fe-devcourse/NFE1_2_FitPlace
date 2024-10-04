@@ -87,11 +87,13 @@ var ProfileLocation = function () {
             myRef.current.scrollTop = 0;
         }
     };
+    // 업데이트 하는 값
     var handleEdit = function () { return __awaiter(void 0, void 0, void 0, function () {
         var putData, submitData;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    if (!(locaValue !== '' && cityValue !== '')) return [3 /*break*/, 2];
                     putData = __assign({}, myData);
                     putData.location = locaValue + ' ' + cityValue;
                     submitData = JSON.stringify(putData);
@@ -112,7 +114,9 @@ var ProfileLocation = function () {
                         })];
                 case 1:
                     _a.sent();
-                    return [2 /*return*/];
+                    return [3 /*break*/, 3];
+                case 2: return [2 /*return*/, alert('지역을 선택해주십시요.')];
+                case 3: return [2 /*return*/];
             }
         });
     }); };

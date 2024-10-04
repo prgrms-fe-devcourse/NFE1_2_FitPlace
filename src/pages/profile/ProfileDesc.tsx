@@ -19,6 +19,7 @@ const ProfileDesc = () => {
 
   const [myToken, setMyToken] = useState("");
   const [textValue, setTextValue] = useState("");
+  const [textLength, setTextLength] = useState(0);
   const [myData, setMyData] = useState<UserData>();
 
   useEffect(() => {
@@ -40,29 +41,33 @@ const ProfileDesc = () => {
   }, [cookie]);
 
   const handleEdit = async () => {
-    const putData = { ...myData };
-    putData.description = textValue;
-    const submitData = JSON.stringify(putData);
-    await axios
-      .put(
-        "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",
-        {
-          fullName: submitData,
-        },
-        {
-          headers: {
-            Authorization: `bearer ${myToken}`,
+    if(textValue.length < 20 || textValue.length > 300) {
+      return alert('소개글은 20자에서 300자 사이여야 합니다.')
+    } else {
+      const putData = { ...myData };
+      putData.description = textValue;
+      const submitData = JSON.stringify(putData);
+      await axios
+        .put(
+          "https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user",
+          {
+            fullName: submitData,
           },
-        }
-      )
-      .then((res) => {
-        if (res.status === 200) {
-          alert("수정 되었습니다.");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+          {
+            headers: {
+              Authorization: `bearer ${myToken}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            alert("수정 되었습니다.");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      }
   };
 
   return (
@@ -78,10 +83,16 @@ const ProfileDesc = () => {
           name=""
           id=""
           value={textValue}
-          onChange={(e) => setTextValue(e.target.value)}
+          onChange={(e) => {
+            setTextValue(e.target.value);
+            setTextLength(e.target.value.length);
+          }}
           placeholder="입력해주세요"
           className="px-4 py-5 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none rounded-lg shadow w-full font-bold text-xl placeholder:text-greenColor min-h-52 resize-none"
         ></textarea>
+        <p
+          className="text-gray-400 text-right"
+        >{textLength} / 300</p>
       </div>
 
       {/* 하단 저장 버튼 */}

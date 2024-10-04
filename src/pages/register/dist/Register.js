@@ -61,7 +61,7 @@ var Register = function () {
             userId: userId,
             location: '',
             description: '',
-            image: ''
+            image: []
         };
         if (checkEmail === 0 && checkPwConfirm === true) {
             regiObj.email = userEmail;

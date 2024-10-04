@@ -41,7 +41,11 @@ const ProfileNickname = () => {
 
   // 수정할 닉네임 서버로 전송
   const handleEdit = async () => {
-    if (nickname.length > 9 || nickname.length < 3 || nickname.includes(" ")) {
+    if (nickname.length > 9 ||
+        nickname.length < 3 ||
+        nickname.includes(" ") ||
+        nickname === ''
+      ) {
       alert("닉네임은 2 ~ 8자 사이여야 하며 공백이 없어야합니다.");
     } else {
       const putData = { ...myData };

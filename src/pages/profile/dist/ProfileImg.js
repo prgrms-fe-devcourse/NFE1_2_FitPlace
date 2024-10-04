@@ -58,6 +58,7 @@ var ProfileImg = function () {
     var imgUrl = "";
     var _a = react_1.useState(""), myToken = _a[0], setMyToken = _a[1];
     var _b = react_1.useState(), myData = _b[0], setMyData = _b[1];
+    // 토큰인증하고 API에서 값 받아오기 & 받아온 값으로 내 데이터 불러오기
     react_1.useEffect(function () {
         setMyToken(cookie.get("token").replace(/bearer\s+/g, ""));
         try {
@@ -76,36 +77,42 @@ var ProfileImg = function () {
             navigate("/");
         }
     }, [cookie]);
+    // 클라우디나리 이미지 업로드 함수
     var uploadImg = function (e) { return __awaiter(void 0, void 0, void 0, function () {
         var file, formData, response, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!!e.target.files) return [3 /*break*/, 1];
-                    return [2 /*return*/];
+                    if (!Array.isArray(myData === null || myData === void 0 ? void 0 : myData.image)) return [3 /*break*/, 6];
+                    if (!(myData.image.length >= 2)) return [3 /*break*/, 1];
+                    return [2 /*return*/, alert('프로필 사진은 최대 두개까지 등록가능합니다.')];
                 case 1:
+                    if (!!e.target.files) return [3 /*break*/, 2];
+                    return [2 /*return*/];
+                case 2:
                     file = e.target.files[0];
                     formData = new FormData();
                     formData.append("file", file);
                     formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
                     formData.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
-                    _a.label = 2;
-                case 2:
-                    _a.trys.push([2, 4, , 5]);
-                    return [4 /*yield*/, axios_1["default"].post("https://api.cloudinary.com/v1_1/" + import.meta.env.VITE_CLOUD_NAME + "/upload", formData)];
+                    _a.label = 3;
                 case 3:
+                    _a.trys.push([3, 5, , 6]);
+                    return [4 /*yield*/, axios_1["default"].post("https://api.cloudinary.com/v1_1/" + import.meta.env.VITE_CLOUD_NAME + "/upload", formData)];
+                case 4:
                     response = _a.sent();
                     imgUrl = response.data.secure_url;
                     putImg(imgUrl);
-                    return [3 /*break*/, 5];
-                case 4:
+                    return [3 /*break*/, 6];
+                case 5:
                     err_1 = _a.sent();
                     console.log(err_1);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     }); };
+    // 클라우디나리에 업로드된 이미지 API에 넣는 함수
     var putImg = function (imgUrlParams) { return __awaiter(void 0, void 0, void 0, function () {
         var putData, submitData;
         return __generator(this, function (_a) {
@@ -143,6 +150,42 @@ var ProfileImg = function () {
             }
         });
     }); };
+    // API에서 이미지 삭제하는 팡션
+    var deleteImg = function (e) { return __awaiter(void 0, void 0, void 0, function () {
+        var target, imgUrl, putData, matchedIndex, submitData;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    target = e.currentTarget;
+                    imgUrl = target.getAttribute('data-imgUrl');
+                    if (!confirm('삭제하시겠습니까?')) return [3 /*break*/, 2];
+                    putData = __assign({}, myData);
+                    if (!(Array.isArray(putData.image) && typeof imgUrl === 'string')) return [3 /*break*/, 2];
+                    matchedIndex = putData.image.findIndex(function (item) { return item === imgUrl; });
+                    putData.image.splice(matchedIndex, 1);
+                    submitData = JSON.stringify(putData);
+                    return [4 /*yield*/, axios_1["default"]
+                            .put("https://kdt.frontend.5th.programmers.co.kr:5009/settings/update-user", {
+                            fullName: submitData
+                        }, {
+                            headers: {
+                                Authorization: "bearer " + myToken
+                            }
+                        })
+                            .then(function (res) {
+                            if (res.status === 200) {
+                                alert("수정 되었습니다.");
+                            }
+                        })["catch"](function (err) {
+                            console.log(err);
+                        })];
+                case 1:
+                    _a.sent();
+                    _a.label = 2;
+                case 2: return [2 /*return*/];
+            }
+        });
+    }); };
     return (React.createElement("form", { className: "w-140 min-h-screen bg-white p-3 flex flex-col justify-start relative" },
         React.createElement("div", { className: "edit__head-top" },
             React.createElement("p", { className: "font-bold text-xl" }, "\uD504\uB85C\uD544 \uC0AC\uC9C4\uC744 \uB4F1\uB85D\uD574\uC8FC\uC138\uC694."),
@@ -151,7 +194,9 @@ var ProfileImg = function () {
             React.createElement("ul", { className: "flex justify-start items-start flex-wrap gap-4" },
                 Array.isArray(myData === null || myData === void 0 ? void 0 : myData.image) &&
                     myData.image.map(function (img, idx) {
-                        return (React.createElement("li", { className: "w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P" }, myData.image.length === 0 ? (React.createElement("img", { src: "/src/assets/defaultProfileImg.svg", alt: "\uAE30\uBCF8 \uD504\uB85C\uD544 \uC0AC\uC9C4", className: "w-full h-full object-cover absolute", key: idx })) : (React.createElement("img", { src: img, alt: (myData === null || myData === void 0 ? void 0 : myData.fullName) + "\uB2D8\uC758 \uC0AC\uC9C4", className: "w-full h-full object-cover absolute", key: idx }))));
+                        return (React.createElement("li", { className: "w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P overflow-hidden" },
+                            myData.image.length === 0 ? (React.createElement("img", { src: "/src/assets/defaultProfileImg.svg", alt: "\uAE30\uBCF8 \uD504\uB85C\uD544 \uC0AC\uC9C4", className: "w-full h-full object-cover absolute", key: idx })) : (React.createElement("img", { src: img, alt: (myData === null || myData === void 0 ? void 0 : myData.fullName) + "\uB2D8\uC758 \uC0AC\uC9C4", className: "w-full h-full object-cover absolute", key: idx })),
+                            React.createElement("p", { className: "absolute top-0 right-0 cursor-pointer", "data-imgUrl": img, onClick: deleteImg }, "\u274C")));
                     }),
                 React.createElement("li", { className: "bg-gray-100 hover:bg-gray-200 w-[calc(33.33333%_-_1rem)] relative rounded shadow after:block after:pb-100P" },
                     React.createElement("label", { htmlFor: "imgUploadInput", className: "w-full h-full absolute flex justify-center items-center cursor-pointer" },

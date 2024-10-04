@@ -82,7 +82,10 @@ var ProfileNickname = function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!(nickname.length > 9 || nickname.length < 3 || nickname.includes(" "))) return [3 /*break*/, 1];
+                    if (!(nickname.length > 9 ||
+                        nickname.length < 3 ||
+                        nickname.includes(" ") ||
+                        nickname === '')) return [3 /*break*/, 1];
                     alert("닉네임은 2 ~ 8자 사이여야 하며 공백이 없어야합니다.");
                     return [3 /*break*/, 3];
                 case 1:
