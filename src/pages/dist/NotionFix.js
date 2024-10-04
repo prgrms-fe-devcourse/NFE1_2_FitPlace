@@ -60,8 +60,8 @@ var Header_1 = require("../components/Header");
 var NotionCategory_1 = require("../components/NotionCategory");
 var KakaoMap_1 = require("./KakaoMap");
 var react_router_dom_1 = require("react-router-dom");
-var react_redux_1 = require("react-redux");
-var react_cookie_1 = require("react-cookie");
+var react_router_dom_2 = require("react-router-dom");
+var axios_1 = require("axios");
 var INITIAL_FORM_STATE = {
     title: "",
     channel: "",
@@ -78,22 +78,54 @@ var INITIAL_FORM_STATE = {
 var API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
 var CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
 var UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-var NotionAdd = function () {
+var NotionFix = function () {
+    var id = react_router_dom_2.useParams().id;
     var _a = react_1.useState(INITIAL_FORM_STATE), formData = _a[0], setFormData = _a[1];
     var _b = react_1.useState(null), selectedLocation = _b[0], setSelectedLocation = _b[1];
     var _c = react_1.useState([]), channels = _c[0], setChannels = _c[1];
-    var _d = react_1.useState(null), previewUrl = _d[0], setPreviewUrl = _d[1];
-    var _e = react_1.useState([]), imageFiles = _e[0], setImageFiles = _e[1];
-    var _f = react_1.useState([]), imageUrls = _f[0], setImageUrls = _f[1];
+    var _d = react_1.useState(), original_data = _d[0], setOriginal_data = _d[1];
+    var Get_post_info = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/posts/" + id)];
+                case 1:
+                    response = _a.sent();
+                    setOriginal_data(JSON.parse(response.data.title));
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    console.log(error_1);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    react_1.useEffect(function () {
+        Get_post_info();
+    }, []);
+    react_1.useEffect(function () {
+        console.log(original_data);
+    }, [original_data]);
+    react_1.useEffect(function () {
+        setFormData(function (prev) { return (__assign(__assign({}, prev), { title: original_data === null || original_data === void 0 ? void 0 : original_data.title, channel: original_data === null || original_data === void 0 ? void 0 : original_data.channel, currentMember: original_data === null || original_data === void 0 ? void 0 : original_data.currentMember, meetingCapacity: original_data === null || original_data === void 0 ? void 0 : original_data.meetingCapacity, meetingTime: original_data === null || original_data === void 0 ? void 0 : original_data.meetingTime, meetingSpot: original_data === null || original_data === void 0 ? void 0 : original_data.meetingSpot, meetingInfo: original_data === null || original_data === void 0 ? void 0 : original_data.meetingInfo })); });
+        setImageUrls((original_data === null || original_data === void 0 ? void 0 : original_data.image) || []); // 기존 이미지 URL로 초기화
+    }, [original_data]);
+    //이미지 업로드 부분(충돌 방지 주석)---------------------------------------------------------------
+    var _e = react_1.useState(null), previewUrl = _e[0], setPreviewUrl = _e[1];
+    var _f = react_1.useState([]), imageFiles = _f[0], setImageFiles = _f[1]; // 선택된 파일들
+    var _g = react_1.useState([]), imageUrls = _g[0], setImageUrls = _g[1]; // 업로드된 이미지 URL들
     var handleFileChange = react_1.useCallback(function (e) { return __awaiter(void 0, void 0, void 0, function () {
-        var files, newFiles_2, newUrls_1, formData_1, _i, newFiles_1, file, response, data, error_1;
+        var files, newFiles_2, newUrls_1, formData_1, _i, newFiles_1, file, response, data, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     files = e.target.files;
                     if (!files) return [3 /*break*/, 8];
                     newFiles_2 = Array.from(files);
-                    setImageFiles(function (prev) { return __spreadArrays(prev, newFiles_2); });
+                    setImageFiles(function (prev) { return __spreadArrays(prev, newFiles_2); }); // 기존 파일에 추가
                     newUrls_1 = [];
                     formData_1 = new FormData();
                     _i = 0, newFiles_1 = newFiles_2;
@@ -115,53 +147,36 @@ var NotionAdd = function () {
                     return [4 /*yield*/, response.json()];
                 case 4:
                     data = _a.sent();
-                    newUrls_1.push(data.secure_url);
+                    newUrls_1.push(data.secure_url); // 업로드된 이미지 URL 추가
                     return [3 /*break*/, 6];
                 case 5:
-                    error_1 = _a.sent();
-                    console.error("이미지 업로드 실패:", error_1);
+                    error_2 = _a.sent();
+                    console.error("이미지 업로드 실패:", error_2);
                     return [3 /*break*/, 6];
                 case 6:
                     _i++;
                     return [3 /*break*/, 1];
                 case 7:
-                    setImageUrls(function (prev) { return __spreadArrays(prev, newUrls_1); });
-                    setFormData(function (prev) { return (__assign(__assign({}, prev), { images: __spreadArrays(prev.images, newUrls_1) })); });
+                    setImageUrls(function (prev) { return __spreadArrays(prev, newUrls_1); }); // 기존 URL에 추가
+                    setFormData(function (prev) { return (__assign(__assign({}, prev), { images: __spreadArrays(prev.images, newUrls_1) })); }); // 폼 데이터에 이미지 URL 배열 저장
                     _a.label = 8;
                 case 8: return [2 /*return*/];
             }
         });
     }); }, []);
-    var _g = react_1.useState(false), isRegistered = _g[0], setIsRegistered = _g[1];
-    var _h = react_1.useState(null), newPostId = _h[0], setNewPostId = _h[1];
+    // 이미지 업로드 부분 여기까지---------------------------------------------------------------
     var navigate = react_router_dom_1.useNavigate();
-    var token = react_redux_1.useSelector(function (state) { return state.userToken; });
-    var cookies = new react_cookie_1.Cookies();
-    var saveFormDataToStorage = function (data) {
-        sessionStorage.setItem("notionAddFormData", JSON.stringify(data));
-    };
-    var resetForm = function () {
-        sessionStorage.removeItem("notionAddFormData");
-        sessionStorage.removeItem("selectedLocation");
-        setFormData(INITIAL_FORM_STATE);
-        setSelectedLocation(null);
-    };
     react_1.useEffect(function () {
-        var savedFormData = sessionStorage.getItem("notionAddFormData");
-        if (savedFormData) {
-            setFormData(JSON.parse(savedFormData));
-        }
+        fetchChannels();
         var savedLocation = sessionStorage.getItem("selectedLocation");
         if (savedLocation) {
-            var locationData = JSON.parse(savedLocation);
-            var locationString_1 = locationData.address + "," + locationData.lat + "," + locationData.lng;
-            setSelectedLocation(locationData);
-            setFormData(function (prev) { return (__assign(__assign({}, prev), { meetingSpot: locationString_1 })); });
+            var locationData_1 = JSON.parse(savedLocation);
+            setSelectedLocation(locationData_1);
+            setFormData(function (prev) { return (__assign(__assign({}, prev), { meetingSpot: locationData_1.address })); });
         }
-        fetchChannels();
     }, []);
     var fetchChannels = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response, data, error_2;
+        var response, data, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -178,42 +193,34 @@ var NotionAdd = function () {
                     setChannels(data);
                     return [3 /*break*/, 4];
                 case 3:
-                    error_2 = _a.sent();
-                    console.error("Error fetching channels:", error_2);
+                    error_3 = _a.sent();
+                    console.error("Error fetching channels:", error_3);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var handleChange = react_1.useCallback(function (e) {
-        var _a;
-        var _b = e.target, name = _b.name, value = _b.value, type = _b.type;
-        var updatedFormData = __assign(__assign({}, formData), (_a = {}, _a[name] = type === "number" ? parseInt(value, 10) : value, _a));
-        setFormData(updatedFormData);
-        saveFormDataToStorage(updatedFormData);
-    }, [formData]);
+        var _a = e.target, name = _a.name, value = _a.value, type = _a.type;
+        setFormData(function (prev) {
+            var _a;
+            return (__assign(__assign({}, prev), (_a = {}, _a[name] = type === "number" ? parseInt(value, 10) : value, _a)));
+        });
+    }, []);
     var handleCategorySelect = react_1.useCallback(function (category) {
         setFormData(function (prev) { return (__assign(__assign({}, prev), { channel: category })); });
-        saveFormDataToStorage(__assign(__assign({}, formData), { channel: category }));
-    }, [formData]);
-    var handleLocationClick = function () {
-        navigate("/map");
-    };
+    }, []);
     var handleSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var cookieToken, channelId, meetingTime, customJsonData, submitData, response, data, error_3;
+        var channelId, meetingTime, imagesToSubmit, customJsonData, submitData, response, data, error_4;
         var _a;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    cookieToken = cookies.get("token");
-                    if (!token && !cookieToken) {
-                        console.error("토큰이 없습니다. 로그인이 필요합니다.");
-                        return [2 /*return*/];
-                    }
                     channelId = ((_a = channels.find(function (ch) { return ch.name === formData.channel; })) === null || _a === void 0 ? void 0 : _a._id) || "";
                     meetingTime = formData.isTimeFlexible
                         ? formData.meetingDate + ", \uC2DC\uAC04 \uBB34\uAD00"
                         : formData.meetingDate + " " + formData.meetingStartTime + " - " + formData.meetingEndTime;
+                    imagesToSubmit = __spreadArrays(original_data === null || original_data === void 0 ? void 0 : original_data.image, formData.images);
                     customJsonData = {
                         title: formData.title,
                         currentMember: formData.currentMember,
@@ -221,18 +228,19 @@ var NotionAdd = function () {
                         meetingTime: meetingTime,
                         meetingSpot: formData.meetingSpot,
                         channel: formData.channel,
-                        image: formData.images
+                        image: imagesToSubmit
                     };
                     submitData = new FormData();
                     submitData.append("title", JSON.stringify(customJsonData));
                     submitData.append("channelId", channelId);
+                    submitData.append("postId", id);
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch(API_URL + "/posts/create", {
-                            method: "POST",
+                    return [4 /*yield*/, fetch(API_URL + "/posts/update", {
+                            method: "PUT",
                             headers: {
-                                Authorization: "" + (cookieToken || token)
+                                Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg"
                             },
                             body: submitData
                         })];
@@ -241,23 +249,24 @@ var NotionAdd = function () {
                     if (!response.ok) {
                         throw new Error("HTTP error : " + response.status);
                     }
-                    navigate("/");
+                    navigate("/notion/" + id);
                     return [4 /*yield*/, response.json()];
                 case 3:
                     data = _b.sent();
-                    console.log("Post 등록 완료:", data);
-                    setNewPostId(data._id);
-                    setIsRegistered(true);
-                    resetForm();
+                    console.log("Post", data);
                     return [3 /*break*/, 5];
                 case 4:
-                    error_3 = _b.sent();
-                    console.error("Error: ", error_3 instanceof Error ? error_3.message : String(error_3));
+                    error_4 = _b.sent();
+                    console.log(submitData);
+                    console.error("Error: ", error_4 instanceof Error ? error_4.message : String(error_4));
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
             }
         });
     }); };
+    var handleLocationClick = function () {
+        navigate("/map");
+    };
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "bg-white w-[640px] h-full" },
@@ -303,16 +312,6 @@ var NotionAdd = function () {
                         react_1["default"].createElement("input", { type: "file", id: "image", name: "image", accept: "image/*", onChange: handleFileChange, className: "absolute hidden" }))),
                 imageUrls && imageUrls.length > 0 && (react_1["default"].createElement("div", { className: "flex flex-col items-center" },
                     react_1["default"].createElement("button", { className: "w-1/2 bg-gray-300 my-3 h-10 text-sm hover:bg-gray-400 hover:rounded-2xl transition-all", onClick: function () { return setImageUrls([]); } }, "\uC0AC\uC9C4 \uCD08\uAE30\uD654"))),
-                react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC784 \uB4F1\uB85D", size: "full", color: "green", onClick: handleSubmit }))),
-        isRegistered && (react_1["default"].createElement("div", { className: "fixed inset-0 flex justify-center items-center backdrop-blur-sm bg-opacity-50" },
-            react_1["default"].createElement("div", { className: "bg-white p-5 border rounded-xl shadow-md" },
-                react_1["default"].createElement("div", { className: "flex justify-between items-center" },
-                    react_1["default"].createElement("p", { className: "text-lg font-bold mr-4" }, "\uBAA8\uC784\uC774 \uC131\uACF5\uC801\uC73C\uB85C \uB4F1\uB85D\uB418\uC5C8\uC2B5\uB2C8\uB2E4!"),
-                    react_1["default"].createElement(Button_1["default"], { label: "\uC0C1\uC138\uBCF4\uAE30", size: "mid", color: "green", onClick: function () {
-                            setIsRegistered(false);
-                            if (newPostId) {
-                                navigate("/notion/" + newPostId);
-                            }
-                        } })))))));
+                react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC784 \uC815\uBCF4 \uC218\uC815\uD558\uAE30", size: "full", color: "green", onClick: handleSubmit })))));
 };
-exports["default"] = NotionAdd;
+exports["default"] = NotionFix;

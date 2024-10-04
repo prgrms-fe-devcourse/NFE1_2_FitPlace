@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/FitPlaceLogo.svg";
 import iconUser from "../assets/icon_user_profile.svg";
 import favorite from "../assets/favorite.svg";
@@ -9,6 +10,7 @@ import Header from "../components/Header";
 import KakaoMap from "./KakaoMap"; // KakaoMap 컴포넌트 불러오기
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 interface ParsedPost {
   _id: string;
@@ -31,12 +33,18 @@ interface ParsedPost {
 }
 
 const NotionPage = () => {
+  const navigate = useNavigate();
   const [deleteModal, setDeleteModal] = useState(false);
   const modalBackground = useRef();
   const { id } = useParams();
 
   const [postData, setPostData] = useState<ParsedPost | null>(null);
-  const [location, setLocation] = useState<{ address: string; lat: number; lng: number } | null>(null); 
+  const [PrevData, setPrevData] = useState({});
+  const [location, setLocation] = useState<{
+    address: string;
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   const parsePostData = (post: any): ParsedPost => {
     try {
@@ -57,8 +65,7 @@ const NotionPage = () => {
         currentMember: parseInt(parsedTitle.currentMember, 10),
         channel: parsedTitle.channel,
         meetingDate: parsedTitle.meetingDate,
-        meetingStartTime: parsedTitle.meetingStartTime,
-        meetingEndTime: parsedTitle.meetingEndTime,
+        meetingTime: parsedTitle.meetingTime,
         isTimeFlexible: parsedTitle.isTimeFlexible,
         meetingInfo: parsedTitle.meetingInfo,
         meetingSpot: parsedTitle.meetingSpot,
@@ -99,7 +106,27 @@ const NotionPage = () => {
   if (!postData) {
     return <div>Loading...</div>;
   }
+  //게시글 삭제 코드 입니다. 충돌 방지--------------------------------------------------------
+  const Delete_post = async () => {
+    try {
+      await axios.delete(
+        `https://kdt.frontend.5th.programmers.co.kr:5009/posts/delete/`,
+        {
+          headers: {
+            Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDE0ODU5fQ.Al40jxy-6yrAoANrY3fQA1joeNw08-fjByus_ZfxXSk`,
+          },
+          data: {
+            id: id,
+          },
+        }
+      );
 
+      navigate("/");
+    } catch (error) {
+      console.log("게시글 삭제 실패", error);
+    }
+  };
+  //-------------------------------------------
   return (
     <>
       <Header />
@@ -118,7 +145,12 @@ const NotionPage = () => {
                 <div>
                   <p>게시글을 삭제할까요?</p>
                   <div className="flex gap-5 mt-2">
-                    <Button label="삭제" size="mid" color="green" />
+                    <Button
+                      label="삭제"
+                      size="mid"
+                      color="green"
+                      onClick={Delete_post}
+                    />
                     <Button
                       label="취소"
                       size="mid"
@@ -140,8 +172,10 @@ const NotionPage = () => {
                 )}
 
                 <div className="text-xs text-[#898989] flex gap-2">
-                  <button>수정</button>|
-                  <button onClick={() => setDeleteModal(true)}>삭제</button>
+                  <Link to={`/notionFix/${id}`}>
+                    <button>수정</button>
+                  </Link>
+                  |<button onClick={() => setDeleteModal(true)}>삭제</button>
                 </div>
               </div>
 
@@ -161,7 +195,7 @@ const NotionPage = () => {
               <div className="flex gap-5">
                 <p className="text-lg font-bold">일시</p>
                 <p className="text-sm text-[#7e7e7e]">
-                  {postData.meetingDate || "시간 무관"}
+                  {postData.meetingTime || "시간 무관"}
                 </p>
               </div>
             </div>
@@ -172,7 +206,10 @@ const NotionPage = () => {
             </div>
             {postData.image && postData.image.length > 0 ? (
               postData.image.map((URL, i) => (
-                <div className="flex flex-wrap justify-center border-2 border-gray-200 my-2" key={i}>
+                <div
+                  className="flex flex-wrap justify-center border-2 border-gray-200 my-2"
+                  key={i}
+                >
                   <img
                     className="w-96 h-96"
                     src={URL}

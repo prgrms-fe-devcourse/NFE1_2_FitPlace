@@ -21,6 +21,7 @@ import CommentPage from "./pages/CommentPage";
 import { Cookies } from "react-cookie";
 import { initializeToken, isLogin } from "./data/store";
 import { useDispatch } from "react-redux";
+import NotionFix from "./pages/NotionFix";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -50,6 +51,7 @@ const App = () => {
         <Route path="/map" element={<Location />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/notifications" element={<NotificationPage />} />
+        <Route path="/notionFix/:id" element={<NotionFix />} />
         <Route path="/notionAdd" element={<NotionAdd />} />
         <Route path="/notion/:id" element={<NotionPage />} />
         <Route path="/notion/:id/comments" element={<CommentPage />} />
