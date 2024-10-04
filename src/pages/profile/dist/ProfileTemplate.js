@@ -161,22 +161,13 @@ var ProfileTemplate = function () {
             }
         });
     };
-    var expireToken = function () {
-        cookie.remove('token', { path: '/' });
-        console.log(cookie.get('token'));
-    };
-    var ex = function () {
-        console.log(likedData);
-    };
     return (React.createElement("div", { className: "w-140 min-h-screen bg-white p-3" },
-        React.createElement(react_router_dom_1.Link, { to: '/profile/edit' }, "\uC784\uC2DC\uB9AC\uB3D9"),
-        React.createElement("p", { onClick: expireToken }, "\uC784\uC2DC\uD3ED\uD30C"),
         React.createElement("div", { className: "flex flex-col justify-center items-stretch" },
             React.createElement("div", { className: "flex flex-col justify-center items-stretch text-center pt-8 pb-6 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow" },
                 React.createElement("div", { id: "profileImg", className: "mx-auto w-24 h-24 overflow-hidden rounded-lg" }, profileData.image.length !== 0
                     ? React.createElement("img", { src: profileData.image[0], alt: (profileData === null || profileData === void 0 ? void 0 : profileData.fullName) + "\uB2D8\uC758 \uD504\uB85C\uD544 \uC0AC\uC9C4", className: "object-cover w-full h-full" })
                     : React.createElement("img", { src: "/src/assets/defaultProfileImg.svg", alt: (profileData === null || profileData === void 0 ? void 0 : profileData.fullName) + "\uB2D8\uC758 \uD504\uB85C\uD544 \uC0AC\uC9C4", className: "object-cover w-full h-full" })),
-                React.createElement("div", { className: "mt-2", onClick: ex },
+                React.createElement("div", { className: "mt-2" },
                     React.createElement("p", { className: "text-3xl font-bold" }, !profileData.fullName || profileData.fullName === ''
                         ? "닉네임"
                         : profileData === null || profileData === void 0 ? void 0 : profileData.fullName)),

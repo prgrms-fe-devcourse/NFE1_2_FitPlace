@@ -151,19 +151,8 @@ const ProfileTemplate = () => {
     })
   }
 
-  const expireToken = () => {
-    cookie.remove('token', { path: '/' })
-    console.log(cookie.get('token'))
-  }
-
-  const ex = () => {
-    console.log(likedData)
-  }
-
   return (
     <div className="w-140 min-h-screen bg-white p-3">
-      <Link to={'/profile/edit'}>임시리동</Link>
-      <p onClick={expireToken}>임시폭파</p>
       <div className="flex flex-col justify-center items-stretch">
         {/* 프로필 상단 정보 영역 */}
         <div className="flex flex-col justify-center items-stretch text-center pt-8 pb-6 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow">
@@ -185,7 +174,7 @@ const ProfileTemplate = () => {
           </div>
 
           {/* 닉네임 */}
-          <div className="mt-2" onClick={ex}>
+          <div className="mt-2">
             <p className="text-3xl font-bold">{
             !profileData.fullName || profileData.fullName === ''
             ? "닉네임"
