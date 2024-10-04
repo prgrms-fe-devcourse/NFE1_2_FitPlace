@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Cookies } from "react-cookie";
+import Header from "../../components/Header";
 
 interface LikeArr {
   _id: string;
@@ -158,90 +159,92 @@ const ProfileTemplate = () => {
   };
 
   return (
-    <div className="w-140 min-h-screen bg-white p-3">
-      <div className="flex flex-col justify-center items-stretch">
-        {/* 프로필 상단 정보 영역 */}
-        <div className="flex flex-col justify-center items-stretch text-center pt-8 pb-6 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow">
-          {/* 프로필 이미지 */}
-          <div
-            id="profileImg"
-            className="mx-auto w-24 h-24 overflow-hidden rounded-lg"
-          >
-            {profileData.image.length !== 0 ? (
-              <img
-                src={profileData.image[0]}
-                alt={`${profileData?.fullName}님의 프로필 사진`}
-                className="object-cover w-full h-full"
-              />
-            ) : (
-              <img
-                src="/src/assets/defaultProfileImg.svg"
-                alt={`${profileData?.fullName}님의 프로필 사진`}
-                className="object-cover w-full h-full"
-              />
-            )}
-          </div>
+    <>
+      <Header />
+      <div className="w-140 min-h-screen bg-white p-3">
+        <div className="flex flex-col justify-center items-stretch">
+          {/* 프로필 상단 정보 영역 */}
+          <div className="flex flex-col justify-center items-stretch text-center pt-8 pb-6 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow">
+            {/* 프로필 이미지 */}
+            <div
+              id="profileImg"
+              className="mx-auto w-24 h-24 overflow-hidden rounded-lg"
+            >
+              {profileData.image.length !== 0 ? (
+                <img
+                  src={profileData.image[0]}
+                  alt={`${profileData?.fullName}님의 프로필 사진`}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <img
+                  src="/src/assets/defaultProfileImg.svg"
+                  alt={`${profileData?.fullName}님의 프로필 사진`}
+                  className="object-cover w-full h-full"
+                />
+              )}
+            </div>
 
-          {/* 닉네임 */}
-          <div className="mt-2">
-            <p className="text-3xl font-bold">
-              {!profileData.fullName || profileData.fullName === ""
-                ? "닉네임"
-                : profileData?.fullName}
-            </p>
-          </div>
-
-          {/* 운동완료 횟수 */}
-          <div className="mt-6">
-            <p className="text-base font-normal">
-              <span className="font-bold">0</span>회 오늘의 같이 운동 완료!
-            </p>
-          </div>
-        </div>
-
-        {/* 하단 기타 정보들 래퍼 */}
-        <div className="profile__bottom flex flex-col justify-center items-stretch gap-5 mt-6">
-          {/* 소개글 */}
-          <ProfileWrap
-            category="소개글"
-            description={
-              !profileData?.description
-                ? "아직 작성하지 않았어요"
-                : profileData.description
-            }
-          />
-
-          {/* 지역 */}
-          <ProfileWrap
-            category="지역"
-            description={
-              !profileData?.location
-                ? "아직 작성하지 않았어요"
-                : profileData.location
-            }
-          />
-
-          {/* 좋아요를 누른 게시물 */}
-          <div className="py-4 px-5 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow">
-            <p className="font-bold text-base">좋아요를 누른 게시물</p>
-            {likedData === null ||
-            likedData[0] === "없음" ||
-            likedData.length === 0 ? (
-              <p className="font-medium text-base mt-4">
-                좋아요를 누른 게시물이 없습니다
+            {/* 닉네임 */}
+            <div className="mt-2">
+              <p className="text-3xl font-bold">
+                {!profileData.fullName || profileData.fullName === ""
+                  ? "닉네임"
+                  : profileData?.fullName}
               </p>
-            ) : (
-              likedData.map((item, idx) => {
-                return (
-                  <p className="font-medium text-base mt-4" key={idx}>
-                    {item}
-                  </p>
-                );
-              })
-            )}
+            </div>
+
+            {/* 운동완료 횟수 */}
+            <div className="mt-6">
+              <p className="text-base font-normal">
+                <span className="font-bold">0</span>회 오늘의 같이 운동 완료!
+              </p>
+            </div>
           </div>
 
-          {/* 오늘의 일정
+          {/* 하단 기타 정보들 래퍼 */}
+          <div className="profile__bottom flex flex-col justify-center items-stretch gap-5 mt-6">
+            {/* 소개글 */}
+            <ProfileWrap
+              category="소개글"
+              description={
+                !profileData?.description
+                  ? "아직 작성하지 않았어요"
+                  : profileData.description
+              }
+            />
+
+            {/* 지역 */}
+            <ProfileWrap
+              category="지역"
+              description={
+                !profileData?.location
+                  ? "아직 작성하지 않았어요"
+                  : profileData.location
+              }
+            />
+
+            {/* 좋아요를 누른 게시물 */}
+            <div className="py-4 px-5 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow">
+              <p className="font-bold text-base">좋아요를 누른 게시물</p>
+              {likedData === null ||
+              likedData[0] === "없음" ||
+              likedData.length === 0 ? (
+                <p className="font-medium text-base mt-4">
+                  좋아요를 누른 게시물이 없습니다
+                </p>
+              ) : (
+                likedData.map((item, idx) => {
+                  return (
+                    <p className="font-medium text-base mt-4" key={idx}>
+                      {item}
+                    </p>
+                  );
+                })
+              )}
+            </div>
+
+            {/* 오늘의 일정
           <ProfileWrap
             category="오늘의 일정"
             description={ !profileData?.description ? "오늘 할 일정이 없어요" : "profileData.location" }
@@ -250,16 +253,17 @@ const ProfileTemplate = () => {
           후기
           <ProfileWrap category="후기" description={ !profileData?.description ? "아직 작성된 후기가 없어요" : "대충 있을때 이거넣을듯" } /> */}
 
-          {isMyProfile === true ? (
-            // 차단 유저 목록
-            <ProfileWrap
-              category="차단유저 목록"
-              description="대충 있을때 이거넣을듯"
-            />
-          ) : null}
+            {isMyProfile === true ? (
+              // 차단 유저 목록
+              <ProfileWrap
+                category="차단유저 목록"
+                description="대충 있을때 이거넣을듯"
+              />
+            ) : null}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

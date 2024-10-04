@@ -304,7 +304,8 @@ var NotionPage = function () {
                         meetingTime: postData.meetingTime,
                         isTimeFlexible: postData.isTimeFlexible,
                         meetingSpot: postData.meetingSpot,
-                        image: postData.image
+                        image: postData.image,
+                        meetingInfo: postData.meetingInfo
                     };
                     updatedTitleString = JSON.stringify(updatedData);
                     console.log("업데이트한 타이틀스트링", updatedTitleString);

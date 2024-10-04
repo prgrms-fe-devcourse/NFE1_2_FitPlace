@@ -278,6 +278,7 @@ const NotionPage = () => {
         isTimeFlexible: postData.isTimeFlexible,
         meetingSpot: postData.meetingSpot,
         image: postData.image,
+        meetingInfo: postData.meetingInfo,
       };
 
       const updatedTitleString = JSON.stringify(updatedData);
