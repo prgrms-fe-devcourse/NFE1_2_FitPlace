@@ -22,6 +22,7 @@ var CommentPage_1 = require("./pages/CommentPage");
 var react_cookie_1 = require("react-cookie");
 var store_1 = require("./data/store");
 var react_redux_1 = require("react-redux");
+var NotionFix_1 = require("./pages/NotionFix");
 var App = function () {
     var dispatch = react_redux_1.useDispatch();
     var cookie = new react_cookie_1.Cookies();
@@ -47,6 +48,7 @@ var App = function () {
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/map", element: react_1["default"].createElement(LocationSetting_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/search", element: react_1["default"].createElement(SearchPage_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/notifications", element: react_1["default"].createElement(NotificationPage_1["default"], null) }),
+            react_1["default"].createElement(react_router_dom_1.Route, { path: "/notionFix/:id", element: react_1["default"].createElement(NotionFix_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/notionAdd", element: react_1["default"].createElement(NotionAdd_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/notion/:id", element: react_1["default"].createElement(NotionPage_1["default"], null) }),
             react_1["default"].createElement(react_router_dom_1.Route, { path: "/notion/:id/comments", element: react_1["default"].createElement(CommentPage_1["default"], null) })),

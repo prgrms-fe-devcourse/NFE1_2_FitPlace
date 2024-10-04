@@ -5,7 +5,7 @@ let currentUser = createSlice({
   initialState: {},
   reducers: {
     initializeUser(state, action){
-      return state = action.payload
+      return state = action.payload;
     }
   }
 });
@@ -15,7 +15,7 @@ let userStatus = createSlice({
   initialState: false,
   reducers: {
     isLogin(state, action){
-      return state = action.payload
+      return state = action.payload;
     }
   }
 });
@@ -25,14 +25,14 @@ let userToken = createSlice({
   initialState: '',
   reducers: {
     initializeToken(state, action){
-      return state = action.payload
+      return state = action.payload;
     }
   }
-})
+});
 
-export let { initializeUser } = currentUser.actions
-export let { isLogin } = userStatus.actions
-export let { initializeToken } = userToken.actions
+export let { initializeUser } = currentUser.actions;
+export let { isLogin } = userStatus.actions;
+export let { initializeToken } = userToken.actions;
 
 export default configureStore({
   reducer: {
@@ -40,4 +40,4 @@ export default configureStore({
     userStatus: userStatus.reducer,
     userToken: userToken.reducer
   }
-})
+});

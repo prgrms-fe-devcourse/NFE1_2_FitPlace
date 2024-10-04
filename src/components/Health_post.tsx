@@ -3,14 +3,36 @@ import { Link } from "react-router-dom";
 
 const Health_post = ({ title, channel_name, id }) => {
   let titleObject;
+
+  // title이 JSON 형식인지 확인하는 함수
+  const isValidJson = (str) => {
+    if (typeof str !== "string") return false;
+    try {
+      JSON.parse(str);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   try {
-    // 이중 파싱: 이스케이프된 문자열을 먼저 일반 문자열로 변환 후 JSON 파싱
-    titleObject = JSON.parse(title);
-    console.log("parsing", titleObject);
+    // title이 유효한 JSON인지 확인 후 파싱
+    if (isValidJson(title)) {
+      titleObject = JSON.parse(title);
+      console.log("Parsing successful:", titleObject);
+    } else {
+      // title이 JSON이 아니면 그대로 사용
+      titleObject = { title: title };
+    }
   } catch (error) {
     console.error("JSON 파싱 오류:", error);
-    titleObject = {};
+    titleObject = { title: title };
   }
+
+  // meetingSpot을 ,로 분리해서 첫 번째 값만 표시
+  const meetingSpot = titleObject.meetingSpot
+    ? titleObject.meetingSpot.split(",")[0]
+    : "장소 없음";
 
   return (
     <Link to={`/notion/${id}`}>
@@ -24,12 +46,11 @@ const Health_post = ({ title, channel_name, id }) => {
           ) : (
             <p className="text-lime-400 font-bold">모집 중</p>
           )}
-
           <span className="mx-3 opacity-5">|</span>
           {titleObject.meetingTime || "기간 없음"}
         </div>
         <div className="text-sm flex">
-          {titleObject.meetingSpot || "장소 없음"}
+          {meetingSpot} {/* 첫 번째 값(장소)만 표시하기 */}
           <span className="mx-3 opacity-5">|</span>
           {titleObject.currentMember || 0}명 /{" "}
           {titleObject.meetingCapacity || 0}명
