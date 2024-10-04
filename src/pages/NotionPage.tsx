@@ -169,6 +169,61 @@ const NotionPage = () => {
         return <div>Loading...</div>;
     }
 
+  };
+  //-------------------------------------------
+  return (
+    <>
+      <Header />
+      <div className="bg-white w-[640px] min-h-screen">
+        <div id="container" className="m-5 relative">
+          {deleteModal && (
+            <div className="flex justify-center absolute w-full h-full backdrop-blur-sm items-center">
+              <div
+                className="w-[400px] h-[200px] flex justify-center items-center border-2 border-solid border-[#000000] rounded-xl bg-white"
+                onClick={(e) => {
+                  if (e.target === modalBackground.current) {
+                    setDeleteModal(false);
+                  }
+                }}
+              >
+                <div>
+                  <p>게시글을 삭제할까요?</p>
+                  <div className="flex gap-5 mt-2">
+                    <Button
+                      label="삭제"
+                      size="mid"
+                      color="green"
+                      onClick={Delete_post}
+                    />
+                    <Button
+                      label="취소"
+                      size="mid"
+                      color="green"
+                      onClick={() => setDeleteModal(false)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          <section>
+            <div>
+              <div className="flex justify-between">
+                {postData.currentMember === postData.meetingCapacity ? (
+                  <p className="text-sm text-rose-600 font-bold">모집 마감</p>
+                ) : (
+                  <p className="text-sm text-[#AFE327] font-bold">모집 중</p>
+                )}
+
+                <div className="text-xs text-[#898989] flex gap-2">
+                  <Link to={`/notionFix/${id}`}>
+                    <button>수정</button>
+                  </Link>
+                  |<button onClick={() => setDeleteModal(true)}>삭제</button>
+                </div>
+              </div>
+
+
     //게시글 삭제 코드 입니다. 충돌 방지--------------------------------------------------------
     const Delete_post = async () => {
         try {

@@ -226,6 +226,22 @@ var NotionAdd = function () {
                     submitData = new FormData();
                     submitData.append("title", JSON.stringify(customJsonData));
                     submitData.append("channelId", channelId);
+                    if (!formData.title) {
+                        alert("제목을 입력해주세요!");
+                        return [2 /*return*/];
+                    }
+                    else if (formData.meetingCapacity === 0) {
+                        alert("모집 인원을 입력해주세요!");
+                        return [2 /*return*/];
+                    }
+                    else if (!formData.channel) {
+                        alert("종목을 선택해주세요!");
+                        return [2 /*return*/];
+                    }
+                    else if (!formData.meetingSpot) {
+                        alert("운동할 위치를 지정해주세요!");
+                        return [2 /*return*/];
+                    }
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 4, , 5]);

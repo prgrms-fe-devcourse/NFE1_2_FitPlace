@@ -161,10 +161,32 @@ const NotionAdd: React.FC = () => {
         [formData]
     );
 
+
     const handleCategorySelect = useCallback(
         (category: string) => {
             setFormData((prev) => ({ ...prev, channel: category }));
             saveFormDataToStorage({ ...formData, channel: category });
+
+    if (!formData.title) {
+      alert("제목을 입력해주세요!");
+      return;
+    } else if (formData.meetingCapacity === 0) {
+      alert("모집 인원을 입력해주세요!");
+      return;
+    } else if (!formData.channel) {
+      alert("종목을 선택해주세요!");
+      return;
+    } else if (!formData.meetingSpot) {
+      alert("운동할 위치를 지정해주세요!");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/posts/create`, {
+        method: "POST",
+        headers: {
+          Authorization: `${cookieToken || token}`,
+
         },
         [formData]
     );

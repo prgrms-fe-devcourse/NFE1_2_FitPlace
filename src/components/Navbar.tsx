@@ -19,63 +19,65 @@ const Navbar = () => {
 
   return (
     <>
-      {nav_on ? (
-        <div
-          className={`w-140 fixed bottom-0 flex flex-col items-center border-2 border-gray-200 border-b-gray-200 drop-shadow-2xl transition-all duration-300 ${
-            nav_on ? "opacity-100 translate-y-0" : "opacity-100 translate-y-12"
-          }`}
-          onMouseLeave={handleMouseLeave}
-        >
-          <div className="w-full h-[56px] bg-white flex justify-between items-center px-20">
-            <Link to="/">
-              <button className="group mt-3">
-                <img
-                  src={HomeIcon}
-                  alt="Home"
-                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
-                />
-              </button>
-            </Link>
-            <Link to="/search">
-              <button className="group mt-3">
-                <img
-                  src={SearchIcon}
-                  alt="Search"
-                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
-                />
-              </button>
-            </Link>
-            <Link to="/notionAdd">
-              <button className="group mt-3">
-                <img
-                  src={PostIcon}
-                  alt="NewPost"
-                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
-                />
-              </button>
-            </Link>
-            <Link to="/ranking">
-              <button className="group mt-3">
-                <img
-                  src={RankingIcon}
-                  alt="Ranking"
-                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
-                />
-              </button>
-            </Link>
-            <Link to="/profile">
-              <button className="group mt-3">
-                <img
-                  src={MyIcon}
-                  alt="My"
-                  className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
-                />
-              </button>
-            </Link>
-          </div>
+      <div
+        className={`w-140 fixed bottom-0 flex flex-col items-center border-2 border-gray-200 border-b-gray-200 drop-shadow-2xl transition-transform duration-300 ${
+          nav_on ? "translate-y-0 opacity-100" : "translate-y-full opacity-100"
+        }`}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="w-full h-[56px] bg-white flex justify-between items-center px-20">
+          <Link to="/">
+            <button className="group mt-3">
+              <img
+                src={HomeIcon}
+                alt="Home"
+                className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
+              />
+            </button>
+          </Link>
+          <Link to="/search">
+            <button className="group mt-3">
+              <img
+                src={SearchIcon}
+                alt="Search"
+                className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
+              />
+            </button>
+          </Link>
+          <Link to="/notionAdd">
+            <button className="group mt-3">
+              <img
+                src={PostIcon}
+                alt="NewPost"
+                className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
+              />
+            </button>
+          </Link>
+          <Link to="/ranking">
+            <button className="group mt-3">
+              <img
+                src={RankingIcon}
+                alt="Ranking"
+                className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
+              />
+            </button>
+          </Link>
+          <Link to="/profile">
+            <button className="group mt-3">
+              <img
+                src={MyIcon}
+                alt="My"
+                className="w-9 h-9 transition-transform duration-200 group-hover:scale-125"
+              />
+            </button>
+          </Link>
         </div>
-      ) : (
-        <div className="w-140 fixed bottom-0 flex flex-col items-center border-2 border-gray-200 border-b-gray-200 drop-shadow-2xl">
+      </div>
+
+      {!nav_on && (
+        <div
+          className={`w-140 h-10 fixed bottom-0 flex flex-col items-center border-1 border-gray-200 border-b-gray-200 drop-shadow-2xl ${nav_on ? "opacity-0" : "opacity-0"}`}
+        >
           <button
             className="bg-white w-full h-[15px]"
             onMouseEnter={handleMouseEnter}
