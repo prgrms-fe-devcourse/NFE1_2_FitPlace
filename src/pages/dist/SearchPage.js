@@ -56,7 +56,6 @@ function parsePost(post) {
             parsedTitle = {};
         }
     }
-    console.log("서치 채널 모임인원: ", parsedTitle.meetingCapacity);
     return {
         _id: post._id,
         title: parsedTitle.title || post.title || "",
@@ -94,7 +93,7 @@ var SearchPage = function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!(e.key === 'Enter')) return [3 /*break*/, 6];
+                    if (!(e.key === "Enter")) return [3 /*break*/, 6];
                     setLoading(true);
                     setError(null);
                     _a.label = 1;
@@ -190,8 +189,6 @@ var SearchPage = function () {
     var handleButtonClick = function (item) {
         setActiveButton(item);
     };
-    react_1.useEffect(function () {
-    }, [results]);
     console.log("searchPage:", results);
     return (React.createElement(React.Fragment, null,
         React.createElement(Header_1["default"], null),
@@ -204,7 +201,6 @@ var SearchPage = function () {
             React.createElement("div", { className: "mb-4 flex" }, searchCategory.map(function (category, index) { return (React.createElement(Button_1["default"], { key: index, label: category, color: activeButton === category ? "green" : "grey", size: "mid", margin: "btnMr", onClick: function () { return handleButtonClick(category); } })); })),
             loading && React.createElement("p", null, "Loading..."),
             error && React.createElement("p", { className: "error" }, error),
-            activeButton === "포스트" ? React.createElement(SearchPost_1["default"], { postList: results })
-                : React.createElement(SearchUser_1["default"], null))));
+            activeButton === "포스트" ? (React.createElement(SearchPost_1["default"], { postList: results })) : (React.createElement(SearchUser_1["default"], null)))));
 };
 exports["default"] = SearchPage;

@@ -90,15 +90,16 @@ var Mainpage = function () {
         Popular_Channel();
         Popular_post();
     }, []);
-    var Sort_Channel = channel
-        .sort(function (a, b) { return b.posts.length - a.posts.length; })
-        .slice(0, 5); //post가 많은 순서대로 정렬.
+    var Sort_Channel = channel;
     var Sort_Post = post
         .sort(function (a, b) { return b.likes.length - a.likes.length; })
         .slice(0, 6);
     react_1.useEffect(function () {
         console.log("post:", Sort_Post);
     }, [Sort_Post]);
+    react_1.useEffect(function () {
+        console.log("channel", Sort_Channel);
+    }, [Sort_Channel]);
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "w-140 min-h-screen bg-white p-3" },

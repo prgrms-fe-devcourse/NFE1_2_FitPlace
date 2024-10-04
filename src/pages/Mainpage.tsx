@@ -42,9 +42,7 @@ const Mainpage = () => {
     Popular_post();
   }, []);
 
-  const Sort_Channel = channel
-    .sort((a, b) => b.posts.length - a.posts.length)
-    .slice(0, 5); //post가 많은 순서대로 정렬.
+  const Sort_Channel = channel;
 
   const Sort_Post = post
     .sort((a, b) => b.likes.length - a.likes.length)
@@ -53,6 +51,10 @@ const Mainpage = () => {
   useEffect(() => {
     console.log("post:", Sort_Post);
   }, [Sort_Post]);
+
+  useEffect(() => {
+    console.log("channel", Sort_Channel);
+  }, [Sort_Channel]);
 
   return (
     <>
