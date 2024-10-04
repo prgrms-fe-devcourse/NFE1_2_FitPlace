@@ -57,6 +57,9 @@ const Register = () => {
       fullName: userName,
       birth: userBirth,
       userId: userId,
+      location: '',
+      description: '',
+      image: []
     }
     
     if (checkEmail === 0 && checkPwConfirm === true) {
