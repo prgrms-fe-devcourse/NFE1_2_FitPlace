@@ -46,6 +46,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 exports.__esModule = true;
 var react_router_dom_1 = require("react-router-dom");
 var ProfileWrap_1 = require("../../components/ProfileWrap");
@@ -69,7 +76,7 @@ var ProfileTemplate = function () {
         location: '',
         image: []
     }), profileData = _g[0], setProfileData = _g[1];
-    var _h = react_1.useState(), likedData = _h[0], setLikedData = _h[1];
+    var _h = react_1.useState([]), likedData = _h[0], setLikedData = _h[1];
     var id = react_router_dom_2.useParams().id;
     react_1.useEffect(function () {
         var token = cookie.get("token").replace(/bearer\s+/g, "");
@@ -131,10 +138,25 @@ var ProfileTemplate = function () {
     var initializePost = function () {
         likedPost.forEach(function (item) {
             if ('post' in item) {
-                console.log('있어');
+                axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/post/" + item.post)
+                    .then(function (res) {
+                    var data = JSON.parse(res.data.title);
+                    var id = res.data._id;
+                    if (item.post === id) {
+                        var updateItems = function (prev) {
+                            if (prev) {
+                                return __spreadArrays(prev, [data.title]);
+                            }
+                            else {
+                                return [data.title];
+                            }
+                        };
+                        setLikedData(updateItems);
+                    }
+                });
             }
             else {
-                console.log('없어');
+                setLikedData(null);
             }
         });
         // if (Array.isArray(likedPost)) {
@@ -174,7 +196,7 @@ var ProfileTemplate = function () {
                 React.createElement("div", { className: "py-4 px-5 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow" },
                     React.createElement("p", { className: "font-bold text-base" }, "\uC88B\uC544\uC694\uB97C \uB204\uB978 \uAC8C\uC2DC\uBB3C"),
                     likedData === null
-                        ? React.createElement("p", { className: "font-medium text-base mt-4" }, "\uC5C6\uCA84")
+                        ? React.createElement("p", { className: "font-medium text-base mt-4" }, "\uC88B\uC544\uC694\uB97C \uB204\uB978 \uAC8C\uC2DC\uBB3C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4")
                         : React.createElement("p", { className: "font-medium text-base mt-4" }, "\uC788\uCA84")),
                 isMyProfile
                     ?

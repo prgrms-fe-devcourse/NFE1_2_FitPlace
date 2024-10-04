@@ -26,6 +26,15 @@ interface PostArr {
   __v: number
 }
 
+interface TitleParse {
+  title: string
+  meetingCapacity: number
+  currentmember: string[]
+  channel: string
+  meetingSpot: string
+  image: string[]
+}
+
 interface UserData {
   fullName: string
   birth: number
@@ -53,7 +62,7 @@ const ProfileTemplate = () => {
     location: '',
     image: []
   });
-  const [likedData, setLikedData] = useState<any>();
+  const [likedData, setLikedData] = useState<string[] | null>([]);
 
   let { id } = useParams();
 
@@ -118,9 +127,24 @@ const ProfileTemplate = () => {
   const initializePost = () => {
     likedPost.forEach(item => {
       if('post' in item) {
-        console.log('있어')
+        axios.get(`https://kdt.frontend.5th.programmers.co.kr:5009/post/${item.post}`)
+        .then(res => {
+          const data: TitleParse = JSON.parse(res.data.title);
+          const id = res.data._id;
+          
+          if(item.post === id) {
+            const updateItems = (prev: string[] | null): string[] | null => {
+              if(prev) {
+                return [...prev, data.title]
+              } else {
+                return [data.title]
+              }
+            }
+            setLikedData(updateItems)
+          }
+        })
       } else {
-        console.log('없어')
+        setLikedData(null)
       }
     })
     // if (Array.isArray(likedPost)) {
@@ -197,7 +221,7 @@ const ProfileTemplate = () => {
             <p className="font-bold text-base">좋아요를 누른 게시물</p>
             {
               likedData === null
-              ? <p className="font-medium text-base mt-4">없쪄</p>
+              ? <p className="font-medium text-base mt-4">좋아요를 누른 게시물이 없습니다</p>
               : <p className="font-medium text-base mt-4">있쪄</p>
             }
           </div>
