@@ -66,15 +66,17 @@ var react_router_dom_2 = require("react-router-dom");
 var axios_1 = require("axios");
 var CurrentMemberItem_1 = require("../components/CurrentMemberItem");
 var NotionPage = function () {
+    var _a;
     var API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
     var id = react_router_dom_2.useParams().id;
     var postId = id;
     var modalBackground = react_1.useRef();
-    var _a = react_1.useState(false), deleteModal = _a[0], setDeleteModal = _a[1];
-    var _b = react_1.useState(null), PrevData = _b[0], setPrevData = _b[1]; //파싱하기 전의 데이터
-    var _c = react_1.useState(null), postData = _c[0], setPostData = _c[1];
-    var _d = react_1.useState(null), location = _d[0], setLocation = _d[1];
-    var _e = react_1.useState([]), currentMember = _e[0], setCurrentMember = _e[1];
+    var _b = react_1.useState(false), deleteModal = _b[0], setDeleteModal = _b[1];
+    var _c = react_1.useState(null), PrevData = _c[0], setPrevData = _c[1]; //파싱하기 전의 데이터
+    var _d = react_1.useState(null), postData = _d[0], setPostData = _d[1];
+    var _e = react_1.useState(null), location = _e[0], setLocation = _e[1];
+    var _f = react_1.useState([]), currentMember = _f[0], setCurrentMember = _f[1];
+    var _g = react_1.useState("허허"), userName = _g[0], setUserName = _g[1];
     var parsePostData = function (post) {
         try {
             var parsedTitle = JSON.parse(post.title);
@@ -91,7 +93,7 @@ var NotionPage = function () {
             return post;
         }
     };
-    // 참가신청 클릭 시-----------------------------------------------------------
+    // 참가신청 클릭 시 모집-----------------------------------------------------------
     var fetchPostData = function () { return __awaiter(void 0, void 0, void 0, function () {
         var response, data, parsedData, error_1;
         return __generator(this, function (_a) {
@@ -129,7 +131,7 @@ var NotionPage = function () {
     var channelId = PrevData === null || PrevData === void 0 ? void 0 : PrevData.channel._id;
     var handleJoin = function () {
         var _a;
-        var userName = "허허"; // 실제 로그인 시스템에서 가져와야 함
+        setUserName("userName"); // 실제 로그인 시스템에서 가져와야 함
         if (!((_a = postData.currentMember) === null || _a === void 0 ? void 0 : _a.includes(userName))) {
             // 여기에 서버로 업데이트된 정보를 보내는 API 호출 추가
             setCurrentMember(__spreadArrays(postData.currentMember, [userName]));
@@ -283,7 +285,8 @@ var NotionPage = function () {
                             }, style: { height: "300px" } })))),
                 react_1["default"].createElement("div", { className: "mt-5 flex justify-between" },
                     react_1["default"].createElement("div", { className: "w-10/12" },
-                        react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uC2E0\uCCAD\uD558\uAE30", size: "full", color: "green", onClick: handleJoin })),
+                        react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uC2E0\uCCAD\uD558\uAE30", size: "full", color: ((_a = postData.currentMember) === null || _a === void 0 ? void 0 : _a.includes(userName)) ? "grey"
+                                : "green", onClick: handleJoin })),
                     react_1["default"].createElement("div", { className: "flex gap-2.5" },
                         react_1["default"].createElement("div", { className: "w-8" },
                             react_1["default"].createElement("button", null,

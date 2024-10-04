@@ -48,6 +48,7 @@ const NotionPage = () => {
         lng: number;
     } | null>(null);
     const [currentMember, setCurrentMember] = useState<string[]>([]);
+    const [userName, setUserName] = useState<string>("허허");
 
     const parsePostData = (post: any): ParsedPost => {
         try {
@@ -80,7 +81,7 @@ const NotionPage = () => {
         }
     };
 
-    // 참가신청 클릭 시-----------------------------------------------------------
+    // 참가신청 클릭 시 모집-----------------------------------------------------------
     const fetchPostData = async () => {
         try {
             const response = await fetch(`${API_URL}/posts/${postId}`, {
@@ -111,7 +112,7 @@ const NotionPage = () => {
     const channelId = PrevData?.channel._id;
 
     const handleJoin = () => {
-        const userName = "허허"; // 실제 로그인 시스템에서 가져와야 함
+        setUserName(`userName`); // 실제 로그인 시스템에서 가져와야 함
         if (!postData.currentMember?.includes(userName)) {
             // 여기에 서버로 업데이트된 정보를 보내는 API 호출 추가
             setCurrentMember([...postData.currentMember, userName]);
@@ -344,7 +345,11 @@ const NotionPage = () => {
                             <Button
                                 label="참가 신청하기"
                                 size="full"
-                                color="green"
+                                color={
+                                    postData.currentMember?.includes(userName)
+                                        ? "grey"
+                                        : "green"
+                                }
                                 onClick={handleJoin}
                             />
                         </div>
