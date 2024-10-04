@@ -184,13 +184,13 @@ const SearchPage = () => {
             handleKeydown={KeyDown}
           />
 
-          <button
+          {/* <button
             onClick={handleSearch}
             disabled={loading}
             className="p-2 absolute right-3 text-[#666666]"
           >
             Search
-          </button>
+          </button> */}
         </section>
 
         {loading && <p>Loading...</p>}

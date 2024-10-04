@@ -23,7 +23,7 @@ const LocationSetting = () => {
         lng: locationData.lng,
       });
       setIsMarkerFixed(true);
-      setIsEditable(false); 
+      setIsEditable(false);
     }
   }, []);
 
@@ -34,11 +34,14 @@ const LocationSetting = () => {
       setIsMarkerFixed(true);
       setIsEditable(false);
 
-      sessionStorage.setItem("selectedLocation", JSON.stringify({
-        address: inputValue,
-        lat: currentPosition.lat,
-        lng: currentPosition.lng
-      }));
+      sessionStorage.setItem(
+        "selectedLocation",
+        JSON.stringify({
+          address: inputValue,
+          lat: currentPosition.lat,
+          lng: currentPosition.lng,
+        })
+      );
 
       navigate("/notionAdd");
     }
@@ -56,7 +59,7 @@ const LocationSetting = () => {
   return (
     <>
       <Header />
-      <div className="w-140 h-full mx-auto bg-white">
+      <div className="w-140 min-h-screen mx-auto bg-white">
         <div className="pt-5 px-4 pb-2">
           <h2 className="text-xl font-bold">장소를 선택해주세요.</h2>
         </div>
@@ -68,14 +71,14 @@ const LocationSetting = () => {
             className="w-full p-4 bg-[#F6F6F6] text-[#666666] border border-gray-300 rounded-lg mb-6"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            disabled={!isEditable} 
+            disabled={!isEditable}
           />
 
           <div className="mb-8">
             <KakaoMap
               isMarkerFixed={isMarkerFixed}
               location={currentPosition}
-              onCenterChange={handleMapCenterChange} 
+              onCenterChange={handleMapCenterChange}
             />
           </div>
 

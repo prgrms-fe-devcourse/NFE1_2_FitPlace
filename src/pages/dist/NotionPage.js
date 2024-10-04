@@ -151,7 +151,7 @@ var NotionPage = function () {
     //-------------------------------------------
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
-        react_1["default"].createElement("div", { className: "bg-white w-[640px] h-full" },
+        react_1["default"].createElement("div", { className: "bg-white w-[640px] min-h-screen" },
             react_1["default"].createElement("div", { id: "container", className: "m-5 relative" },
                 deleteModal && (react_1["default"].createElement("div", { className: "flex justify-center absolute w-full h-full backdrop-blur-sm items-center" },
                     react_1["default"].createElement("div", { className: "w-[400px] h-[200px] flex justify-center items-center border-2 border-solid border-[#000000] rounded-xl bg-white", onClick: function (e) {
