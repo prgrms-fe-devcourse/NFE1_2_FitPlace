@@ -32,7 +32,7 @@ const NotificationPage = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        'https://kdt.frontend.5th.programmers.co.kr:5005/notifications',
+        'https://kdt.frontend.5th.programmers.co.kr:5009/notifications',
         {
           method: 'GET',
           headers: {
