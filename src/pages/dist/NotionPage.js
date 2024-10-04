@@ -55,18 +55,20 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 exports.__esModule = true;
 var react_1 = require("react");
+var react_router_dom_1 = require("react-router-dom");
 var favorite_svg_1 = require("../assets/favorite.svg");
 var commentIcon_svg_1 = require("../assets/commentIcon.svg");
 var NotionItem_1 = require("../components/NotionItem");
 var Button_1 = require("../components/Button");
 var Header_1 = require("../components/Header");
 var KakaoMap_1 = require("./KakaoMap"); // KakaoMap 컴포넌트 불러오기
-var react_router_dom_1 = require("react-router-dom");
 var react_router_dom_2 = require("react-router-dom");
+var react_router_dom_3 = require("react-router-dom");
 var axios_1 = require("axios");
 var CurrentMemberItem_1 = require("../components/CurrentMemberItem");
 var NotionPage = function () {
-    var id = react_router_dom_2.useParams().id;
+    var navigate = react_router_dom_1.useNavigate();
+    var id = react_router_dom_3.useParams().id;
     var postId = id;
     var modalBackground = react_1.useRef();
     var _a = react_1.useState(false), deleteModal = _a[0], setDeleteModal = _a[1];
@@ -84,7 +86,7 @@ var NotionPage = function () {
                 lat: parseFloat(lat),
                 lng: parseFloat(lng)
             });
-            return __assign(__assign({}, post), { title: parsedTitle.title, meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10), currentMember: parsedTitle.currentMember, channel: parsedTitle.channel, meetingDate: parsedTitle.meetingDate, meetingStartTime: parsedTitle.meetingStartTime, meetingEndTime: parsedTitle.meetingEndTime, isTimeFlexible: parsedTitle.isTimeFlexible, meetingSpot: parsedTitle.meetingSpot, image: parsedTitle.image });
+            return __assign(__assign({}, post), { actualTitle: parsedTitle.title, meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10), currentMember: parsedTitle.currentMember, channel: parsedTitle.channel, meetingDate: parsedTitle.meetingDate, meetingTime: parsedTitle.meetingTime, isTimeFlexible: parsedTitle.isTimeFlexible, meetingInfo: parsedTitle.meetingInfo, meetingSpot: parsedTitle.meetingSpot, image: parsedTitle.image });
         }
         catch (error) {
             console.error("Error parsing post title:", error);
@@ -130,6 +132,35 @@ var NotionPage = function () {
     if (!postData) {
         return react_1["default"].createElement("div", null, "Loading...");
     }
+    //게시글 삭제 코드 입니다. 충돌 방지--------------------------------------------------------
+    var Delete_post = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, axios_1["default"]["delete"]("https://kdt.frontend.5th.programmers.co.kr:5009/posts/delete/", {
+                            headers: {
+                                Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDE0ODU5fQ.Al40jxy-6yrAoANrY3fQA1joeNw08-fjByus_ZfxXSk"
+                            },
+                            data: {
+                                id: id
+                            }
+                        })];
+                case 1:
+                    _a.sent();
+                    navigate("/");
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_2 = _a.sent();
+                    console.log("게시글 삭제 실패", error_2);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    //-------------------------------------------
+    // 참가신청 모집마감 시작-------------------------------------------
     var channelId = PrevData === null || PrevData === void 0 ? void 0 : PrevData.channel._id;
     var handleJoin = function () {
         var _a;
@@ -159,7 +190,7 @@ var NotionPage = function () {
         }
     };
     var updatePostData = function (updatedTitleString) { return __awaiter(void 0, void 0, void 0, function () {
-        var reqBody, response, error_2;
+        var reqBody, response, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -187,22 +218,22 @@ var NotionPage = function () {
                     _a.sent();
                     return [2 /*return*/, response.data];
                 case 3:
-                    error_2 = _a.sent();
-                    if (axios_1["default"].isAxiosError(error_2)) {
+                    error_3 = _a.sent();
+                    if (axios_1["default"].isAxiosError(error_3)) {
                         console.error("서버 업데이트 중 오류 발생:"
                         // error.response?.data || error.message
                         );
                     }
                     else {
-                        console.error("서버 업데이트 중 알 수 없는 오류 발생:", error_2);
+                        console.error("서버 업데이트 중 알 수 없는 오류 발생:", error_3);
                     }
-                    throw error_2;
+                    throw error_3;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var handleCurrentMember = function (members) { return __awaiter(void 0, void 0, void 0, function () {
-        var updatedData, updatedTitleString, updatedPost, error_3;
+        var updatedData, updatedTitleString, updatedPost, error_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -227,8 +258,8 @@ var NotionPage = function () {
                         console.log("업데이트된 게시물", updatedPost);
                     return [3 /*break*/, 3];
                 case 2:
-                    error_3 = _a.sent();
-                    console.error("게시물 업데이트 실패:", error_3);
+                    error_4 = _a.sent();
+                    console.error("게시물 업데이트 실패:", error_4);
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }
@@ -261,7 +292,7 @@ var NotionPage = function () {
                         react_1["default"].createElement("div", null,
                             react_1["default"].createElement("p", null, "\uAC8C\uC2DC\uAE00\uC744 \uC0AD\uC81C\uD560\uAE4C\uC694?"),
                             react_1["default"].createElement("div", { className: "flex gap-5 mt-2" },
-                                react_1["default"].createElement(Button_1["default"], { label: "\uC0AD\uC81C", size: "mid", color: "green" }),
+                                react_1["default"].createElement(Button_1["default"], { label: "\uC0AD\uC81C", size: "mid", color: "green", onClick: Delete_post }),
                                 react_1["default"].createElement(Button_1["default"], { label: "\uCDE8\uC18C", size: "mid", color: "green", onClick: function () {
                                         return setDeleteModal(false);
                                     } })))))),
@@ -271,8 +302,8 @@ var NotionPage = function () {
                             postData.currentMember.length ===
                                 postData.meetingCapacity ? (react_1["default"].createElement("p", { className: "text-sm text-rose-600 font-bold" }, "\uBAA8\uC9D1 \uB9C8\uAC10")) : (react_1["default"].createElement("p", { className: "text-sm text-[#AFE327] font-bold" }, "\uBAA8\uC9D1 \uC911")),
                             react_1["default"].createElement("div", { className: "text-xs text-[#898989] flex gap-2" },
-                                react_1["default"].createElement("button", null, "\uC218\uC815"),
-                                "|",
+                                react_1["default"].createElement(react_router_dom_2.Link, { to: "/notionFix/" + id },
+                                    react_1["default"].createElement("button", null, "\uC218\uC815")),
                                 react_1["default"].createElement("button", { onClick: function () { return setDeleteModal(true); } }, "\uC0AD\uC81C"))),
                         react_1["default"].createElement("h3", { className: "text-2xl font-bold" }, postData.title),
                         react_1["default"].createElement("p", { className: "text-lg text-[#666666] pt-2.5" }))),
@@ -283,11 +314,11 @@ var NotionPage = function () {
                             react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, (location === null || location === void 0 ? void 0 : location.address) || "장소 없음")),
                         react_1["default"].createElement("div", { className: "flex gap-5" },
                             react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC77C\uC2DC"),
-                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingTime || "")))),
+                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingTime || "시간 무관")))),
                 react_1["default"].createElement("section", { className: "mt-7" },
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement(NotionItem_1["default"], { content: postData.meetingInfo })),
-                    postData.image && (postData === null || postData === void 0 ? void 0 : postData.image.length) > 0 ? (postData.image.map(function (URL, i) { return (react_1["default"].createElement("div", { className: "flex flex-wrap justify-center border-2 border-gray-200 my-2", key: i },
+                    postData.image && postData.image.length > 0 ? (postData.image.map(function (URL, i) { return (react_1["default"].createElement("div", { className: "flex flex-wrap justify-center border-2 border-gray-200 my-2", key: i },
                         react_1["default"].createElement("img", { className: "w-96 h-96", src: URL, alt: "\uAC8C\uC2DC\uAE00\uC0AC\uC9C4", id: "notionImg" }))); })) : (react_1["default"].createElement("p", { className: "my-10" }, "\uC0AC\uC9C4\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."))),
                 react_1["default"].createElement("section", { className: "mt-11 flex flex-col gap-5" },
                     react_1["default"].createElement("div", null,
@@ -313,13 +344,14 @@ var NotionPage = function () {
                                 lng: location.lng
                             }, style: { height: "300px" } })))),
                 react_1["default"].createElement("div", { className: "mt-5 flex justify-between" },
-                    react_1["default"].createElement("div", { className: "w-10/12" }, renderButton()),
+                    react_1["default"].createElement("div", { className: "w-10/12" },
+                        react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uC2E0\uCCAD\uD558\uAE30", size: "full", color: "green" })),
                     react_1["default"].createElement("div", { className: "flex gap-2.5" },
                         react_1["default"].createElement("div", { className: "w-8" },
                             react_1["default"].createElement("button", null,
                                 react_1["default"].createElement("img", { src: favorite_svg_1["default"], alt: "\uC88B\uC544\uC694\uBC84\uD2BC" }))),
                         react_1["default"].createElement("div", { className: "w-8" },
-                            react_1["default"].createElement(react_router_dom_1.Link, { to: "/notion/" + id + "/comments" },
+                            react_1["default"].createElement(react_router_dom_2.Link, { to: "/notion/" + id + "/comments" },
                                 react_1["default"].createElement("button", null,
                                     react_1["default"].createElement("img", { src: commentIcon_svg_1["default"], alt: "\uBA54\uC138\uC9C0\uBC84\uD2BC" }))))))))));
 };

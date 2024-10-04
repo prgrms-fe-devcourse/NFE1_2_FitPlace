@@ -1,8 +1,10 @@
+import { Link } from "react-router-dom";
 import ProfileWrap from "../../components/ProfileWrap";
 
 const ProfileTemplate = () => {
   return (
     <div className="w-140 min-h-screen bg-white p-3">
+      <Link to={'./edit'}>임시리동</Link>
       <div className="flex flex-col justify-center items-stretch">
         {/* 프로필 상단 정보 영역 */}
         <div className="flex flex-col justify-center items-stretch text-center pt-8 pb-6 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow">

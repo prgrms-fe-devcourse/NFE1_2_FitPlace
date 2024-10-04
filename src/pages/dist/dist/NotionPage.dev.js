@@ -159,11 +159,25 @@ var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
   }
 };
 
+var __spreadArrays = void 0 && (void 0).__spreadArrays || function () {
+  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
+    s += arguments[i].length;
+  }
+
+  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
+    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
+      r[k] = a[j];
+    }
+  }
+
+  return r;
+};
+
 exports.__esModule = true;
 
 var react_1 = require("react");
 
-var icon_user_profile_svg_1 = require("../assets/icon_user_profile.svg");
+var react_router_dom_1 = require("react-router-dom");
 
 var favorite_svg_1 = require("../assets/favorite.svg");
 
@@ -175,38 +189,67 @@ var Button_1 = require("../components/Button");
 
 var Header_1 = require("../components/Header");
 
-var react_router_dom_1 = require("react-router-dom");
+var KakaoMap_1 = require("./KakaoMap"); // KakaoMap 컴포넌트 불러오기
+
 
 var react_router_dom_2 = require("react-router-dom");
 
+var react_router_dom_3 = require("react-router-dom");
+
+var axios_1 = require("axios");
+
 var NotionPage = function NotionPage() {
+  var id = react_router_dom_2.useParams().id;
+  var postId = id;
+  var modalBackground = react_1.useRef();
+  var navigate = react_router_dom_1.useNavigate();
+
   var _a = react_1.useState(false),
       deleteModal = _a[0],
       setDeleteModal = _a[1];
 
-  var modalBackground = react_1.useRef();
-  var id = react_router_dom_2.useParams().id;
-
   var _b = react_1.useState(null),
-      postData = _b[0],
-      setPostData = _b[1];
+      PrevData = _b[0],
+      setPrevData = _b[1]; //파싱하기 전의 데이터
 
-  var _c = react_1.useState({}),
-      PrevData = _c[0],
-      setPrevData = _c[1]; //파싱하기 전의 데이터
 
+  var _c = react_1.useState(null),
+      postData = _c[0],
+      setPostData = _c[1];
+
+  var _d = react_1.useState(null),
+      location = _d[0],
+      setLocation = _d[1];
+
+  var _e = react_1.useState([]),
+      currentMember = _e[0],
+      setCurrentMember = _e[1];
+
+  var _f = react_1.useState("sser"),
+      userName = _f[0],
+      setUserName = _f[1];
 
   var parsePostData = function parsePostData(post) {
     try {
       var parsedTitle = JSON.parse(post.title);
+
+      var _a = parsedTitle.meetingSpot.split(","),
+          address = _a[0],
+          lat = _a[1],
+          lng = _a[2];
+
+      setLocation({
+        address: address,
+        lat: parseFloat(lat),
+        lng: parseFloat(lng)
+      });
       return __assign(__assign({}, post), {
         actualTitle: parsedTitle.title,
         meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10),
         currentMember: parseInt(parsedTitle.currentMember, 10),
         channel: parsedTitle.channel,
         meetingDate: parsedTitle.meetingDate,
-        meetingStartTime: parsedTitle.meetingStartTime,
-        meetingEndTime: parsedTitle.meetingEndTime,
+        meetingTime: parsedTitle.meetingTime,
         isTimeFlexible: parsedTitle.isTimeFlexible,
         meetingInfo: parsedTitle.meetingInfo,
         meetingSpot: parsedTitle.meetingSpot,
@@ -214,8 +257,62 @@ var NotionPage = function NotionPage() {
       });
     } catch (error) {
       console.error("Error parsing post title:", error);
-      return post; // 파싱에 실패하면 원본 데이터 반환
+      return post;
     }
+  }; // 참가신청 클릭 시 모집-----------------------------------------------------------
+
+
+  var fetchPostData = function fetchPostData() {
+    return __awaiter(void 0, void 0, void 0, function () {
+      var response, data, parsedData, error_1;
+
+      var _a;
+
+      return __generator(this, function (_b) {
+        switch (_b.label) {
+          case 0:
+            _b.trys.push([0, 2,, 3]);
+
+            return [4
+            /*yield*/
+            , axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/posts/" + postId, {
+              headers: {}
+            })];
+
+          case 1:
+            response = _b.sent();
+
+            if (response.status !== 200) {
+              throw new Error("HTTP error! status: " + response.status);
+            }
+
+            data = response.data;
+            parsedData = parsePostData(data);
+            setPostData(parsedData);
+            return [3
+            /*break*/
+            , 3];
+
+          case 2:
+            error_1 = _b.sent();
+
+            if (axios_1["default"].isAxiosError(error_1)) {
+              console.error("Error fetching post data:", ((_a = error_1.response) === null || _a === void 0 ? void 0 : _a.data) || error_1.message);
+            } else {
+              console.error("Unknown error fetching post data:", error_1);
+            }
+
+            return [3
+            /*break*/
+            , 3];
+
+          case 3:
+            return [2
+            /*return*/
+            ];
+        }
+      });
+    });
   };
 
   react_1.useEffect(function () {
@@ -250,7 +347,6 @@ var NotionPage = function NotionPage() {
 
             case 2:
               data = _a.sent();
-              setPrevData(data);
               parsedData = parsePostData(data);
               setPostData(parsedData);
               return [3
@@ -274,11 +370,56 @@ var NotionPage = function NotionPage() {
     };
 
     fetchPostData();
-  }, []);
+  }, [id]);
 
   if (!postData) {
-    return react_1["default"].createElement("div", null, "Loading..."); // 데이터 로딩 중 표시
-  }
+    return react_1["default"].createElement("div", null, "Loading...");
+  } //게시글 삭제 코드 입니다. 충돌 방지--------------------------------------------------------
+
+
+  var Delete_post = function Delete_post() {
+    return __awaiter(void 0, void 0, void 0, function () {
+      var error_2;
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            _a.trys.push([0, 2,, 3]);
+
+            return [4
+            /*yield*/
+            , axios_1["default"]["delete"]("https://kdt.frontend.5th.programmers.co.kr:5009/posts/delete/", {
+              headers: {
+                Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDE0ODU5fQ.Al40jxy-6yrAoANrY3fQA1joeNw08-fjByus_ZfxXSk"
+              },
+              data: {
+                id: id
+              }
+            })];
+
+          case 1:
+            _a.sent();
+
+            navigate("/");
+            return [3
+            /*break*/
+            , 3];
+
+          case 2:
+            error_2 = _a.sent();
+            console.log("게시글 삭제 실패", error_2);
+            return [3
+            /*break*/
+            , 3];
+
+          case 3:
+            return [2
+            /*return*/
+            ];
+        }
+      });
+    });
+  }; //-------------------------------------------
+
 
   return react_1["default"].createElement(react_1["default"].Fragment, null, react_1["default"].createElement(Header_1["default"], null), react_1["default"].createElement("div", {
     className: "bg-white w-[640px] h-full"
@@ -299,7 +440,8 @@ var NotionPage = function NotionPage() {
   }, react_1["default"].createElement(Button_1["default"], {
     label: "\uC0AD\uC81C",
     size: "mid",
-    color: "green"
+    color: "green",
+    onClick: Delete_post
   }), react_1["default"].createElement(Button_1["default"], {
     label: "\uCDE8\uC18C",
     size: "mid",
@@ -309,13 +451,15 @@ var NotionPage = function NotionPage() {
     }
   }))))), react_1["default"].createElement("section", null, react_1["default"].createElement("div", null, react_1["default"].createElement("div", {
     className: "flex justify-between"
-  }, postData.currentMember === postData.meetingCapacity ? react_1["default"].createElement("p", {
+  }, postData.currentMember.length === postData.meetingCapacity ? react_1["default"].createElement("p", {
     className: "text-sm text-rose-600 font-bold"
   }, "\uBAA8\uC9D1 \uB9C8\uAC10") : react_1["default"].createElement("p", {
     className: "text-sm text-[#AFE327] font-bold"
   }, "\uBAA8\uC9D1 \uC911"), react_1["default"].createElement("div", {
     className: "text-xs text-[#898989] flex gap-2"
-  }, react_1["default"].createElement("button", null, "\uC218\uC815"), "|", react_1["default"].createElement("button", {
+  }, react_1["default"].createElement(react_router_dom_2.Link, {
+    to: "/notionFix/" + id
+  }, react_1["default"].createElement("button", null, "\uC218\uC815")), react_1["default"].createElement("button", {
     onClick: function onClick() {
       return setDeleteModal(true);
     }
@@ -333,19 +477,20 @@ var NotionPage = function NotionPage() {
     className: "text-lg font-bold"
   }, "\uC7A5\uC18C"), react_1["default"].createElement("p", {
     className: "text-sm text-[#7e7e7e]"
-  }, postData.meetingSpot || "장소 없음")), react_1["default"].createElement("div", {
+  }, (location === null || location === void 0 ? void 0 : location.address) || "장소 없음")), react_1["default"].createElement("div", {
     className: "flex gap-5"
   }, react_1["default"].createElement("p", {
     className: "text-lg font-bold"
   }, "\uC77C\uC2DC"), react_1["default"].createElement("p", {
     className: "text-sm text-[#7e7e7e]"
-  }, postData.meetingDate || "시간 무관")))), react_1["default"].createElement("section", {
+  }, postData.meetingTime || "시간 무관")))), react_1["default"].createElement("section", {
     className: "mt-7"
   }, react_1["default"].createElement("div", null, react_1["default"].createElement(NotionItem_1["default"], {
     content: postData.meetingInfo
   })), postData.image && postData.image.length > 0 ? postData.image.map(function (URL, i) {
     return react_1["default"].createElement("div", {
-      className: "flex flex-wrap justify-center border-2 border-gray-200 my-2"
+      className: "flex flex-wrap justify-center border-2 border-gray-200 my-2",
+      key: i
     }, react_1["default"].createElement("img", {
       className: "w-96 h-96",
       src: URL,
@@ -358,19 +503,14 @@ var NotionPage = function NotionPage() {
     className: "mt-11 flex flex-col gap-5"
   }, react_1["default"].createElement("div", null, react_1["default"].createElement("p", {
     className: "text-lg font-bold"
-  }, "\uBA64\uBC84 ", react_1["default"].createElement("span", null, postData.currentMember || "0명"), " /", " ", postData.meetingCapacity, "\uBA85")), react_1["default"].createElement("div", {
+  }, "\uBA64\uBC84", " ", postData.currentMember.length > 0 ? postData.currentMember.length : 0, " ", "/ ", postData.meetingCapacity, "\uBA85")), react_1["default"].createElement("div", {
     className: "flex gap-10 "
-  }, react_1["default"].createElement("div", {
-    className: "flex flex-col text-center gap-1.5"
-  }, react_1["default"].createElement("img", {
-    src: icon_user_profile_svg_1["default"],
-    alt: "\uD504\uB85C\uD544\uC774\uBBF8\uC9C0"
-  }), react_1["default"].createElement("p", null, "\uD48B\uC0B4\uD48B\uC0B4")), react_1["default"].createElement("div", {
-    className: "flex flex-col text-center gap-1.5"
-  }, react_1["default"].createElement("img", {
-    src: icon_user_profile_svg_1["default"],
-    alt: "\uD504\uB85C\uD544\uC774\uBBF8\uC9C0"
-  }), react_1["default"].createElement("p", null, "\uAE40\uB3D9\uB3D9")))), react_1["default"].createElement("section", {
+  }, postData.currentMember && (postData === null || postData === void 0 ? void 0 : postData.currentMember.length) > 0 ? postData.currentMember.map(function (item, idx) {
+    return react_1["default"].createElement(CurrentMemberItem_1["default"], {
+      key: idx,
+      userName: item
+    });
+  }) : react_1["default"].createElement("p", null, "\uC544\uC9C1 \uCC38\uAC00\uC790\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4."))), react_1["default"].createElement("section", {
     className: "mt-14"
   }, react_1["default"].createElement("div", {
     className: "flex flex-col gap-4"
@@ -378,7 +518,18 @@ var NotionPage = function NotionPage() {
     className: "text-lg font-bold"
   }, "\uC6B4\uB3D9\uC7A5\uC18C"), react_1["default"].createElement("p", {
     className: "text-sm text-[#7e7e7e]"
-  }, postData.meetingSpot || "장소 없음")), react_1["default"].createElement("div", null)), react_1["default"].createElement("div", {
+  }, (location === null || location === void 0 ? void 0 : location.address) || "장소 없음")), location && react_1["default"].createElement("div", {
+    className: "mt-4"
+  }, react_1["default"].createElement(KakaoMap_1["default"], {
+    isMarkerFixed: true,
+    location: {
+      lat: location.lat,
+      lng: location.lng
+    },
+    style: {
+      height: "300px"
+    }
+  }))), react_1["default"].createElement("div", {
     className: "mt-5 flex justify-between"
   }, react_1["default"].createElement("div", {
     className: "w-10/12"
@@ -395,7 +546,7 @@ var NotionPage = function NotionPage() {
     alt: "\uC88B\uC544\uC694\uBC84\uD2BC"
   }))), react_1["default"].createElement("div", {
     className: "w-8"
-  }, react_1["default"].createElement(react_router_dom_1.Link, {
+  }, react_1["default"].createElement(react_router_dom_2.Link, {
     to: "/notion/" + id + "/comments"
   }, react_1["default"].createElement("button", null, react_1["default"].createElement("img", {
     src: commentIcon_svg_1["default"],

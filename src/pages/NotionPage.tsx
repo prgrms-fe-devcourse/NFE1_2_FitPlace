@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/FitPlaceLogo.svg";
 import favorite from "../assets/favorite.svg";
 import commentIcon from "../assets/commentIcon.svg";
@@ -8,9 +9,10 @@ import Header from "../components/Header";
 import KakaoMap from "./KakaoMap"; // KakaoMap 컴포넌트 불러오기
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
+
+import axios from "axios";
 import { Channel, PostType } from "../types/models";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import CurrentMemberItem from "../components/CurrentMemberItem";
 
 interface ParsedPost {
@@ -32,6 +34,7 @@ interface ParsedPost {
 }
 
 const NotionPage = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
     const postId = id;
     const modalBackground = useRef();
@@ -45,6 +48,7 @@ const NotionPage = () => {
         lat: number;
         lng: number;
     } | null>(null);
+
     const [currentMember, setCurrentMember] = useState<string[]>([]);
     const [userName, setUserName] = useState<string>("sser");
 
@@ -62,14 +66,15 @@ const NotionPage = () => {
 
             return {
                 ...post,
-                title: parsedTitle.title,
+                actualTitle: parsedTitle.title,
                 meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10),
                 currentMember: parsedTitle.currentMember,
                 channel: parsedTitle.channel,
                 meetingDate: parsedTitle.meetingDate,
-                meetingStartTime: parsedTitle.meetingStartTime,
-                meetingEndTime: parsedTitle.meetingEndTime,
+                meetingTime: parsedTitle.meetingTime,
+
                 isTimeFlexible: parsedTitle.isTimeFlexible,
+                meetingInfo: parsedTitle.meetingInfo,
                 meetingSpot: parsedTitle.meetingSpot,
                 image: parsedTitle.image,
             };
@@ -114,6 +119,29 @@ const NotionPage = () => {
     if (!postData) {
         return <div>Loading...</div>;
     }
+    //게시글 삭제 코드 입니다. 충돌 방지--------------------------------------------------------
+    const Delete_post = async () => {
+        try {
+            await axios.delete(
+                `https://kdt.frontend.5th.programmers.co.kr:5009/posts/delete/`,
+                {
+                    headers: {
+                        Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDE0ODU5fQ.Al40jxy-6yrAoANrY3fQA1joeNw08-fjByus_ZfxXSk`,
+                    },
+                    data: {
+                        id: id,
+                    },
+                }
+            );
+
+            navigate("/");
+        } catch (error) {
+            console.log("게시글 삭제 실패", error);
+        }
+    };
+    //-------------------------------------------
+
+    // 참가신청 모집마감 시작-------------------------------------------
 
     const channelId = PrevData?.channel._id;
 
@@ -247,7 +275,6 @@ const NotionPage = () => {
         }
     };
     // 참가신청 버튼완료 ------------------------------------------------------------
-
     return (
         <>
             <Header />
@@ -270,6 +297,7 @@ const NotionPage = () => {
                                             label="삭제"
                                             size="mid"
                                             color="green"
+                                            onClick={Delete_post}
                                         />
                                         <Button
                                             label="취소"
@@ -299,7 +327,9 @@ const NotionPage = () => {
                                 )}
 
                                 <div className="text-xs text-[#898989] flex gap-2">
-                                    <button>수정</button>|
+                                    <Link to={`/notionFix/${id}`}>
+                                        <button>수정</button>
+                                    </Link>
                                     <button
                                         onClick={() => setDeleteModal(true)}
                                     >
@@ -326,7 +356,7 @@ const NotionPage = () => {
                             <div className="flex gap-5">
                                 <p className="text-lg font-bold">일시</p>
                                 <p className="text-sm text-[#7e7e7e]">
-                                    {postData.meetingTime || ""}
+                                    {postData.meetingTime || "시간 무관"}
                                 </p>
                             </div>
                         </div>
@@ -335,7 +365,7 @@ const NotionPage = () => {
                         <div>
                             <NotionItem content={postData.meetingInfo} />
                         </div>
-                        {postData.image && postData?.image.length > 0 ? (
+                        {postData.image && postData.image.length > 0 ? (
                             postData.image.map((URL, i) => (
                                 <div
                                     className="flex flex-wrap justify-center border-2 border-gray-200 my-2"
@@ -399,7 +429,13 @@ const NotionPage = () => {
                         )}
                     </section>
                     <div className="mt-5 flex justify-between">
-                        <div className="w-10/12">{renderButton()}</div>
+                        <div className="w-10/12">
+                            <Button
+                                label="참가 신청하기"
+                                size="full"
+                                color="green"
+                            />
+                        </div>
                         <div className="flex gap-2.5">
                             <div className="w-8">
                                 <button>

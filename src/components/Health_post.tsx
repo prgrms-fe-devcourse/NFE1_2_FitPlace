@@ -29,7 +29,10 @@ const Health_post = ({ title, channel_name, id }) => {
         titleObject = { title: title };
     }
 
-    console.log("모임인원: ", title.meetingCapacity);
+    // meetingSpot을 ,로 분리해서 첫 번째 값만 표시
+    const meetingSpot = titleObject.meetingSpot
+        ? titleObject.meetingSpot.split(",")[0]
+        : "장소 없음";
 
     return (
         <Link to={`/notion/${id}`}>
@@ -38,8 +41,9 @@ const Health_post = ({ title, channel_name, id }) => {
                     {titleObject.title || "제목 없음"}
                 </p>
                 <div className="mb-2 text-sm flex">
-                    {titleObject.currentMember.length ===
-                    titleObject.meetingCapacity ? (
+                    {titleObject.currentMember &&
+                    titleObject.currentMember.length ===
+                        titleObject.meetingCapacity ? (
                         <p className="text-rose-600	 font-bold">모집 마감</p>
                     ) : (
                         <p className="text-lime-400 font-bold">모집 중</p>
@@ -49,10 +53,12 @@ const Health_post = ({ title, channel_name, id }) => {
                     {titleObject.meetingTime || "기간 없음"}
                 </div>
                 <div className="text-sm flex">
-                    {titleObject.meetingSpot || "장소 없음"}
+                    {meetingSpot} {/* 첫 번째 값(장소)만 표시하기 */}
                     <span className="mx-3 opacity-5">|</span>
-                    {titleObject.currentMember.length || 0}명 /{" "}
-                    {titleObject.meetingCapacity || 0}명
+                    {titleObject.currentMember
+                        ? titleObject.currentMember.length
+                        : 0}
+                    명 / {titleObject.meetingCapacity || 0}명
                     <span className="mx-3 opacity-5">|</span>
                     {channel_name || "기타"}
                 </div>

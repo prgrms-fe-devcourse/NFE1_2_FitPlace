@@ -32,21 +32,27 @@ var Health_post = function (_a) {
         console.error("JSON 파싱 오류:", error);
         titleObject = { title: title };
     }
-    console.log("모임인원: ", title.meetingCapacity);
+    // meetingSpot을 ,로 분리해서 첫 번째 값만 표시
+    var meetingSpot = titleObject.meetingSpot
+        ? titleObject.meetingSpot.split(",")[0]
+        : "장소 없음";
     return (react_1["default"].createElement(react_router_dom_1.Link, { to: "/notion/" + id },
         react_1["default"].createElement("button", { className: "bg-gray-100 h-32 w-full rounded-md shadow-lg mb-5 p-5 flex flex-col transition-transform duration-300 ease-in-out hover:bg-gray-200 hover:shadow-xl" },
             react_1["default"].createElement("p", { className: "font-bold text-lg mb-3" }, titleObject.title || "제목 없음"),
             react_1["default"].createElement("div", { className: "mb-2 text-sm flex" },
-                titleObject.currentMember.length ===
-                    titleObject.meetingCapacity ? (react_1["default"].createElement("p", { className: "text-rose-600\t font-bold" }, "\uBAA8\uC9D1 \uB9C8\uAC10")) : (react_1["default"].createElement("p", { className: "text-lime-400 font-bold" }, "\uBAA8\uC9D1 \uC911")),
+                titleObject.currentMember &&
+                    titleObject.currentMember.length ===
+                        titleObject.meetingCapacity ? (react_1["default"].createElement("p", { className: "text-rose-600\t font-bold" }, "\uBAA8\uC9D1 \uB9C8\uAC10")) : (react_1["default"].createElement("p", { className: "text-lime-400 font-bold" }, "\uBAA8\uC9D1 \uC911")),
                 react_1["default"].createElement("span", { className: "mx-3 opacity-5" }, "|"),
                 titleObject.meetingTime || "기간 없음"),
             react_1["default"].createElement("div", { className: "text-sm flex" },
-                titleObject.meetingSpot || "장소 없음",
-                react_1["default"].createElement("span", { className: "mx-3 opacity-5" }, "|"),
-                titleObject.currentMember.length || 0,
-                "\uBA85 /",
+                meetingSpot,
                 " ",
+                react_1["default"].createElement("span", { className: "mx-3 opacity-5" }, "|"),
+                titleObject.currentMember
+                    ? titleObject.currentMember.length
+                    : 0,
+                "\uBA85 / ",
                 titleObject.meetingCapacity || 0,
                 "\uBA85",
                 react_1["default"].createElement("span", { className: "mx-3 opacity-5" }, "|"),
