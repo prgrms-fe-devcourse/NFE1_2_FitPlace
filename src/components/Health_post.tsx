@@ -38,7 +38,7 @@ const Health_post = ({ title, channel_name, id }) => {
                     {titleObject.title || "제목 없음"}
                 </p>
                 <div className="mb-2 text-sm flex">
-                    {titleObject.currentMember ===
+                    {titleObject.currentMember.length ===
                     titleObject.meetingCapacity ? (
                         <p className="text-rose-600	 font-bold">모집 마감</p>
                     ) : (

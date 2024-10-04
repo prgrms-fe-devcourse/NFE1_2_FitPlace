@@ -32,8 +32,6 @@ interface ParsedPost {
 }
 
 const NotionPage = () => {
-    const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
-
     const { id } = useParams();
     const postId = id;
     const modalBackground = useRef();
@@ -48,7 +46,7 @@ const NotionPage = () => {
         lng: number;
     } | null>(null);
     const [currentMember, setCurrentMember] = useState<string[]>([]);
-    const [userName, setUserName] = useState<string>("허허");
+    const [userName, setUserName] = useState<string>("sser");
 
     const parsePostData = (post: any): ParsedPost => {
         try {
@@ -84,23 +82,31 @@ const NotionPage = () => {
     // 참가신청 클릭 시 모집-----------------------------------------------------------
     const fetchPostData = async () => {
         try {
-            const response = await fetch(`${API_URL}/posts/${postId}`, {
-                headers: {},
-            });
+            const response = await axios.get(
+                `https://kdt.frontend.5th.programmers.co.kr:5009/posts/${postId}`,
+                {
+                    headers: {},
+                }
+            );
 
-            if (!response.ok) {
+            if (response.status !== 200) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await response.json();
-
+            const data = response.data;
             const parsedData = parsePostData(data);
             setPostData(parsedData);
         } catch (error) {
-            console.error("Error fetching post data:", error);
+            if (axios.isAxiosError(error)) {
+                console.error(
+                    "Error fetching post data:",
+                    error.response?.data || error.message
+                );
+            } else {
+                console.error("Unknown error fetching post data:", error);
+            }
         }
     };
-
     useEffect(() => {
         fetchPostData();
     }, [currentMember, id]);
@@ -112,13 +118,16 @@ const NotionPage = () => {
     const channelId = PrevData?.channel._id;
 
     const handleJoin = () => {
-        setUserName(`userName`); // 실제 로그인 시스템에서 가져와야 함
-        if (!postData.currentMember?.includes(userName)) {
+        setUserName(userName); // 실제 로그인 시스템에서 가져와야 함
+        if (
+            postData.currentMember &&
+            !postData.currentMember?.includes(userName)
+        ) {
             // 여기에 서버로 업데이트된 정보를 보내는 API 호출 추가
             setCurrentMember([...postData.currentMember, userName]);
             console.log(userName);
             handleCurrentMember([...postData.currentMember, userName]);
-            console.log([...postData.currentMember, userName]);
+            renderButton();
         } else {
             alert("이미 참가 신청하셨습니다.");
         }
@@ -130,6 +139,7 @@ const NotionPage = () => {
             );
             setCurrentMember(updatedMembers);
             handleCurrentMember(updatedMembers);
+            renderButton();
         } else {
             alert("참가 신청을 하지 않았습니다.");
         }
@@ -200,17 +210,7 @@ const NotionPage = () => {
         }
     };
     const renderButton = () => {
-        if (postData.currentMember.includes(userName)) {
-            return (
-                <Button
-                    label="참가 취소"
-                    size="full"
-                    color="line"
-                    disabled={false}
-                    onClick={handleLeave} // 참가 취소 버튼 클릭 시 호출
-                />
-            );
-        } else if (
+        if (
             postData.currentMember.length > 0 &&
             postData.currentMember.length === postData.meetingCapacity
         ) {
@@ -218,8 +218,21 @@ const NotionPage = () => {
                 <Button
                     label="모집 마감"
                     size="full"
-                    color="green"
+                    color="grey"
                     disabled={true}
+                />
+            );
+        } else if (
+            postData.currentMember &&
+            postData.currentMember.includes(userName)
+        ) {
+            return (
+                <Button
+                    label="참가 취소"
+                    size="full"
+                    color="line"
+                    disabled={false}
+                    onClick={handleLeave} // 참가 취소 버튼 클릭 시 호출
                 />
             );
         } else {

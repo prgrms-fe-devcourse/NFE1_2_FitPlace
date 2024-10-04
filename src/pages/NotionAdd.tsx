@@ -244,7 +244,7 @@ const NotionAdd: React.FC = () => {
             const response = await fetch(`${API_URL}/posts/create`, {
                 method: "POST",
                 headers: {
-                    Authorization: `bearer ${cookieToken || token}`,
+                    Authorization: `${cookieToken || token}`,
                 },
                 body: submitData,
             });

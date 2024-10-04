@@ -66,7 +66,6 @@ var react_router_dom_2 = require("react-router-dom");
 var axios_1 = require("axios");
 var CurrentMemberItem_1 = require("../components/CurrentMemberItem");
 var NotionPage = function () {
-    var API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
     var id = react_router_dom_2.useParams().id;
     var postId = id;
     var modalBackground = react_1.useRef();
@@ -75,7 +74,7 @@ var NotionPage = function () {
     var _c = react_1.useState(null), postData = _c[0], setPostData = _c[1];
     var _d = react_1.useState(null), location = _d[0], setLocation = _d[1];
     var _e = react_1.useState([]), currentMember = _e[0], setCurrentMember = _e[1];
-    var _f = react_1.useState("허허"), userName = _f[0], setUserName = _f[1];
+    var _f = react_1.useState("sser"), userName = _f[0], setUserName = _f[1];
     var parsePostData = function (post) {
         try {
             var parsedTitle = JSON.parse(post.title);
@@ -95,29 +94,33 @@ var NotionPage = function () {
     // 참가신청 클릭 시 모집-----------------------------------------------------------
     var fetchPostData = function () { return __awaiter(void 0, void 0, void 0, function () {
         var response, data, parsedData, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch(API_URL + "/posts/" + postId, {
+                    _b.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/posts/" + postId, {
                             headers: {}
                         })];
                 case 1:
-                    response = _a.sent();
-                    if (!response.ok) {
+                    response = _b.sent();
+                    if (response.status !== 200) {
                         throw new Error("HTTP error! status: " + response.status);
                     }
-                    return [4 /*yield*/, response.json()];
-                case 2:
-                    data = _a.sent();
+                    data = response.data;
                     parsedData = parsePostData(data);
                     setPostData(parsedData);
-                    return [3 /*break*/, 4];
-                case 3:
-                    error_1 = _a.sent();
-                    console.error("Error fetching post data:", error_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _b.sent();
+                    if (axios_1["default"].isAxiosError(error_1)) {
+                        console.error("Error fetching post data:", ((_a = error_1.response) === null || _a === void 0 ? void 0 : _a.data) || error_1.message);
+                    }
+                    else {
+                        console.error("Unknown error fetching post data:", error_1);
+                    }
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
             }
         });
     }); };
@@ -130,13 +133,14 @@ var NotionPage = function () {
     var channelId = PrevData === null || PrevData === void 0 ? void 0 : PrevData.channel._id;
     var handleJoin = function () {
         var _a;
-        setUserName("userName"); // 실제 로그인 시스템에서 가져와야 함
-        if (!((_a = postData.currentMember) === null || _a === void 0 ? void 0 : _a.includes(userName))) {
+        setUserName(userName); // 실제 로그인 시스템에서 가져와야 함
+        if (postData.currentMember &&
+            !((_a = postData.currentMember) === null || _a === void 0 ? void 0 : _a.includes(userName))) {
             // 여기에 서버로 업데이트된 정보를 보내는 API 호출 추가
             setCurrentMember(__spreadArrays(postData.currentMember, [userName]));
             console.log(userName);
             handleCurrentMember(__spreadArrays(postData.currentMember, [userName]));
-            console.log(__spreadArrays(postData.currentMember, [userName]));
+            renderButton();
         }
         else {
             alert("이미 참가 신청하셨습니다.");
@@ -148,6 +152,7 @@ var NotionPage = function () {
             var updatedMembers = postData.currentMember.filter(function (member) { return member !== userName; });
             setCurrentMember(updatedMembers);
             handleCurrentMember(updatedMembers);
+            renderButton();
         }
         else {
             alert("참가 신청을 하지 않았습니다.");
@@ -230,12 +235,13 @@ var NotionPage = function () {
         });
     }); };
     var renderButton = function () {
-        if (postData.currentMember.includes(userName)) {
-            return (react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uCDE8\uC18C", size: "full", color: "line", disabled: false, onClick: handleLeave }));
-        }
-        else if (postData.currentMember.length > 0 &&
+        if (postData.currentMember.length > 0 &&
             postData.currentMember.length === postData.meetingCapacity) {
-            return (react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC9D1 \uB9C8\uAC10", size: "full", color: "green", disabled: true }));
+            return (react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC9D1 \uB9C8\uAC10", size: "full", color: "grey", disabled: true }));
+        }
+        else if (postData.currentMember &&
+            postData.currentMember.includes(userName)) {
+            return (react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uCDE8\uC18C", size: "full", color: "line", disabled: false, onClick: handleLeave }));
         }
         else {
             return (react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uC2E0\uCCAD\uD558\uAE30", size: "full", color: "green", onClick: handleJoin }));
