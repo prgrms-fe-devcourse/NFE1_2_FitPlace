@@ -13,8 +13,15 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Channel, PostType } from "../types/models";
 import { useSelector } from "react-redux";
-import CurrentMemberItem from "../components/CurrentMemberItem";
+import { Cookies } from "react-cookie";
 
+import CurrentMemberItem from "../components/CurrentMemberItem";
+interface User {
+    id: string;
+    fullName: string;
+    email: string;
+    // 기타 필요한 사용자 정보 필드
+}
 interface ParsedPost {
     _id: string;
     title: string;
@@ -34,6 +41,16 @@ interface ParsedPost {
 }
 
 const NotionPage = () => {
+    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState("");
+    const token = useSelector((state) => state.userToken);
+    const cookies = new Cookies();
+    const [myToken, setMyToken] = useState<string | null>(
+        cookies.get("token") || token
+    ); // 쿠키 또는 Redux에서 토큰 가져옴
+
+    const [currentMember, setCurrentMember] = useState<string[]>([]);
+
     const navigate = useNavigate();
     const { id } = useParams();
     const postId = id;
@@ -49,9 +66,6 @@ const NotionPage = () => {
         lng: number;
     } | null>(null);
 
-    const [currentMember, setCurrentMember] = useState<string[]>([]);
-    const [userName, setUserName] = useState<string>("sser");
-
     const parsePostData = (post: any): ParsedPost => {
         try {
             const parsedTitle = JSON.parse(post.title);
@@ -66,7 +80,7 @@ const NotionPage = () => {
 
             return {
                 ...post,
-                actualTitle: parsedTitle.title,
+                title: parsedTitle.title,
                 meetingCapacity: parseInt(parsedTitle.meetingCapacity, 10),
                 currentMember: parsedTitle.currentMember,
                 channel: parsedTitle.channel,
@@ -83,8 +97,39 @@ const NotionPage = () => {
             return post;
         }
     };
+    // 사용자 정보를 가져오는 함수
+    const fetchUser = async () => {
+        if (!myToken) {
+            setLoading(false);
+            console.log(myToken);
+            return;
+        }
 
-    // 참가신청 클릭 시 모집-----------------------------------------------------------
+        console.log(myToken);
+        try {
+            const response = await axios.get(
+                "https://kdt.frontend.5th.programmers.co.kr:5009/auth-user",
+                {
+                    headers: {
+                        Authorization: `${myToken}`,
+                    },
+                }
+            );
+
+            const fullName = response.data.fullName;
+            console.log(fullName);
+            if (fullName) {
+                setUser(fullName); // 상태에 사용자 이름 저장
+                localStorage.setItem("userFullName", fullName); // 로컬스토리지에 이름 저장
+            }
+
+            setLoading(false);
+        } catch (err) {
+            console.error("사용자 정보를 가져오는 중 오류 발생", err);
+            setLoading(false);
+        }
+    };
+
     const fetchPostData = async () => {
         try {
             const response = await axios.get(
@@ -112,13 +157,25 @@ const NotionPage = () => {
             }
         }
     };
+
+    // 페이지 로드 시 로컬스토리지에서 사용자 이름을 가져옴
     useEffect(() => {
-        fetchPostData();
-    }, [currentMember, id]);
+        const storedUser = localStorage.getItem("userFullName");
+        if (storedUser) {
+            setUser(storedUser); // 로컬스토리지에 저장된 이름을 상태로 설정
+            console.log("stored", storedUser);
+        } else {
+            fetchUser(); // 저장된 이름이 없으면 사용자 정보 fetch
+        }
+    }, [token]);
+    useEffect(() => {
+        fetchPostData(); // 'id' 변경 시에만 실행
+    }, [id]);
 
     if (!postData) {
         return <div>Loading...</div>;
     }
+
     //게시글 삭제 코드 입니다. 충돌 방지--------------------------------------------------------
     const Delete_post = async () => {
         try {
@@ -126,7 +183,7 @@ const NotionPage = () => {
                 `https://kdt.frontend.5th.programmers.co.kr:5009/posts/delete/`,
                 {
                     headers: {
-                        Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDE0ODU5fQ.Al40jxy-6yrAoANrY3fQA1joeNw08-fjByus_ZfxXSk`,
+                        Authorization: `${myToken || token}`,
                     },
                     data: {
                         id: id,
@@ -146,24 +203,29 @@ const NotionPage = () => {
     const channelId = PrevData?.channel._id;
 
     const handleJoin = () => {
-        setUserName(userName); // 실제 로그인 시스템에서 가져와야 함
-        if (
-            postData.currentMember &&
-            !postData.currentMember?.includes(userName)
-        ) {
+        if (!token) {
+            console.error("토큰이 없습니다. 로그인이 필요합니다.");
+            navigate("/login");
+            return;
+        }
+        console.log(postData.currentMember);
+        if (postData.currentMember && !postData.currentMember.includes(user)) {
             // 여기에 서버로 업데이트된 정보를 보내는 API 호출 추가
-            setCurrentMember([...postData.currentMember, userName]);
-            console.log(userName);
-            handleCurrentMember([...postData.currentMember, userName]);
+            setCurrentMember([...postData.currentMember, user]);
+            console.log(user);
+            handleCurrentMember([...postData.currentMember, user]);
             renderButton();
-        } else {
+        } else if (currentMember.includes(user)) {
             alert("이미 참가 신청하셨습니다.");
+        } else if (!user) {
+            alert("로그인해주세용");
         }
     };
+
     const handleLeave = () => {
-        if (postData.currentMember?.includes(userName)) {
+        if (postData.currentMember.includes(user)) {
             const updatedMembers = postData.currentMember.filter(
-                (member) => member !== userName
+                (member) => member !== user
             );
             setCurrentMember(updatedMembers);
             handleCurrentMember(updatedMembers);
@@ -188,7 +250,7 @@ const NotionPage = () => {
                 reqBody,
                 {
                     headers: {
-                        Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3ODc2Njg2fQ.O3_t47pHP0SeUQt3jUNTezVVLTHQhqCzOnHf4iqrtZ8`,
+                        Authorization: `${myToken || token}`,
                     },
                 }
             );
@@ -252,7 +314,7 @@ const NotionPage = () => {
             );
         } else if (
             postData.currentMember &&
-            postData.currentMember.includes(userName)
+            postData.currentMember.includes(user)
         ) {
             return (
                 <Button
@@ -434,6 +496,7 @@ const NotionPage = () => {
                                 label="참가 신청하기"
                                 size="full"
                                 color="green"
+                                onClick={handleJoin}
                             />
                         </div>
                         <div className="flex gap-2.5">
