@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProfileWrap from "../../components/ProfileWrap";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -47,6 +47,7 @@ interface UserData {
 const ProfileTemplate = () => {
 
   const cookie = new Cookies();
+  const navigate = useNavigate();
 
   const [isMyProfile, setIsMyProfile] = useState(false);
   const [myToken, setMyToken] = useState();
@@ -67,56 +68,57 @@ const ProfileTemplate = () => {
   let { id } = useParams();
 
   useEffect(() => {
-    const token = cookie.get("token").replace(/bearer\s+/g, "")
-    setMyToken(token);
-    const fetchData = async () => {
-      try {
-        const paramRes = await axios.get(`https://kdt.frontend.5th.programmers.co.kr:5009/users/${ id }`)
-        setLikedPost(paramRes.data.likes)
-        setParamsId(paramRes.data._id)
+    try { 
+      let token = cookie.get("token").replace(/bearer\s+/g, "")
+      setMyToken(token);
 
-        if (paramRes.data.fullName === 'STYLED 관리자') {
-          setProfileData(prev => ({
-            ...prev,
-            fullName: '관리자',
-            birth: 20000101,
-            location: '관리자',
-            description: '관리자용 계정입니다',
-            userId: '관리자',
-            image: []
-          }))
-        } else {
-          const profile = JSON.parse(paramRes.data.fullName)
-          setProfileData(prev => ({
-            ...prev,
-            ...profile
-          }))
-        }
-
-        const tokenRes = await axios.get('https://kdt.frontend.5th.programmers.co.kr:5009/auth-user', {
-          headers: {
-            Authorization: `bearer ${myToken}`
+      const fetchData = async () => {
+        try {
+          const paramRes = await axios.get(`https://kdt.frontend.5th.programmers.co.kr:5009/users/${ id }`)
+          setLikedPost(paramRes.data.likes)
+          setParamsId(paramRes.data._id)
+  
+          if (paramRes.data.fullName === 'STYLED 관리자') {
+            setProfileData(prev => ({
+              ...prev,
+              fullName: '관리자',
+              birth: 20000101,
+              location: '관리자',
+              description: '관리자용 계정입니다',
+              userId: '관리자',
+              image: []
+            }))
+          } else {
+            const profile = JSON.parse(paramRes.data.fullName)
+            setProfileData(prev => ({
+              ...prev,
+              ...profile
+            }))
           }
-        })
-        setTokenId(tokenRes.data._id);
 
-        if(paramsId === tokenId) {
-          setIsMyProfile(true);
-        } else {
-          setIsMyProfile(false)
+          const tokenRes = await axios.get('https://kdt.frontend.5th.programmers.co.kr:5009/auth-user', {
+            headers: {
+              Authorization: `bearer ${token}`
+            }
+          })
+          setTokenId(tokenRes.data._id);
+        } catch (err) {
+          console.log(err)
         }
-      } catch (err) {
-        console.log(err)
+      }
+  
+      if(token !== '') {
+        fetchData()
       }
     }
-
-    if(token) {
-      fetchData()
+    catch(err) {
+      alert('로그인한 회원만 조회가 가능합니다')
+      return navigate('/login')
     }
   }, [id])
 
   useEffect(() => {
-    if(paramsId === tokenId) {
+    if(paramsId == tokenId) {
       setIsMyProfile(true)
     } else {
       setIsMyProfile(false)
@@ -137,7 +139,7 @@ const ProfileTemplate = () => {
               if(prev) {
                 return [...prev, data.title]
               } else {
-                return [data.title]
+                return ['없음']
               }
             }
             setLikedData(updateItems)
@@ -147,26 +149,21 @@ const ProfileTemplate = () => {
         setLikedData(null)
       }
     })
-    // if (Array.isArray(likedPost)) {
-    //   const evenData: PostArr[] = [];
-    //   likedPost.map((post, idx) => {
-    //     const matchedData = postData?.find(item => item._id === post.post);
-    //     if(typeof matchedData === 'object') {
-    //       evenData.push(matchedData)
-    //       console.log(evenData)
-    //     }
-    //   })
-    //   const set = new Set(evenData)
-    //   const arr = [...set];
-    //   arr.map((item, idx) => {
-    //     return setLikedData(JSON.parse(item.title))
-    //   })
-    // }
+  }
+
+  const expireToken = () => {
+    cookie.remove('token', { path: '/' })
+    console.log(cookie.get('token'))
+  }
+
+  const ex = () => {
+    console.log(likedData)
   }
 
   return (
     <div className="w-140 min-h-screen bg-white p-3">
       <Link to={'/profile/edit'}>임시리동</Link>
+      <p onClick={expireToken}>임시폭파</p>
       <div className="flex flex-col justify-center items-stretch">
         {/* 프로필 상단 정보 영역 */}
         <div className="flex flex-col justify-center items-stretch text-center pt-8 pb-6 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow">
@@ -188,7 +185,7 @@ const ProfileTemplate = () => {
           </div>
 
           {/* 닉네임 */}
-          <div className="mt-2">
+          <div className="mt-2" onClick={ex}>
             <p className="text-3xl font-bold">{
             !profileData.fullName || profileData.fullName === ''
             ? "닉네임"
@@ -220,9 +217,11 @@ const ProfileTemplate = () => {
           <div className="py-4 px-5 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow">
             <p className="font-bold text-base">좋아요를 누른 게시물</p>
             {
-              likedData === null
+              likedData === null || likedData[0] === '없음' || likedData.length === 0
               ? <p className="font-medium text-base mt-4">좋아요를 누른 게시물이 없습니다</p>
-              : <p className="font-medium text-base mt-4">있쪄</p>
+              : likedData.map((item, idx) => {
+                return <p className="font-medium text-base mt-4" key={idx}>{item}</p>
+              })
             }
           </div>
 
@@ -236,7 +235,7 @@ const ProfileTemplate = () => {
           <ProfileWrap category="후기" description={ !profileData?.description ? "아직 작성된 후기가 없어요" : "대충 있을때 이거넣을듯" } /> */}
 
           {
-            isMyProfile
+            isMyProfile === true
             ?
             // 차단 유저 목록
             <ProfileWrap category="차단유저 목록" description="대충 있을때 이거넣을듯" />

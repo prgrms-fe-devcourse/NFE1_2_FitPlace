@@ -62,6 +62,7 @@ var axios_1 = require("axios");
 var react_cookie_1 = require("react-cookie");
 var ProfileTemplate = function () {
     var cookie = new react_cookie_1.Cookies();
+    var navigate = react_router_dom_1.useNavigate();
     var _a = react_1.useState(false), isMyProfile = _a[0], setIsMyProfile = _a[1];
     var _b = react_1.useState(), myToken = _b[0], setMyToken = _b[1];
     var _c = react_1.useState(''), paramsId = _c[0], setParamsId = _c[1];
@@ -79,55 +80,55 @@ var ProfileTemplate = function () {
     var _h = react_1.useState([]), likedData = _h[0], setLikedData = _h[1];
     var id = react_router_dom_2.useParams().id;
     react_1.useEffect(function () {
-        var token = cookie.get("token").replace(/bearer\s+/g, "");
-        setMyToken(token);
-        var fetchData = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var paramRes, profile_1, tokenRes, err_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/users/" + id)];
-                    case 1:
-                        paramRes = _a.sent();
-                        setLikedPost(paramRes.data.likes);
-                        setParamsId(paramRes.data._id);
-                        if (paramRes.data.fullName === 'STYLED 관리자') {
-                            setProfileData(function (prev) { return (__assign(__assign({}, prev), { fullName: '관리자', birth: 20000101, location: '관리자', description: '관리자용 계정입니다', userId: '관리자', image: [] })); });
-                        }
-                        else {
-                            profile_1 = JSON.parse(paramRes.data.fullName);
-                            setProfileData(function (prev) { return (__assign(__assign({}, prev), profile_1)); });
-                        }
-                        return [4 /*yield*/, axios_1["default"].get('https://kdt.frontend.5th.programmers.co.kr:5009/auth-user', {
-                                headers: {
-                                    Authorization: "bearer " + myToken
-                                }
-                            })];
-                    case 2:
-                        tokenRes = _a.sent();
-                        setTokenId(tokenRes.data._id);
-                        if (paramsId === tokenId) {
-                            setIsMyProfile(true);
-                        }
-                        else {
-                            setIsMyProfile(false);
-                        }
-                        return [3 /*break*/, 4];
-                    case 3:
-                        err_1 = _a.sent();
-                        console.log(err_1);
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
-                }
-            });
-        }); };
-        if (token) {
-            fetchData();
+        try {
+            var token_1 = cookie.get("token").replace(/bearer\s+/g, "");
+            setMyToken(token_1);
+            var fetchData = function () { return __awaiter(void 0, void 0, void 0, function () {
+                var paramRes, profile_1, tokenRes, err_1;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            _a.trys.push([0, 3, , 4]);
+                            return [4 /*yield*/, axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/users/" + id)];
+                        case 1:
+                            paramRes = _a.sent();
+                            setLikedPost(paramRes.data.likes);
+                            setParamsId(paramRes.data._id);
+                            if (paramRes.data.fullName === 'STYLED 관리자') {
+                                setProfileData(function (prev) { return (__assign(__assign({}, prev), { fullName: '관리자', birth: 20000101, location: '관리자', description: '관리자용 계정입니다', userId: '관리자', image: [] })); });
+                            }
+                            else {
+                                profile_1 = JSON.parse(paramRes.data.fullName);
+                                setProfileData(function (prev) { return (__assign(__assign({}, prev), profile_1)); });
+                            }
+                            return [4 /*yield*/, axios_1["default"].get('https://kdt.frontend.5th.programmers.co.kr:5009/auth-user', {
+                                    headers: {
+                                        Authorization: "bearer " + token_1
+                                    }
+                                })];
+                        case 2:
+                            tokenRes = _a.sent();
+                            setTokenId(tokenRes.data._id);
+                            return [3 /*break*/, 4];
+                        case 3:
+                            err_1 = _a.sent();
+                            console.log(err_1);
+                            return [3 /*break*/, 4];
+                        case 4: return [2 /*return*/];
+                    }
+                });
+            }); };
+            if (token_1 !== '') {
+                fetchData();
+            }
+        }
+        catch (err) {
+            alert('로그인한 회원만 조회가 가능합니다');
+            return navigate('/login');
         }
     }, [id]);
     react_1.useEffect(function () {
-        if (paramsId === tokenId) {
+        if (paramsId == tokenId) {
             setIsMyProfile(true);
         }
         else {
@@ -148,7 +149,7 @@ var ProfileTemplate = function () {
                                 return __spreadArrays(prev, [data.title]);
                             }
                             else {
-                                return [data.title];
+                                return ['없음'];
                             }
                         };
                         setLikedData(updateItems);
@@ -159,30 +160,23 @@ var ProfileTemplate = function () {
                 setLikedData(null);
             }
         });
-        // if (Array.isArray(likedPost)) {
-        //   const evenData: PostArr[] = [];
-        //   likedPost.map((post, idx) => {
-        //     const matchedData = postData?.find(item => item._id === post.post);
-        //     if(typeof matchedData === 'object') {
-        //       evenData.push(matchedData)
-        //       console.log(evenData)
-        //     }
-        //   })
-        //   const set = new Set(evenData)
-        //   const arr = [...set];
-        //   arr.map((item, idx) => {
-        //     return setLikedData(JSON.parse(item.title))
-        //   })
-        // }
+    };
+    var expireToken = function () {
+        cookie.remove('token', { path: '/' });
+        console.log(cookie.get('token'));
+    };
+    var ex = function () {
+        console.log(likedData);
     };
     return (React.createElement("div", { className: "w-140 min-h-screen bg-white p-3" },
         React.createElement(react_router_dom_1.Link, { to: '/profile/edit' }, "\uC784\uC2DC\uB9AC\uB3D9"),
+        React.createElement("p", { onClick: expireToken }, "\uC784\uC2DC\uD3ED\uD30C"),
         React.createElement("div", { className: "flex flex-col justify-center items-stretch" },
             React.createElement("div", { className: "flex flex-col justify-center items-stretch text-center pt-8 pb-6 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow" },
                 React.createElement("div", { id: "profileImg", className: "mx-auto w-24 h-24 overflow-hidden rounded-lg" }, profileData.image.length !== 0
                     ? React.createElement("img", { src: profileData.image[0], alt: (profileData === null || profileData === void 0 ? void 0 : profileData.fullName) + "\uB2D8\uC758 \uD504\uB85C\uD544 \uC0AC\uC9C4", className: "object-cover w-full h-full" })
                     : React.createElement("img", { src: "/src/assets/defaultProfileImg.svg", alt: (profileData === null || profileData === void 0 ? void 0 : profileData.fullName) + "\uB2D8\uC758 \uD504\uB85C\uD544 \uC0AC\uC9C4", className: "object-cover w-full h-full" })),
-                React.createElement("div", { className: "mt-2" },
+                React.createElement("div", { className: "mt-2", onClick: ex },
                     React.createElement("p", { className: "text-3xl font-bold" }, !profileData.fullName || profileData.fullName === ''
                         ? "닉네임"
                         : profileData === null || profileData === void 0 ? void 0 : profileData.fullName)),
@@ -195,10 +189,12 @@ var ProfileTemplate = function () {
                 React.createElement(ProfileWrap_1["default"], { category: "\uC9C0\uC5ED", description: !(profileData === null || profileData === void 0 ? void 0 : profileData.location) ? "아직 작성하지 않았어요" : profileData.location }),
                 React.createElement("div", { className: "py-4 px-5 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow" },
                     React.createElement("p", { className: "font-bold text-base" }, "\uC88B\uC544\uC694\uB97C \uB204\uB978 \uAC8C\uC2DC\uBB3C"),
-                    likedData === null
+                    likedData === null || likedData[0] === '없음' || likedData.length === 0
                         ? React.createElement("p", { className: "font-medium text-base mt-4" }, "\uC88B\uC544\uC694\uB97C \uB204\uB978 \uAC8C\uC2DC\uBB3C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4")
-                        : React.createElement("p", { className: "font-medium text-base mt-4" }, "\uC788\uCA84")),
-                isMyProfile
+                        : likedData.map(function (item, idx) {
+                            return React.createElement("p", { className: "font-medium text-base mt-4", key: idx }, item);
+                        })),
+                isMyProfile === true
                     ?
                         // 차단 유저 목록
                         React.createElement(ProfileWrap_1["default"], { category: "\uCC28\uB2E8\uC720\uC800 \uBAA9\uB85D", description: "\uB300\uCDA9 \uC788\uC744\uB54C \uC774\uAC70\uB123\uC744\uB4EF" })
