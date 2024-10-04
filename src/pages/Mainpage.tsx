@@ -46,7 +46,7 @@ const Mainpage = () => {
 
   const Sort_Post = post
     .sort((a, b) => b.likes.length - a.likes.length)
-    .slice(0, 6);
+    .slice(0, 1);
 
   useEffect(() => {
     console.log("post:", Sort_Post);
