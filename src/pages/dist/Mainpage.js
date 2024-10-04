@@ -107,7 +107,7 @@ var Mainpage = function () {
                 react_1["default"].createElement("button", { className: "w-full" },
                     react_1["default"].createElement(Search_bar_1["default"], { placeholder: "\uAC80\uC0C9" }))),
             Sort_Channel.length > 0 && (react_1["default"].createElement("section", { className: "mt-11" },
-                react_1["default"].createElement("p", { className: "font-bold mt-11 text-xl mb-3" }, "\uC778\uAE30\uC885\uBAA9"),
+                react_1["default"].createElement("p", { className: "font-bold mt-11 text-xl mb-3" }, "\uC778\uAE30 \uC885\uBAA9"),
                 react_1["default"].createElement("div", { className: "flex" },
                     react_1["default"].createElement(Popular_sports_1["default"], { name: Sort_Channel[0].name, description: Sort_Channel[0].description, postLength: Sort_Channel[0].posts.length }),
                     react_1["default"].createElement(Popular_sports_1["default"], { name: Sort_Channel[1].name, description: Sort_Channel[1].description, postLength: Sort_Channel[1].posts.length }),

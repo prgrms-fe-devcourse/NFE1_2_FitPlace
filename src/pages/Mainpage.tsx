@@ -68,7 +68,7 @@ const Mainpage = () => {
         </Link>
         {Sort_Channel.length > 0 && (
           <section className="mt-11">
-            <p className="font-bold mt-11 text-xl mb-3">인기종목</p>
+            <p className="font-bold mt-11 text-xl mb-3">인기 종목</p>
             <div className="flex">
               <Popular_sports
                 name={Sort_Channel[0].name}
