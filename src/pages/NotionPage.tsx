@@ -390,16 +390,40 @@ const NotionPage = () => {
               <div className="flex gap-5">
                 <p className="text-lg font-bold">장소</p>
                 {/* 장소명만 표시 */}
-                <p className="text-sm text-[#7e7e7e]">
+                <p className="text-sm text-[#7e7e7e] mt-1">
                   {location?.address || "장소 없음"}
                 </p>
               </div>
               <div className="flex gap-5">
                 <p className="text-lg font-bold">일시</p>
-                <p className="text-sm text-[#7e7e7e]">
+                <p className="text-sm text-[#7e7e7e] mt-1">
                   {postData.meetingTime || "시간 무관"}
                 </p>
               </div>
+              <section className="flex  gap-5">
+                <div className="flex gap-5">
+                  <p className="text-lg font-bold">참가 신청자 </p>
+                  <p className="text-sm text-[#7e7e7e] mt-1">
+                    {postData.currentMember.length > 0
+                      ? postData.currentMember.length
+                      : 0}{" "}
+                    / {postData.meetingCapacity}명
+                  </p>
+                </div>
+                <div className="flex gap-10 ">
+                  {postData.currentMember &&
+                  postData?.currentMember.length > 0 ? (
+                    // postData.currentMember.map((item, idx) => (
+                    //   <CurrentMemberItem key={idx} userName={item} />
+                    // ))
+                    <div></div>
+                  ) : (
+                    <p className="text-sm text-[#7e7e7e] mt-1">
+                      아직 참가자가 없습니다.
+                    </p>
+                  )}
+                </div>
+              </section>
             </div>
           </section>
           <section className="mt-7">
@@ -424,10 +448,10 @@ const NotionPage = () => {
               <p className="my-10">사진이 없습니다.</p>
             )}
           </section>
-          <section className="mt-11 flex flex-col gap-5">
+          {/* <section className="mt-11 flex flex-col gap-5">
             <div>
               <p className="text-lg font-bold">
-                멤버{" "}
+                참가 신청 인원{" "}
                 {postData.currentMember.length > 0
                   ? postData.currentMember.length
                   : 0}{" "}
@@ -436,14 +460,15 @@ const NotionPage = () => {
             </div>
             <div className="flex gap-10 ">
               {postData.currentMember && postData?.currentMember.length > 0 ? (
-                postData.currentMember.map((item, idx) => (
-                  <CurrentMemberItem key={idx} userName={item} />
-                ))
+                // postData.currentMember.map((item, idx) => (
+                //   <CurrentMemberItem key={idx} userName={item} />
+                // ))
+                <div></div>
               ) : (
                 <p>아직 참가자가 없습니다.</p>
               )}
             </div>
-          </section>
+          </section> */}
           <section className="mt-14">
             <div className="flex flex-col gap-4">
               <p className="text-lg font-bold">운동장소</p>

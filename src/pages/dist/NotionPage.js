@@ -67,7 +67,6 @@ var react_router_dom_3 = require("react-router-dom");
 var axios_1 = require("axios");
 var react_redux_1 = require("react-redux");
 var react_cookie_1 = require("react-cookie");
-var CurrentMemberItem_1 = require("../components/CurrentMemberItem");
 var NotionPage = function () {
     var _a = react_1.useState(true), loading = _a[0], setLoading = _a[1];
     var _b = react_1.useState(""), user = _b[0], setUser = _b[1];
@@ -369,28 +368,32 @@ var NotionPage = function () {
                     react_1["default"].createElement("div", { className: "flex flex-col gap-3" },
                         react_1["default"].createElement("div", { className: "flex gap-5" },
                             react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC7A5\uC18C"),
-                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, (location === null || location === void 0 ? void 0 : location.address) || "장소 없음")),
+                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e] mt-1" }, (location === null || location === void 0 ? void 0 : location.address) || "장소 없음")),
                         react_1["default"].createElement("div", { className: "flex gap-5" },
                             react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC77C\uC2DC"),
-                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e]" }, postData.meetingTime || "시간 무관")))),
+                            react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e] mt-1" }, postData.meetingTime || "시간 무관")),
+                        react_1["default"].createElement("section", { className: "flex  gap-5" },
+                            react_1["default"].createElement("div", { className: "flex gap-5" },
+                                react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uCC38\uAC00 \uC2E0\uCCAD\uC790 "),
+                                react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e] mt-1" },
+                                    postData.currentMember.length > 0
+                                        ? postData.currentMember.length
+                                        : 0,
+                                    " ",
+                                    "/ ",
+                                    postData.meetingCapacity,
+                                    "\uBA85")),
+                            react_1["default"].createElement("div", { className: "flex gap-10 " }, postData.currentMember &&
+                                (postData === null || postData === void 0 ? void 0 : postData.currentMember.length) > 0 ? (
+                            // postData.currentMember.map((item, idx) => (
+                            //   <CurrentMemberItem key={idx} userName={item} />
+                            // ))
+                            react_1["default"].createElement("div", null)) : (react_1["default"].createElement("p", { className: "text-sm text-[#7e7e7e] mt-1" }, "\uC544\uC9C1 \uCC38\uAC00\uC790\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.")))))),
                 react_1["default"].createElement("section", { className: "mt-7" },
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement(NotionItem_1["default"], { content: postData.meetingInfo })),
                     postData.image && postData.image.length > 0 ? (postData.image.map(function (URL, i) { return (react_1["default"].createElement("div", { className: "flex flex-wrap justify-center border-2 border-gray-200 my-2", key: i },
                         react_1["default"].createElement("img", { className: "w-96 h-96", src: URL, alt: "\uAC8C\uC2DC\uAE00\uC0AC\uC9C4", id: "notionImg" }))); })) : (react_1["default"].createElement("p", { className: "my-10" }, "\uC0AC\uC9C4\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."))),
-                react_1["default"].createElement("section", { className: "mt-11 flex flex-col gap-5" },
-                    react_1["default"].createElement("div", null,
-                        react_1["default"].createElement("p", { className: "text-lg font-bold" },
-                            "\uBA64\uBC84",
-                            " ",
-                            postData.currentMember.length > 0
-                                ? postData.currentMember.length
-                                : 0,
-                            " ",
-                            "/ ",
-                            postData.meetingCapacity,
-                            "\uBA85")),
-                    react_1["default"].createElement("div", { className: "flex gap-10 " }, postData.currentMember && (postData === null || postData === void 0 ? void 0 : postData.currentMember.length) > 0 ? (postData.currentMember.map(function (item, idx) { return (react_1["default"].createElement(CurrentMemberItem_1["default"], { key: idx, userName: item })); })) : (react_1["default"].createElement("p", null, "\uC544\uC9C1 \uCC38\uAC00\uC790\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.")))),
                 react_1["default"].createElement("section", { className: "mt-14" },
                     react_1["default"].createElement("div", { className: "flex flex-col gap-4" },
                         react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC6B4\uB3D9\uC7A5\uC18C"),
