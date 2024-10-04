@@ -107,10 +107,8 @@ var NotionPage = function () {
                 case 0:
                     if (!myToken) {
                         setLoading(false);
-                        console.log(myToken);
                         return [2 /*return*/];
                     }
-                    console.log(myToken);
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
@@ -122,10 +120,10 @@ var NotionPage = function () {
                 case 2:
                     response = _a.sent();
                     fullName = response.data.fullName;
-                    console.log(fullName);
                     if (fullName) {
                         setUser(fullName); // 상태에 사용자 이름 저장
                         localStorage.setItem("userFullName", fullName); // 로컬스토리지에 이름 저장
+                        console.log(myToken);
                     }
                     setLoading(false);
                     return [3 /*break*/, 4];
@@ -235,7 +233,7 @@ var NotionPage = function () {
             alert("이미 참가 신청하셨습니다.");
         }
         else if (!user) {
-            alert("로그인해주세용");
+            alert("로그인해주세요");
         }
     };
     var handleLeave = function () {
@@ -326,6 +324,7 @@ var NotionPage = function () {
         });
     }); };
     var renderButton = function () {
+        console.log(postData.currentMember);
         if (postData.currentMember.length > 0 &&
             postData.currentMember.length === postData.meetingCapacity) {
             return (react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC9D1 \uB9C8\uAC10", size: "full", color: "grey", disabled: true }));
@@ -334,7 +333,8 @@ var NotionPage = function () {
             postData.currentMember.includes(user)) {
             return (react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uCDE8\uC18C", size: "full", color: "line", disabled: false, onClick: handleLeave }));
         }
-        else {
+        else if (postData.currentMember &&
+            !postData.currentMember.includes(user)) {
             return (react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uC2E0\uCCAD\uD558\uAE30", size: "full", color: "green", onClick: handleJoin }));
         }
     };

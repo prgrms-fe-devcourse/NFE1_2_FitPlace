@@ -16,12 +16,7 @@ import { useSelector } from "react-redux";
 import { Cookies } from "react-cookie";
 
 import CurrentMemberItem from "../components/CurrentMemberItem";
-interface User {
-    id: string;
-    fullName: string;
-    email: string;
-    // 기타 필요한 사용자 정보 필드
-}
+
 interface ParsedPost {
     _id: string;
     title: string;
@@ -101,11 +96,9 @@ const NotionPage = () => {
     const fetchUser = async () => {
         if (!myToken) {
             setLoading(false);
-            console.log(myToken);
             return;
         }
 
-        console.log(myToken);
         try {
             const response = await axios.get(
                 "https://kdt.frontend.5th.programmers.co.kr:5009/auth-user",
@@ -117,10 +110,10 @@ const NotionPage = () => {
             );
 
             const fullName = response.data.fullName;
-            console.log(fullName);
             if (fullName) {
                 setUser(fullName); // 상태에 사용자 이름 저장
                 localStorage.setItem("userFullName", fullName); // 로컬스토리지에 이름 저장
+                console.log(myToken);
             }
 
             setLoading(false);
@@ -218,7 +211,7 @@ const NotionPage = () => {
         } else if (currentMember.includes(user)) {
             alert("이미 참가 신청하셨습니다.");
         } else if (!user) {
-            alert("로그인해주세용");
+            alert("로그인해주세요");
         }
     };
 
@@ -300,6 +293,7 @@ const NotionPage = () => {
         }
     };
     const renderButton = () => {
+        console.log(postData.currentMember);
         if (
             postData.currentMember.length > 0 &&
             postData.currentMember.length === postData.meetingCapacity
@@ -325,7 +319,10 @@ const NotionPage = () => {
                     onClick={handleLeave} // 참가 취소 버튼 클릭 시 호출
                 />
             );
-        } else {
+        } else if (
+            postData.currentMember &&
+            !postData.currentMember.includes(user)
+        ) {
             return (
                 <Button
                     label="참가 신청하기"
