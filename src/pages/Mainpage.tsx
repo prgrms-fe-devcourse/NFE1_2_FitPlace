@@ -42,9 +42,7 @@ const Mainpage = () => {
     Popular_post();
   }, []);
 
-  const Sort_Channel = channel
-    .sort((a, b) => b.posts.length - a.posts.length)
-    .slice(0, 5); //post가 많은 순서대로 정렬.
+  const Sort_Channel = channel;
 
   const Sort_Post = post
     .sort((a, b) => b.likes.length - a.likes.length)
@@ -53,6 +51,10 @@ const Mainpage = () => {
   useEffect(() => {
     console.log("post:", Sort_Post);
   }, [Sort_Post]);
+
+  useEffect(() => {
+    console.log("channel", Sort_Channel);
+  }, [Sort_Channel]);
 
   return (
     <>
@@ -66,32 +68,32 @@ const Mainpage = () => {
         </Link>
         {Sort_Channel.length > 0 && (
           <section className="mt-11">
-            <p className="font-bold mt-11 text-xl mb-3">인기종목</p>
+            <p className="font-bold mt-11 text-xl mb-3">인기 종목</p>
             <div className="flex">
               <Popular_sports
-                name={Sort_Channel[0].name}
+                name={Sort_Channel[13].name}
                 description={Sort_Channel[0].description}
                 postLength={Sort_Channel[0].posts.length}
               />
               <Popular_sports
-                name={Sort_Channel[1].name}
+                name={Sort_Channel[14].name}
                 description={Sort_Channel[1].description}
                 postLength={Sort_Channel[1].posts.length}
               />
               <Popular_sports
-                name={Sort_Channel[2].name}
+                name={Sort_Channel[15].name}
                 description={Sort_Channel[2].description}
                 postLength={Sort_Channel[2].posts.length}
               />
             </div>
             <div className="flex mx-24">
               <Popular_sports
-                name={Sort_Channel[3].name}
+                name={Sort_Channel[11].name}
                 description={Sort_Channel[3].description}
                 postLength={Sort_Channel[3].posts.length}
               />
               <Popular_sports
-                name={Sort_Channel[4].name}
+                name={Sort_Channel[12].name}
                 description={Sort_Channel[4].description}
                 postLength={Sort_Channel[4].posts.length}
               />

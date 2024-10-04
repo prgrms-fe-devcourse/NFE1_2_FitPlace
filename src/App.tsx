@@ -20,7 +20,8 @@ import ProfileImg from "./pages/profile/ProfileImg";
 import CommentPage from "./pages/CommentPage";
 import { Cookies } from "react-cookie";
 import { initializeToken, isLogin } from "./data/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import NotionFix from "./pages/NotionFix";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -35,7 +36,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-white">
+    <div className="flex flex-col justify-center items-center min-h-screen bg-white ">
       <Routes>
         <Route path="/" element={<Mainpage />} />
         <Route path="/login" element={<Login />} />
@@ -50,6 +51,7 @@ const App = () => {
         <Route path="/map" element={<Location />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/notifications" element={<NotificationPage />} />
+        <Route path="/notionFix/:id" element={<NotionFix />} />
         <Route path="/notionAdd" element={<NotionAdd />} />
         <Route path="/notion/:id" element={<NotionPage />} />
         <Route path="/notion/:id/comments" element={<CommentPage />} />

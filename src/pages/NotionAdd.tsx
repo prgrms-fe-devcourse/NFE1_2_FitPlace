@@ -1,20 +1,23 @@
 import React, { useState, useCallback, ChangeEvent, useEffect } from "react";
-import arrowforward from "../assets/arrowforward.svg";
 import Button from "../components/Button";
 import Header from "../components/Header";
 import NotionCategory from "../components/NotionCategory";
+import KakaoMap from "./KakaoMap";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Cookies } from "react-cookie";
 
 interface FormData {
     title: string;
     channel: string;
-    currentMember: number;
+    currentMember: string[];
     meetingCapacity: number;
     meetingDate: string;
     meetingStartTime: string;
     meetingEndTime: string;
     isTimeFlexible: boolean;
     meetingSpot: string;
-    image: string | null;
+    images: string[];
     meetingInfo: string;
 }
 
@@ -27,25 +30,108 @@ interface Channel {
 const INITIAL_FORM_STATE: FormData = {
     title: "",
     channel: "",
-    currentMember: 0,
+    currentMember: [],
     meetingCapacity: 0,
     meetingDate: "",
     meetingStartTime: "",
     meetingEndTime: "",
     isTimeFlexible: false,
     meetingSpot: "",
-    image: null,
+    images: [],
     meetingInfo: "",
 };
 
 const API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
+const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 const NotionAdd: React.FC = () => {
     const [formData, setFormData] = useState<FormData>(INITIAL_FORM_STATE);
+    const [selectedLocation, setSelectedLocation] = useState<{
+        address: string;
+        lat: number;
+        lng: number;
+    } | null>(null);
 
     const [channels, setChannels] = useState<Channel[]>([]);
 
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
+
+    const handleFileChange = useCallback(
+        async (e: ChangeEvent<HTMLInputElement>) => {
+            const files = e.target.files;
+            if (files) {
+                const newFiles = Array.from(files);
+                setImageFiles((prev) => [...prev, ...newFiles]);
+
+                const newUrls: string[] = [];
+                const formData = new FormData();
+
+                for (const file of newFiles) {
+                    formData.append("file", file);
+                    formData.append("upload_preset", UPLOAD_PRESET);
+
+                    try {
+                        const response = await fetch(
+                            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+                            {
+                                method: "POST",
+                                body: formData,
+                            }
+                        );
+                        const data = await response.json();
+                        newUrls.push(data.secure_url);
+                    } catch (error) {
+                        console.error("이미지 업로드 실패:", error);
+                    }
+                }
+                setImageUrls((prev) => [...prev, ...newUrls]);
+                setFormData((prev) => ({
+                    ...prev,
+                    images: [...prev.images, ...newUrls],
+                }));
+            }
+        },
+        []
+    );
+
+    const [isRegistered, setIsRegistered] = useState(false);
+    const [newPostId, setNewPostId] = useState<string | null>(null);
+    const navigate = useNavigate();
+
+    const token = useSelector((state: any) => state.userToken);
+    const cookies = new Cookies();
+
+    const saveFormDataToStorage = (data: FormData) => {
+        sessionStorage.setItem("notionAddFormData", JSON.stringify(data));
+    };
+
+    const resetForm = () => {
+        sessionStorage.removeItem("notionAddFormData");
+        sessionStorage.removeItem("selectedLocation");
+        setFormData(INITIAL_FORM_STATE);
+        setSelectedLocation(null);
+    };
+
     useEffect(() => {
+        const savedFormData = sessionStorage.getItem("notionAddFormData");
+        if (savedFormData) {
+            setFormData(JSON.parse(savedFormData));
+        }
+
+        const savedLocation = sessionStorage.getItem("selectedLocation");
+        if (savedLocation) {
+            const locationData = JSON.parse(savedLocation);
+            const locationString = `${locationData.address},${locationData.lat},${locationData.lng}`;
+            setSelectedLocation(locationData);
+            setFormData((prev) => ({
+                ...prev,
+                meetingSpot: locationString,
+            }));
+        }
+
         fetchChannels();
     }, []);
 
@@ -57,7 +143,6 @@ const NotionAdd: React.FC = () => {
             }
             const data = await response.json();
             setChannels(data);
-            console.log(data);
         } catch (error) {
             console.error("Error fetching channels:", error);
         }
@@ -66,49 +151,61 @@ const NotionAdd: React.FC = () => {
     const handleChange = useCallback(
         (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             const { name, value, type } = e.target;
-            setFormData((prev) => ({
-                ...prev,
+            const updatedFormData = {
+                ...formData,
                 [name]: type === "number" ? parseInt(value, 10) : value,
-            }));
+            };
+            setFormData(updatedFormData);
+            saveFormDataToStorage(updatedFormData);
         },
-        []
+        [formData]
     );
 
-    const handleFileChange = useCallback(
-        (e: ChangeEvent<HTMLInputElement>) => {},
-        []
-    );
 
-    const handleCategorySelect = useCallback((category: string) => {
-        setFormData((prev) => ({ ...prev, channel: category }));
-    }, []);
+    const handleCategorySelect = useCallback(
+        (category: string) => {
+            setFormData((prev) => ({ ...prev, channel: category }));
+            saveFormDataToStorage({ ...formData, channel: category });
 
-    const handleTimeFlexibleChange = useCallback(
-        (e: ChangeEvent<HTMLInputElement>) => {
-            const { checked } = e.target;
-            setFormData((prev) => ({
-                ...prev,
-                isTimeFlexible: checked,
-                meetingStartTime: checked ? "" : prev.meetingStartTime,
-                meetingEndTime: checked ? "" : prev.meetingEndTime,
-            }));
+    if (!formData.title) {
+      alert("제목을 입력해주세요!");
+      return;
+    } else if (formData.meetingCapacity === 0) {
+      alert("모집 인원을 입력해주세요!");
+      return;
+    } else if (!formData.channel) {
+      alert("종목을 선택해주세요!");
+      return;
+    } else if (!formData.meetingSpot) {
+      alert("운동할 위치를 지정해주세요!");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/posts/create`, {
+        method: "POST",
+        headers: {
+          Authorization: `${cookieToken || token}`,
+
         },
-        []
+        [formData]
     );
 
-    const getChannelId = (selectedChannel: string): string => {
-        const channel = channels.find((ch) => ch.name === selectedChannel);
-        if (channel) {
-            return channel._id;
-        }
-        const otherChannel = channels.find((ch) => ch.name === "기타");
-        return otherChannel ? otherChannel._id : "";
+    const handleLocationClick = () => {
+        navigate("/map");
     };
 
     const handleSubmit = async () => {
-        const channelId = getChannelId(formData.channel);
+        const cookieToken = cookies.get("token");
 
-        // meetingTime 문자열 생성
+        if (!token && !cookieToken) {
+            console.error("토큰이 없습니다. 로그인이 필요합니다.");
+            return;
+        }
+
+        const channelId =
+            channels.find((ch) => ch.name === formData.channel)?._id || "";
+
         const meetingTime = formData.isTimeFlexible
             ? `${formData.meetingDate}, 시간 무관`
             : `${formData.meetingDate} ${formData.meetingStartTime} - ${formData.meetingEndTime}`;
@@ -117,21 +214,21 @@ const NotionAdd: React.FC = () => {
             title: formData.title,
             currentMember: formData.currentMember,
             meetingCapacity: formData.meetingCapacity,
-            meetingTime: meetingTime, // 하나의 속성으로 합침
+            meetingTime: meetingTime,
             meetingSpot: formData.meetingSpot,
             channel: formData.channel,
+            image: formData.images,
         };
 
         const submitData = new FormData();
         submitData.append("title", JSON.stringify(customJsonData));
-
         submitData.append("channelId", channelId);
 
         try {
             const response = await fetch(`${API_URL}/posts/create`, {
                 method: "POST",
                 headers: {
-                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3NDA0OTkzfQ.EziIP1HOZoU6tUyfSm1T7xhrmYkf0L60ItKo6kSErhs`,
+                    Authorization: `${cookieToken || token}`,
                 },
                 body: submitData,
             });
@@ -140,8 +237,12 @@ const NotionAdd: React.FC = () => {
                 throw new Error(`HTTP error : ${response.status}`);
             }
 
+            navigate(`/`);
             const data = await response.json();
-            console.log("Post", data);
+            console.log("Post 등록 완료:", data);
+            setNewPostId(data._id);
+            setIsRegistered(true);
+            resetForm();
         } catch (error) {
             console.error(
                 "Error: ",
@@ -155,6 +256,7 @@ const NotionAdd: React.FC = () => {
             <Header />
             <div className="bg-white w-[640px] h-full">
                 <form className="m-5">
+                    {/* 모임 이름 */}
                     <div>
                         <label
                             htmlFor="title"
@@ -173,6 +275,7 @@ const NotionAdd: React.FC = () => {
                         />
                     </div>
 
+                    {/* 모임 인원 */}
                     <div>
                         <label
                             htmlFor="meetingCapacity"
@@ -191,6 +294,7 @@ const NotionAdd: React.FC = () => {
                         />
                     </div>
 
+                    {/* 운동 종목 */}
                     <div>
                         <h3 className="font-bold text-xl mt-6">운동 종목</h3>
                         <div className="mt-2.5">
@@ -198,6 +302,7 @@ const NotionAdd: React.FC = () => {
                         </div>
                     </div>
 
+                    {/* 모임 날짜 */}
                     <div>
                         <label
                             htmlFor="meetingDate"
@@ -215,6 +320,7 @@ const NotionAdd: React.FC = () => {
                         />
                     </div>
 
+                    {/* 시간 무관 여부 */}
                     <div>
                         <label
                             htmlFor="isTimeFlexible"
@@ -225,7 +331,7 @@ const NotionAdd: React.FC = () => {
                                 id="isTimeFlexible"
                                 name="isTimeFlexible"
                                 checked={formData.isTimeFlexible}
-                                onChange={handleTimeFlexibleChange}
+                                onChange={handleChange}
                                 className="mr-2"
                             />
                             시간 무관
@@ -270,6 +376,7 @@ const NotionAdd: React.FC = () => {
                         </>
                     )}
 
+                    {/* 모임 장소 */}
                     <div>
                         <label
                             htmlFor="meetingSpot"
@@ -277,19 +384,32 @@ const NotionAdd: React.FC = () => {
                         >
                             모임 장소
                         </label>
-                        <input
-                            type="text"
-                            id="meetingSpot"
-                            name="meetingSpot"
-                            value={formData.meetingSpot}
-                            onChange={handleChange}
-                            placeholder="모임 장소를 입력해주세요."
-                            className="border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5"
-                        />
+                        <div
+                            className="cursor-pointer relative mt-2.5 border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] flex items-center px-3"
+                            onClick={handleLocationClick}
+                        >
+                            <span>
+                                {selectedLocation?.address ||
+                                    "모임 장소를 입력해주세요."}
+                            </span>
+                        </div>
                     </div>
+
+                    {/* 지도 표시 */}
+                    {selectedLocation && (
+                        <div className="mt-4">
+                            <KakaoMap
+                                isMarkerFixed={true}
+                                location={selectedLocation}
+                                style={{ height: "300px" }}
+                            />
+                        </div>
+                    )}
+
+                    {/* 모임 설명 */}
                     <div>
                         <label
-                            htmlFor="meetingSpot"
+                            htmlFor="meetingInfo"
                             className="flex font-bold text-xl mt-6"
                         >
                             모임 설명
@@ -304,22 +424,51 @@ const NotionAdd: React.FC = () => {
                             className="border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] mt-2.5 text-lg pl-2.5"
                         />
                     </div>
+
+                    {/* 사진 등록 */}
                     <div className="mb-6">
                         <p className="font-bold text-xl mt-6">사진 등록</p>
-                        <label
-                            htmlFor="image"
-                            className="w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-2.5"
-                        >
-                            + 사진 업로드
-                        </label>
-                        <input
-                            type="file"
-                            id="image"
-                            name="image"
-                            className="absolute hidden"
-                        />
+                        <div className="flex flex-wrap">
+                            {imageUrls.map((url, index) => (
+                                <img
+                                    key={index}
+                                    src={url}
+                                    alt={`uploaded-${index}`}
+                                    className="w-[160px] h-[140px] mt-4"
+                                />
+                            ))}
+
+                            <label
+                                htmlFor="image"
+                                className="w-[160px] h-[140px] border-2 border-solid rounded text-[#A7E30A] text-xl flex justify-center items-center relative mt-4"
+                            >
+                                + 사진 업로드
+                            </label>
+
+                            <input
+                                type="file"
+                                id="image"
+                                name="image"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="absolute hidden"
+                            />
+                        </div>
                     </div>
 
+                    {/*사진 초기화하기 */}
+                    {imageUrls && imageUrls.length > 0 && (
+                        <div className="flex flex-col items-center">
+                            <button
+                                className="w-1/2 bg-gray-300 my-3 h-10 text-sm hover:bg-gray-400 hover:rounded-2xl transition-all"
+                                onClick={() => setImageUrls([])}
+                            >
+                                사진 초기화
+                            </button>
+                        </div>
+                    )}
+
+                    {/* 모임 등록 버튼 */}
                     <Button
                         label="모임 등록"
                         size="full"
@@ -328,6 +477,30 @@ const NotionAdd: React.FC = () => {
                     />
                 </form>
             </div>
+
+            {/* 모임 등록 성공 표시 */}
+            {isRegistered && (
+                <div className="fixed inset-0 flex justify-center items-center backdrop-blur-sm bg-opacity-50">
+                    <div className="bg-white p-5 border rounded-xl shadow-md">
+                        <div className="flex justify-between items-center">
+                            <p className="text-lg font-bold mr-4">
+                                모임이 성공적으로 등록되었습니다!
+                            </p>
+                            <Button
+                                label="상세보기"
+                                size="mid"
+                                color="green"
+                                onClick={() => {
+                                    setIsRegistered(false);
+                                    if (newPostId) {
+                                        navigate(`/notion/${newPostId}`);
+                                    }
+                                }}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };

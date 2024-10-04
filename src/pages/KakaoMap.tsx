@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, CSSProperties } from "react";
 
 declare global {
   interface Window {
@@ -7,17 +7,16 @@ declare global {
 }
 
 interface KakaoMapProps {
-  isMarkerFixed: boolean; 
+  isMarkerFixed: boolean;
+  location: { lat: number; lng: number };
+  onCenterChange?: (lat: number, lng: number) => void;
+  style?: CSSProperties;
 }
 
-const KakaoMap: React.FC<KakaoMapProps> = ({ isMarkerFixed }) => {
+const KakaoMap: React.FC<KakaoMapProps> = ({ isMarkerFixed, location, onCenterChange, style }) => {
   const mapRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
-  const [address, setAddress] = useState<string>(""); 
-  const [currentPosition, setCurrentPosition] = useState<{ lat: number; lng: number }>({
-    lat: 37.556135, // 초기값 설정(= 서울역 좌표)
-    lng: 126.972608,
-  });
+  const [address, setAddress] = useState<string>("");
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -34,7 +33,7 @@ const KakaoMap: React.FC<KakaoMapProps> = ({ isMarkerFixed }) => {
         }
 
         const options = {
-          center: new window.kakao.maps.LatLng(currentPosition.lat, currentPosition.lng),
+          center: new window.kakao.maps.LatLng(location.lat, location.lng),
           level: 3,
         };
 
@@ -42,7 +41,7 @@ const KakaoMap: React.FC<KakaoMapProps> = ({ isMarkerFixed }) => {
         mapRef.current = map;
 
         const marker = new window.kakao.maps.Marker({
-          position: new window.kakao.maps.LatLng(currentPosition.lat, currentPosition.lng),
+          position: new window.kakao.maps.LatLng(location.lat, location.lng),
           map: map,
         });
         markerRef.current = marker;
@@ -59,15 +58,16 @@ const KakaoMap: React.FC<KakaoMapProps> = ({ isMarkerFixed }) => {
           });
         };
 
-        // 초기 주소 설정하기
-        getAddress(currentPosition.lat, currentPosition.lng);
+        getAddress(location.lat, location.lng);
 
         window.kakao.maps.event.addListener(map, "center_changed", () => {
           if (!isMarkerFixed) {
             const center = map.getCenter();
             marker.setPosition(center);
-            setCurrentPosition({ lat: center.getLat(), lng: center.getLng() }); 
-            getAddress(center.getLat(), center.getLng());
+
+            if (onCenterChange) {
+              onCenterChange(center.getLat(), center.getLng());
+            }
           }
         });
       });
@@ -80,14 +80,14 @@ const KakaoMap: React.FC<KakaoMapProps> = ({ isMarkerFixed }) => {
     return () => {
       script.remove();
     };
-  }, [isMarkerFixed, currentPosition.lat, currentPosition.lng]); 
+  }, [isMarkerFixed, location.lat, location.lng, onCenterChange]);
 
   return (
     <div>
       <div className="text-left mb-2 text-gray-400 text-xs">
         <p>현재 위치: {address}</p>
       </div>
-      <div id="map" style={{ width: "100%", height: "550px" }}></div>
+      <div id="map" style={{ width: "100%", height: "550px", ...style }}></div>
     </div>
   );
 };
