@@ -55,7 +55,6 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 exports.__esModule = true;
 var react_1 = require("react");
-var icon_user_profile_svg_1 = require("../assets/icon_user_profile.svg");
 var favorite_svg_1 = require("../assets/favorite.svg");
 var commentIcon_svg_1 = require("../assets/commentIcon.svg");
 var NotionItem_1 = require("../components/NotionItem");
@@ -64,6 +63,8 @@ var Header_1 = require("../components/Header");
 var KakaoMap_1 = require("./KakaoMap"); // KakaoMap 컴포넌트 불러오기
 var react_router_dom_1 = require("react-router-dom");
 var react_router_dom_2 = require("react-router-dom");
+var axios_1 = require("axios");
+var CurrentMemberItem_1 = require("../components/CurrentMemberItem");
 var NotionPage = function () {
     var API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
     var id = react_router_dom_2.useParams().id;
@@ -90,50 +91,51 @@ var NotionPage = function () {
             return post;
         }
     };
+    // 참가신청 클릭 시-----------------------------------------------------------
+    var fetchPostData = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, data, parsedData, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, fetch(API_URL + "/posts/" + postId, {
+                            headers: {}
+                        })];
+                case 1:
+                    response = _a.sent();
+                    if (!response.ok) {
+                        throw new Error("HTTP error! status: " + response.status);
+                    }
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    data = _a.sent();
+                    parsedData = parsePostData(data);
+                    setPostData(parsedData);
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_1 = _a.sent();
+                    console.error("Error fetching post data:", error_1);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
     react_1.useEffect(function () {
-        var fetchPostData = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var response, data, parsedData, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, fetch(API_URL + "/posts/" + postId, {
-                                headers: {}
-                            })];
-                    case 1:
-                        response = _a.sent();
-                        if (!response.ok) {
-                            throw new Error("HTTP error! status: " + response.status);
-                        }
-                        return [4 /*yield*/, response.json()];
-                    case 2:
-                        data = _a.sent();
-                        parsedData = parsePostData(data);
-                        setPostData(parsedData);
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_1 = _a.sent();
-                        console.error("Error fetching post data:", error_1);
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
-                }
-            });
-        }); };
         fetchPostData();
     }, [currentMember, id]);
     if (!postData) {
         return react_1["default"].createElement("div", null, "Loading...");
     }
-    // 참가신청 클릭 시-----------------------------------------------------------
     var channelId = PrevData === null || PrevData === void 0 ? void 0 : PrevData.channel._id;
     var handleJoin = function () {
-        var userName = "현재사용자"; // 실제 로그인 시스템에서 가져와야 함
-        if (!currentMember.includes(userName)) {
+        var _a;
+        var userName = "허허"; // 실제 로그인 시스템에서 가져와야 함
+        if (!((_a = postData.currentMember) === null || _a === void 0 ? void 0 : _a.includes(userName))) {
             // 여기에 서버로 업데이트된 정보를 보내는 API 호출 추가
-            setCurrentMember(__spreadArrays(currentMember, [userName]));
+            setCurrentMember(__spreadArrays(postData.currentMember, [userName]));
             console.log(userName);
-            handleCurrentMember(__spreadArrays(currentMember, [userName]));
-            console.log(__spreadArrays(currentMember, [userName]));
+            handleCurrentMember(__spreadArrays(postData.currentMember, [userName]));
+            console.log(__spreadArrays(postData.currentMember, [userName]));
         }
         else {
             alert("이미 참가 신청하셨습니다.");
@@ -144,7 +146,8 @@ var NotionPage = function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
+                    _a.trys.push([0, 3, , 4]);
+                    console.log(updatedTitleString);
                     reqBody = {
                         postId: postId,
                         title: updatedTitleString,
@@ -152,25 +155,32 @@ var NotionPage = function () {
                         image: null,
                         imageToDeletePublicId: null
                     };
-                    return [4 /*yield*/, fetch(API_URL + "/posts/update", {
-                            method: "PUT",
+                    return [4 /*yield*/, axios_1["default"].put("https://kdt.frontend.5th.programmers.co.kr:5009/posts/update", reqBody, {
                             headers: {
                                 Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3ODc2Njg2fQ.O3_t47pHP0SeUQt3jUNTezVVLTHQhqCzOnHf4iqrtZ8"
-                            },
-                            body: JSON.stringify(reqBody)
+                            }
                         })];
                 case 1:
                     response = _a.sent();
-                    if (!response.ok) {
-                        throw new Error("서버 업데이트 실패");
-                    }
-                    console.log("서버 업데이트");
-                    return [2 /*return*/, response];
+                    console.log("서버 업데이트 성공");
+                    // 업데이트 성공 후 포스트 데이터를 다시 가져옵니다.
+                    return [4 /*yield*/, fetchPostData()];
                 case 2:
+                    // 업데이트 성공 후 포스트 데이터를 다시 가져옵니다.
+                    _a.sent();
+                    return [2 /*return*/, response.data];
+                case 3:
                     error_2 = _a.sent();
-                    console.error("서버 업데이트 중 오류 발생:", error_2);
+                    if (axios_1["default"].isAxiosError(error_2)) {
+                        console.error("서버 업데이트 중 오류 발생:"
+                        // error.response?.data || error.message
+                        );
+                    }
+                    else {
+                        console.error("서버 업데이트 중 알 수 없는 오류 발생:", error_2);
+                    }
                     throw error_2;
-                case 3: return [2 /*return*/];
+                case 4: return [2 /*return*/];
             }
         });
     }); };
@@ -251,19 +261,17 @@ var NotionPage = function () {
                 react_1["default"].createElement("section", { className: "mt-11 flex flex-col gap-5" },
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement("p", { className: "text-lg font-bold" },
-                            "\uBA64\uBC84 ",
-                            postData.currentMember.length,
-                            " /",
+                            "\uBA64\uBC84",
                             " ",
+                            postData.currentMember.length > 0
+                                ? postData.currentMember.length
+                                : 0,
+                            " ",
+                            "/ ",
                             postData.meetingCapacity,
                             "\uBA85")),
-                    react_1["default"].createElement("div", { className: "flex gap-10 " },
-                        react_1["default"].createElement("div", { className: "flex flex-col text-center gap-1.5" },
-                            react_1["default"].createElement("img", { src: icon_user_profile_svg_1["default"], alt: "\uD504\uB85C\uD544\uC774\uBBF8\uC9C0" }),
-                            react_1["default"].createElement("p", null, "\uD48B\uC0B4\uD48B\uC0B4")),
-                        react_1["default"].createElement("div", { className: "flex flex-col text-center gap-1.5" },
-                            react_1["default"].createElement("img", { src: icon_user_profile_svg_1["default"], alt: "\uD504\uB85C\uD544\uC774\uBBF8\uC9C0" }),
-                            react_1["default"].createElement("p", null, "\uAE40\uB3D9\uB3D9")))),
+                    react_1["default"].createElement("div", { className: "flex gap-10 " }, postData.currentMember &&
+                        (postData === null || postData === void 0 ? void 0 : postData.currentMember.length) > 0 ? (postData.currentMember.map(function (item, idx) { return (react_1["default"].createElement(CurrentMemberItem_1["default"], { key: idx, userName: item })); })) : (react_1["default"].createElement("p", null, "\uC544\uC9C1 \uCC38\uAC00\uC790\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.")))),
                 react_1["default"].createElement("section", { className: "mt-14" },
                     react_1["default"].createElement("div", { className: "flex flex-col gap-4" },
                         react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC6B4\uB3D9\uC7A5\uC18C"),

@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import logo from "../assets/FitPlaceLogo.svg";
-import iconUser from "../assets/icon_user_profile.svg";
 import favorite from "../assets/favorite.svg";
 import commentIcon from "../assets/commentIcon.svg";
 import NotionItem from "../components/NotionItem";
@@ -11,6 +10,8 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { Channel, PostType } from "../types/models";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import CurrentMemberItem from "../components/CurrentMemberItem";
 
 interface ParsedPost {
     _id: string;
@@ -79,26 +80,27 @@ const NotionPage = () => {
         }
     };
 
-    useEffect(() => {
-        const fetchPostData = async () => {
-            try {
-                const response = await fetch(`${API_URL}/posts/${postId}`, {
-                    headers: {},
-                });
+    // 참가신청 클릭 시-----------------------------------------------------------
+    const fetchPostData = async () => {
+        try {
+            const response = await fetch(`${API_URL}/posts/${postId}`, {
+                headers: {},
+            });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                const parsedData = parsePostData(data);
-                setPostData(parsedData);
-            } catch (error) {
-                console.error("Error fetching post data:", error);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
 
+            const data = await response.json();
+
+            const parsedData = parsePostData(data);
+            setPostData(parsedData);
+        } catch (error) {
+            console.error("Error fetching post data:", error);
+        }
+    };
+
+    useEffect(() => {
         fetchPostData();
     }, [currentMember, id]);
 
@@ -106,18 +108,16 @@ const NotionPage = () => {
         return <div>Loading...</div>;
     }
 
-    // 참가신청 클릭 시-----------------------------------------------------------
-
     const channelId = PrevData?.channel._id;
 
     const handleJoin = () => {
-        const userName = "현재사용자"; // 실제 로그인 시스템에서 가져와야 함
-        if (!currentMember.includes(userName)) {
+        const userName = "허허"; // 실제 로그인 시스템에서 가져와야 함
+        if (!postData.currentMember?.includes(userName)) {
             // 여기에 서버로 업데이트된 정보를 보내는 API 호출 추가
-            setCurrentMember([...currentMember, userName]);
+            setCurrentMember([...postData.currentMember, userName]);
             console.log(userName);
-            handleCurrentMember([...currentMember, userName]);
-            console.log([...currentMember, userName]);
+            handleCurrentMember([...postData.currentMember, userName]);
+            console.log([...postData.currentMember, userName]);
         } else {
             alert("이미 참가 신청하셨습니다.");
         }
@@ -125,6 +125,7 @@ const NotionPage = () => {
 
     const updatePostData = async (updatedTitleString: string) => {
         try {
+            console.log(updatedTitleString);
             const reqBody = {
                 postId: postId,
                 title: updatedTitleString,
@@ -133,21 +134,29 @@ const NotionPage = () => {
                 imageToDeletePublicId: null,
             };
 
-            const response = await fetch(`${API_URL}/posts/update`, {
-                method: "PUT",
-                headers: {
-                    Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3ODc2Njg2fQ.O3_t47pHP0SeUQt3jUNTezVVLTHQhqCzOnHf4iqrtZ8`,
-                },
-                body: JSON.stringify(reqBody),
-            });
+            const response = await axios.put(
+                `https://kdt.frontend.5th.programmers.co.kr:5009/posts/update`,
+                reqBody,
+                {
+                    headers: {
+                        Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3ODc2Njg2fQ.O3_t47pHP0SeUQt3jUNTezVVLTHQhqCzOnHf4iqrtZ8`,
+                    },
+                }
+            );
 
-            if (!response.ok) {
-                throw new Error("서버 업데이트 실패");
-            }
-            console.log("서버 업데이트");
-            return response;
+            console.log("서버 업데이트 성공");
+            // 업데이트 성공 후 포스트 데이터를 다시 가져옵니다.
+            await fetchPostData();
+            return response.data;
         } catch (error) {
-            console.error("서버 업데이트 중 오류 발생:", error);
+            if (axios.isAxiosError(error)) {
+                console.error(
+                    "서버 업데이트 중 오류 발생:"
+                    // error.response?.data || error.message
+                );
+            } else {
+                console.error("서버 업데이트 중 알 수 없는 오류 발생:", error);
+            }
             throw error;
         }
     };
@@ -288,19 +297,25 @@ const NotionPage = () => {
                     <section className="mt-11 flex flex-col gap-5">
                         <div>
                             <p className="text-lg font-bold">
-                                멤버 {postData.currentMember.length} /{" "}
-                                {postData.meetingCapacity}명
+                                멤버{" "}
+                                {postData.currentMember.length > 0
+                                    ? postData.currentMember.length
+                                    : 0}{" "}
+                                / {postData.meetingCapacity}명
                             </p>
                         </div>
                         <div className="flex gap-10 ">
-                            <div className="flex flex-col text-center gap-1.5">
-                                <img src={iconUser} alt="프로필이미지" />
-                                <p>풋살풋살</p>
-                            </div>
-                            <div className="flex flex-col text-center gap-1.5">
-                                <img src={iconUser} alt="프로필이미지" />
-                                <p>김동동</p>
-                            </div>
+                            {postData.currentMember &&
+                            postData?.currentMember.length > 0 ? (
+                                postData.currentMember.map((item, idx) => (
+                                    <CurrentMemberItem
+                                        key={idx}
+                                        userName={item}
+                                    />
+                                ))
+                            ) : (
+                                <p>아직 참가자가 없습니다.</p>
+                            )}
                         </div>
                     </section>
                     <section className="mt-14">
