@@ -65,7 +65,7 @@ var react_cookie_1 = require("react-cookie");
 var INITIAL_FORM_STATE = {
     title: "",
     channel: "",
-    currentMember: 0,
+    currentMember: [],
     meetingCapacity: 0,
     meetingDate: "",
     meetingStartTime: "",
@@ -305,7 +305,8 @@ var NotionAdd = function () {
                 react_1["default"].createElement("div", null,
                     react_1["default"].createElement("label", { htmlFor: "meetingSpot", className: "flex font-bold text-xl mt-6" }, "\uBAA8\uC784 \uC7A5\uC18C"),
                     react_1["default"].createElement("div", { className: "cursor-pointer relative mt-2.5 border-2 border-solid border-[#e8e8e8] w-[600px] h-[45px] flex items-center px-3", onClick: handleLocationClick },
-                        react_1["default"].createElement("span", null, (selectedLocation === null || selectedLocation === void 0 ? void 0 : selectedLocation.address) || "모임 장소를 입력해주세요."))),
+                        react_1["default"].createElement("span", null, (selectedLocation === null || selectedLocation === void 0 ? void 0 : selectedLocation.address) ||
+                            "모임 장소를 입력해주세요."))),
                 selectedLocation && (react_1["default"].createElement("div", { className: "mt-4" },
                     react_1["default"].createElement(KakaoMap_1["default"], { isMarkerFixed: true, location: selectedLocation, style: { height: "300px" } }))),
                 react_1["default"].createElement("div", null,
