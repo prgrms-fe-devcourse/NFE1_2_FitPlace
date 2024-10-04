@@ -71,29 +71,29 @@ const Mainpage = () => {
             <p className="font-bold mt-11 text-xl mb-3">인기 종목</p>
             <div className="flex">
               <Popular_sports
-                name={Sort_Channel[0].name}
+                name={Sort_Channel[13].name}
                 description={Sort_Channel[0].description}
                 postLength={Sort_Channel[0].posts.length}
               />
               <Popular_sports
-                name={Sort_Channel[1].name}
+                name={Sort_Channel[14].name}
                 description={Sort_Channel[1].description}
                 postLength={Sort_Channel[1].posts.length}
               />
               <Popular_sports
-                name={Sort_Channel[2].name}
+                name={Sort_Channel[15].name}
                 description={Sort_Channel[2].description}
                 postLength={Sort_Channel[2].posts.length}
               />
             </div>
             <div className="flex mx-24">
               <Popular_sports
-                name={Sort_Channel[3].name}
+                name={Sort_Channel[11].name}
                 description={Sort_Channel[3].description}
                 postLength={Sort_Channel[3].posts.length}
               />
               <Popular_sports
-                name={Sort_Channel[4].name}
+                name={Sort_Channel[12].name}
                 description={Sort_Channel[4].description}
                 postLength={Sort_Channel[4].posts.length}
               />

@@ -6,6 +6,7 @@ import KakaoMap from "./KakaoMap";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { Cookies } from "react-cookie";
 
 interface FormData {
   title: string;
