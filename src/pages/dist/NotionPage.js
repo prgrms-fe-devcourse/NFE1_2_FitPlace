@@ -66,17 +66,16 @@ var react_router_dom_2 = require("react-router-dom");
 var axios_1 = require("axios");
 var CurrentMemberItem_1 = require("../components/CurrentMemberItem");
 var NotionPage = function () {
-    var _a;
     var API_URL = "https://kdt.frontend.5th.programmers.co.kr:5009";
     var id = react_router_dom_2.useParams().id;
     var postId = id;
     var modalBackground = react_1.useRef();
-    var _b = react_1.useState(false), deleteModal = _b[0], setDeleteModal = _b[1];
-    var _c = react_1.useState(null), PrevData = _c[0], setPrevData = _c[1]; //파싱하기 전의 데이터
-    var _d = react_1.useState(null), postData = _d[0], setPostData = _d[1];
-    var _e = react_1.useState(null), location = _e[0], setLocation = _e[1];
-    var _f = react_1.useState([]), currentMember = _f[0], setCurrentMember = _f[1];
-    var _g = react_1.useState("허허"), userName = _g[0], setUserName = _g[1];
+    var _a = react_1.useState(false), deleteModal = _a[0], setDeleteModal = _a[1];
+    var _b = react_1.useState(null), PrevData = _b[0], setPrevData = _b[1]; //파싱하기 전의 데이터
+    var _c = react_1.useState(null), postData = _c[0], setPostData = _c[1];
+    var _d = react_1.useState(null), location = _d[0], setLocation = _d[1];
+    var _e = react_1.useState([]), currentMember = _e[0], setCurrentMember = _e[1];
+    var _f = react_1.useState("허허"), userName = _f[0], setUserName = _f[1];
     var parsePostData = function (post) {
         try {
             var parsedTitle = JSON.parse(post.title);
@@ -141,6 +140,17 @@ var NotionPage = function () {
         }
         else {
             alert("이미 참가 신청하셨습니다.");
+        }
+    };
+    var handleLeave = function () {
+        var _a;
+        if ((_a = postData.currentMember) === null || _a === void 0 ? void 0 : _a.includes(userName)) {
+            var updatedMembers = postData.currentMember.filter(function (member) { return member !== userName; });
+            setCurrentMember(updatedMembers);
+            handleCurrentMember(updatedMembers);
+        }
+        else {
+            alert("참가 신청을 하지 않았습니다.");
         }
     };
     var updatePostData = function (updatedTitleString) { return __awaiter(void 0, void 0, void 0, function () {
@@ -219,6 +229,19 @@ var NotionPage = function () {
             }
         });
     }); };
+    var renderButton = function () {
+        if (postData.currentMember.includes(userName)) {
+            return (react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uCDE8\uC18C", size: "full", color: "line", disabled: false, onClick: handleLeave }));
+        }
+        else if (postData.currentMember.length > 0 &&
+            postData.currentMember.length === postData.meetingCapacity) {
+            return (react_1["default"].createElement(Button_1["default"], { label: "\uBAA8\uC9D1 \uB9C8\uAC10", size: "full", color: "green", disabled: true }));
+        }
+        else {
+            return (react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uC2E0\uCCAD\uD558\uAE30", size: "full", color: "green", onClick: handleJoin }));
+        }
+    };
+    // 참가신청 버튼완료 ------------------------------------------------------------
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "bg-white w-[640px] h-full" },
@@ -284,9 +307,7 @@ var NotionPage = function () {
                                 lng: location.lng
                             }, style: { height: "300px" } })))),
                 react_1["default"].createElement("div", { className: "mt-5 flex justify-between" },
-                    react_1["default"].createElement("div", { className: "w-10/12" },
-                        react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uC2E0\uCCAD\uD558\uAE30", size: "full", color: ((_a = postData.currentMember) === null || _a === void 0 ? void 0 : _a.includes(userName)) ? "grey"
-                                : "green", onClick: handleJoin })),
+                    react_1["default"].createElement("div", { className: "w-10/12" }, renderButton()),
                     react_1["default"].createElement("div", { className: "flex gap-2.5" },
                         react_1["default"].createElement("div", { className: "w-8" },
                             react_1["default"].createElement("button", null,

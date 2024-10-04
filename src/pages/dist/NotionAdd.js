@@ -268,7 +268,7 @@ var NotionAdd = function () {
                     return [4 /*yield*/, fetch(API_URL + "/posts/create", {
                             method: "POST",
                             headers: {
-                                Authorization: "" + (cookieToken || token)
+                                Authorization: "bearer " + (cookieToken || token)
                             },
                             body: submitData
                         })];

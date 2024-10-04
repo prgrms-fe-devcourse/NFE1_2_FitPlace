@@ -7,6 +7,7 @@ interface ButtonProps {
     color?: "green" | "line" | "grey";
     margin?: "btnMr" | "btnMl" | "";
     onClick?: () => void;
+    disabled?: boolean; // disabled prop 추가
 }
 
 // 크기와 색상에 대한 타입 정의
@@ -20,6 +21,7 @@ const Button = ({
     color = "green",
     margin = "",
     onClick,
+    disabled = false, // disabled prop의 기본값 설정
 }: ButtonProps): JSX.Element => {
     // 크기와 색상에 따라 Tailwind CSS 클래스를 설정합니다.
     const sizeClasses: Record<SizeClass, string> = {
@@ -30,7 +32,7 @@ const Button = ({
     const colorClasses: Record<ColorClass, string> = {
         green: "bg-[#AFE327] text-[#333] hover:bg-[#C4F545]",
         line: "border-2 border-[#AFE327] text-[#555] hover:bg-[#AFE327] hover:text-[#555]",
-        grey: "bg-[#E7E7E7] text-[#555] cursor-not-allowed opacity-50",
+        grey: "bg-[#E7E7E7] text-[#555]",
     };
     const marginClasses: Record<MarginClass, string> = {
         btnMr: "mr-2",
@@ -38,16 +40,18 @@ const Button = ({
         "": "",
     };
 
-    // grey 색상일 때 비활성화 상태를 설정
-    const isDisabled = color === "grey";
+    // disabled 상태에 따른 추가 클래스
+    const disabledClass = disabled
+        ? "opacity-50 cursor-not-allowed"
+        : "cursor-pointer";
 
     return (
         <div
-            className={`rounded ${sizeClasses[size]} ${colorClasses[color]} ${marginClasses[margin as MarginClass]} ${isDisabled ? "" : "cursor-pointer"}`}
-            onClick={isDisabled ? undefined : onClick}
+            className={`rounded ${sizeClasses[size]} ${colorClasses[color]} ${marginClasses[margin as MarginClass]} ${disabledClass}`}
+            onClick={disabled ? undefined : onClick}
             role="button"
-            tabIndex={isDisabled ? -1 : 0}
-            aria-disabled={isDisabled}
+            tabIndex={disabled ? -1 : 0}
+            aria-disabled={disabled}
         >
             {label}
         </div>

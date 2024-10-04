@@ -123,7 +123,17 @@ const NotionPage = () => {
             alert("이미 참가 신청하셨습니다.");
         }
     };
-
+    const handleLeave = () => {
+        if (postData.currentMember?.includes(userName)) {
+            const updatedMembers = postData.currentMember.filter(
+                (member) => member !== userName
+            );
+            setCurrentMember(updatedMembers);
+            handleCurrentMember(updatedMembers);
+        } else {
+            alert("참가 신청을 하지 않았습니다.");
+        }
+    };
     const updatePostData = async (updatedTitleString: string) => {
         try {
             console.log(updatedTitleString);
@@ -189,6 +199,41 @@ const NotionPage = () => {
             // 오류 처리
         }
     };
+    const renderButton = () => {
+        if (postData.currentMember.includes(userName)) {
+            return (
+                <Button
+                    label="참가 취소"
+                    size="full"
+                    color="line"
+                    disabled={false}
+                    onClick={handleLeave} // 참가 취소 버튼 클릭 시 호출
+                />
+            );
+        } else if (
+            postData.currentMember.length > 0 &&
+            postData.currentMember.length === postData.meetingCapacity
+        ) {
+            return (
+                <Button
+                    label="모집 마감"
+                    size="full"
+                    color="green"
+                    disabled={true}
+                />
+            );
+        } else {
+            return (
+                <Button
+                    label="참가 신청하기"
+                    size="full"
+                    color="green"
+                    onClick={handleJoin}
+                />
+            );
+        }
+    };
+    // 참가신청 버튼완료 ------------------------------------------------------------
 
     return (
         <>
@@ -341,18 +386,7 @@ const NotionPage = () => {
                         )}
                     </section>
                     <div className="mt-5 flex justify-between">
-                        <div className="w-10/12">
-                            <Button
-                                label="참가 신청하기"
-                                size="full"
-                                color={
-                                    postData.currentMember?.includes(userName)
-                                        ? "grey"
-                                        : "green"
-                                }
-                                onClick={handleJoin}
-                            />
-                        </div>
+                        <div className="w-10/12">{renderButton()}</div>
                         <div className="flex gap-2.5">
                             <div className="w-8">
                                 <button>
