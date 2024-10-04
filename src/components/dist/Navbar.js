@@ -30,7 +30,7 @@ var Navbar = function () {
                 react_1["default"].createElement(react_router_dom_1.Link, { to: "/ranking" },
                     react_1["default"].createElement("button", { className: "group mt-3" },
                         react_1["default"].createElement("img", { src: Ranking_svg_1["default"], alt: "Ranking", className: "w-9 h-9 transition-transform duration-200 group-hover:scale-125" }))),
-                react_1["default"].createElement(react_router_dom_1.Link, { to: "/profile" },
+                react_1["default"].createElement(react_router_dom_1.Link, { to: "/profile/:id" },
                     react_1["default"].createElement("button", { className: "group mt-3" },
                         react_1["default"].createElement("img", { src: My_svg_1["default"], alt: "My", className: "w-9 h-9 transition-transform duration-200 group-hover:scale-125" }))))),
         !nav_on && (react_1["default"].createElement("div", { className: "w-140 h-10 fixed bottom-0 flex flex-col items-center border-1 border-gray-200 border-b-gray-200 drop-shadow-2xl " + (nav_on ? "opacity-0" : "opacity-0") },

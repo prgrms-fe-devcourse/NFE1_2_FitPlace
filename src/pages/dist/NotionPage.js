@@ -194,7 +194,7 @@ var NotionPage = function () {
                     _a.trys.push([0, 2, , 3]);
                     return [4 /*yield*/, axios_1["default"]["delete"]("https://kdt.frontend.5th.programmers.co.kr:5009/posts/delete/", {
                             headers: {
-                                Authorization: "" + (myToken || token)
+                                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0ZWRiYTRkN2M1NGYyMTI4ZTQ2Y2NlNSIsImVtYWlsIjoiYWRtaW5AcHJvZ3JhbW1lcnMuY28ua3IifSwiaWF0IjoxNzI3Mzk3NTY0fQ.ziDMvpbQF6K61P2POdELAiyLocTIMZ7IZGbe8ZiYlqg"
                             },
                             data: {
                                 id: id
@@ -353,17 +353,15 @@ var NotionPage = function () {
                             react_1["default"].createElement("p", null, "\uAC8C\uC2DC\uAE00\uC744 \uC0AD\uC81C\uD560\uAE4C\uC694?"),
                             react_1["default"].createElement("div", { className: "flex gap-5 mt-2" },
                                 react_1["default"].createElement(Button_1["default"], { label: "\uC0AD\uC81C", size: "mid", color: "green", onClick: Delete_post }),
-                                react_1["default"].createElement(Button_1["default"], { label: "\uCDE8\uC18C", size: "mid", color: "green", onClick: function () {
-                                        return setDeleteModal(false);
-                                    } })))))),
+                                react_1["default"].createElement(Button_1["default"], { label: "\uCDE8\uC18C", size: "mid", color: "green", onClick: function () { return setDeleteModal(false); } })))))),
                 react_1["default"].createElement("section", null,
                     react_1["default"].createElement("div", null,
                         react_1["default"].createElement("div", { className: "flex justify-between" },
-                            postData.currentMember.length ===
-                                postData.meetingCapacity ? (react_1["default"].createElement("p", { className: "text-sm text-rose-600 font-bold" }, "\uBAA8\uC9D1 \uB9C8\uAC10")) : (react_1["default"].createElement("p", { className: "text-sm text-[#AFE327] font-bold" }, "\uBAA8\uC9D1 \uC911")),
+                            postData.currentMember.length === postData.meetingCapacity ? (react_1["default"].createElement("p", { className: "text-sm text-rose-600 font-bold" }, "\uBAA8\uC9D1 \uB9C8\uAC10")) : (react_1["default"].createElement("p", { className: "text-sm text-[#AFE327] font-bold" }, "\uBAA8\uC9D1 \uC911")),
                             react_1["default"].createElement("div", { className: "text-xs text-[#898989] flex gap-2" },
                                 react_1["default"].createElement(react_router_dom_2.Link, { to: "/notionFix/" + id },
                                     react_1["default"].createElement("button", null, "\uC218\uC815")),
+                                "|",
                                 react_1["default"].createElement("button", { onClick: function () { return setDeleteModal(true); } }, "\uC0AD\uC81C"))),
                         react_1["default"].createElement("h3", { className: "text-2xl font-bold" }, postData.title),
                         react_1["default"].createElement("p", { className: "text-lg text-[#666666] pt-2.5" }))),
@@ -392,8 +390,7 @@ var NotionPage = function () {
                             "/ ",
                             postData.meetingCapacity,
                             "\uBA85")),
-                    react_1["default"].createElement("div", { className: "flex gap-10 " }, postData.currentMember &&
-                        (postData === null || postData === void 0 ? void 0 : postData.currentMember.length) > 0 ? (postData.currentMember.map(function (item, idx) { return (react_1["default"].createElement(CurrentMemberItem_1["default"], { key: idx, userName: item })); })) : (react_1["default"].createElement("p", null, "\uC544\uC9C1 \uCC38\uAC00\uC790\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.")))),
+                    react_1["default"].createElement("div", { className: "flex gap-10 " }, postData.currentMember && (postData === null || postData === void 0 ? void 0 : postData.currentMember.length) > 0 ? (postData.currentMember.map(function (item, idx) { return (react_1["default"].createElement(CurrentMemberItem_1["default"], { key: idx, userName: item })); })) : (react_1["default"].createElement("p", null, "\uC544\uC9C1 \uCC38\uAC00\uC790\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.")))),
                 react_1["default"].createElement("section", { className: "mt-14" },
                     react_1["default"].createElement("div", { className: "flex flex-col gap-4" },
                         react_1["default"].createElement("p", { className: "text-lg font-bold" }, "\uC6B4\uB3D9\uC7A5\uC18C"),
@@ -404,8 +401,7 @@ var NotionPage = function () {
                                 lng: location.lng
                             }, style: { height: "300px" } })))),
                 react_1["default"].createElement("div", { className: "mt-5 flex justify-between" },
-                    react_1["default"].createElement("div", { className: "w-10/12" },
-                        react_1["default"].createElement(Button_1["default"], { label: "\uCC38\uAC00 \uC2E0\uCCAD\uD558\uAE30", size: "full", color: "green", onClick: handleJoin })),
+                    react_1["default"].createElement("div", { className: "w-10/12" }, renderButton()),
                     react_1["default"].createElement("div", { className: "flex gap-2.5" },
                         react_1["default"].createElement("div", { className: "w-8" },
                             react_1["default"].createElement("button", null,

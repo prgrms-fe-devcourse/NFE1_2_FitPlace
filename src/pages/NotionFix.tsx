@@ -74,10 +74,6 @@ const NotionFix: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(original_data);
-  }, [original_data]);
-
-  useEffect(() => {
     setFormData((prev) => ({
       ...prev,
       title: original_data?.title, // 기존 제목을 기본 값으로 설정
@@ -198,6 +194,7 @@ const NotionFix: React.FC = () => {
       meetingSpot: formData.meetingSpot,
       channel: formData.channel,
       image: imagesToSubmit, //이미지 업로드 부분
+      meetingInfo: formData.meetingInfo,
     };
 
     const submitData = new FormData();
