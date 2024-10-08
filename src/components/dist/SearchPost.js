@@ -21,10 +21,6 @@ var SearchPost = function (props) {
                     react_1["default"].createElement("div", { className: "text-sm flex" },
                         value.meetingSpot.split(",")[0] || "장소 없음",
                         " ",
-                        react_1["default"].createElement("span", { className: "mx-3 opacity-5" }, "|"),
-                        value.currentMember || 0,
-                        "\uBA85 / ",
-                        value.meetingCapacity || 0,
-                        "\uBA85")))); })))));
+                        react_1["default"].createElement("span", { className: "mx-3 opacity-5" }, "|"))))); })))));
 };
 exports["default"] = SearchPost;
