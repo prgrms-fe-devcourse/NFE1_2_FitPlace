@@ -42,6 +42,7 @@ var Button_1 = require("../components/Button");
 var react_router_dom_1 = require("react-router-dom");
 var axios_1 = require("axios");
 var react_cookie_1 = require("react-cookie");
+var Header_1 = require("../components/Header");
 var CommentPage = function () {
     var _a;
     var id = react_router_dom_1.useParams().id;
@@ -111,6 +112,7 @@ var CommentPage = function () {
         CommentLoading();
     }, [Post]);
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
+        react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "relative bg-white w-140 mx-auto min-h-screen flex flex-col" },
             react_1["default"].createElement("div", { className: "flex-grow p-3" },
                 ParsingData.currentMember === ParsingData.meetingCapacity ? (react_1["default"].createElement("div", { className: "text-sm text-rose-600 mb-1 font-bold" }, "\uBAA8\uC9D1 \uB9C8\uAC10")) : (react_1["default"].createElement("div", { className: "text-sm text-[#AFE327] mb-1 font-bold" }, "\uBAA8\uC9D1\uC911")),

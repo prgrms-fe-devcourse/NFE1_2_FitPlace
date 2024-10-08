@@ -4,6 +4,7 @@ import { Cookies } from "react-cookie";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 interface UserData {
   fullName: string;
   birth: number;
@@ -41,8 +42,8 @@ const ProfileDesc = () => {
   }, [cookie]);
 
   const handleEdit = async () => {
-    if(textValue.length < 20 || textValue.length > 300) {
-      return alert('소개글은 20자에서 300자 사이여야 합니다.')
+    if (textValue.length < 20 || textValue.length > 300) {
+      return alert("소개글은 20자에서 300자 사이여야 합니다.");
     } else {
       const putData = { ...myData };
       putData.description = textValue;
@@ -67,7 +68,7 @@ const ProfileDesc = () => {
         .catch((err) => {
           console.log(err);
         });
-      }
+    }
   };
 
   return (
@@ -90,9 +91,7 @@ const ProfileDesc = () => {
           placeholder="입력해주세요"
           className="px-4 py-5 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none rounded-lg shadow w-full font-bold text-xl placeholder:text-greenColor min-h-52 resize-none"
         ></textarea>
-        <p
-          className="text-gray-400 text-right"
-        >{textLength} / 300</p>
+        <p className="text-gray-400 text-right">{textLength} / 300</p>
       </div>
 
       {/* 하단 저장 버튼 */}

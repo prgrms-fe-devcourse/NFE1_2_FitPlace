@@ -60,21 +60,22 @@ var react_router_dom_2 = require("react-router-dom");
 var react_1 = require("react");
 var axios_1 = require("axios");
 var react_cookie_1 = require("react-cookie");
+var Header_1 = require("../../components/Header");
 var ProfileTemplate = function () {
     var cookie = new react_cookie_1.Cookies();
     var navigate = react_router_dom_1.useNavigate();
     var _a = react_1.useState(false), isMyProfile = _a[0], setIsMyProfile = _a[1];
     var _b = react_1.useState(), myToken = _b[0], setMyToken = _b[1];
-    var _c = react_1.useState(''), paramsId = _c[0], setParamsId = _c[1];
-    var _d = react_1.useState(''), tokenId = _d[0], setTokenId = _d[1];
+    var _c = react_1.useState(""), paramsId = _c[0], setParamsId = _c[1];
+    var _d = react_1.useState(""), tokenId = _d[0], setTokenId = _d[1];
     var _e = react_1.useState([]), likedPost = _e[0], setLikedPost = _e[1];
     var _f = react_1.useState(), postData = _f[0], setPostData = _f[1];
     var _g = react_1.useState({
-        fullName: '',
+        fullName: "",
         birth: 0,
-        userId: '',
-        description: '',
-        location: '',
+        userId: "",
+        description: "",
+        location: "",
         image: []
     }), profileData = _g[0], setProfileData = _g[1];
     var _h = react_1.useState([]), likedData = _h[0], setLikedData = _h[1];
@@ -94,14 +95,14 @@ var ProfileTemplate = function () {
                             paramRes = _a.sent();
                             setLikedPost(paramRes.data.likes);
                             setParamsId(paramRes.data._id);
-                            if (paramRes.data.fullName === 'STYLED 관리자') {
-                                setProfileData(function (prev) { return (__assign(__assign({}, prev), { fullName: '관리자', birth: 20000101, location: '관리자', description: '관리자용 계정입니다', userId: '관리자', image: [] })); });
+                            if (paramRes.data.fullName === "STYLED 관리자") {
+                                setProfileData(function (prev) { return (__assign(__assign({}, prev), { fullName: "관리자", birth: 20000101, location: "관리자", description: "관리자용 계정입니다", userId: "관리자", image: [] })); });
                             }
                             else {
                                 profile_1 = JSON.parse(paramRes.data.fullName);
                                 setProfileData(function (prev) { return (__assign(__assign({}, prev), profile_1)); });
                             }
-                            return [4 /*yield*/, axios_1["default"].get('https://kdt.frontend.5th.programmers.co.kr:5009/auth-user', {
+                            return [4 /*yield*/, axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/auth-user", {
                                     headers: {
                                         Authorization: "bearer " + token_1
                                     }
@@ -118,13 +119,13 @@ var ProfileTemplate = function () {
                     }
                 });
             }); };
-            if (token_1 !== '') {
+            if (token_1 !== "") {
                 fetchData();
             }
         }
         catch (err) {
-            alert('로그인한 회원만 조회가 가능합니다');
-            return navigate('/login');
+            alert("로그인한 회원만 조회가 가능합니다");
+            return navigate("/login");
         }
     }, [id]);
     react_1.useEffect(function () {
@@ -138,8 +139,9 @@ var ProfileTemplate = function () {
     }, [paramsId, tokenId]);
     var initializePost = function () {
         likedPost.forEach(function (item) {
-            if ('post' in item) {
-                axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/post/" + item.post)
+            if ("post" in item) {
+                axios_1["default"]
+                    .get("https://kdt.frontend.5th.programmers.co.kr:5009/post/" + item.post)
                     .then(function (res) {
                     var data = JSON.parse(res.data.title);
                     var id = res.data._id;
@@ -149,7 +151,7 @@ var ProfileTemplate = function () {
                                 return __spreadArrays(prev, [data.title]);
                             }
                             else {
-                                return ['없음'];
+                                return ["없음"];
                             }
                         };
                         setLikedData(updateItems);
@@ -161,34 +163,36 @@ var ProfileTemplate = function () {
             }
         });
     };
-    return (React.createElement("div", { className: "w-140 min-h-screen bg-white p-3" },
-        React.createElement("div", { className: "flex flex-col justify-center items-stretch" },
-            React.createElement("div", { className: "flex flex-col justify-center items-stretch text-center pt-8 pb-6 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow" },
-                React.createElement("div", { id: "profileImg", className: "mx-auto w-24 h-24 overflow-hidden rounded-lg" }, profileData.image.length !== 0
-                    ? React.createElement("img", { src: profileData.image[0], alt: (profileData === null || profileData === void 0 ? void 0 : profileData.fullName) + "\uB2D8\uC758 \uD504\uB85C\uD544 \uC0AC\uC9C4", className: "object-cover w-full h-full" })
-                    : React.createElement("img", { src: "/src/assets/defaultProfileImg.svg", alt: (profileData === null || profileData === void 0 ? void 0 : profileData.fullName) + "\uB2D8\uC758 \uD504\uB85C\uD544 \uC0AC\uC9C4", className: "object-cover w-full h-full" })),
-                React.createElement("div", { className: "mt-2" },
-                    React.createElement("p", { className: "text-3xl font-bold" }, !profileData.fullName || profileData.fullName === ''
-                        ? "닉네임"
-                        : profileData === null || profileData === void 0 ? void 0 : profileData.fullName)),
-                React.createElement("div", { className: "mt-6" },
-                    React.createElement("p", { className: "text-base font-normal" },
-                        React.createElement("span", { className: "font-bold" }, "0"),
-                        "\uD68C \uC624\uB298\uC758 \uAC19\uC774 \uC6B4\uB3D9 \uC644\uB8CC!"))),
-            React.createElement("div", { className: "profile__bottom flex flex-col justify-center items-stretch gap-5 mt-6" },
-                React.createElement(ProfileWrap_1["default"], { category: "\uC18C\uAC1C\uAE00", description: !(profileData === null || profileData === void 0 ? void 0 : profileData.description) ? "아직 작성하지 않았어요" : profileData.description }),
-                React.createElement(ProfileWrap_1["default"], { category: "\uC9C0\uC5ED", description: !(profileData === null || profileData === void 0 ? void 0 : profileData.location) ? "아직 작성하지 않았어요" : profileData.location }),
-                React.createElement("div", { className: "py-4 px-5 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow" },
-                    React.createElement("p", { className: "font-bold text-base" }, "\uC88B\uC544\uC694\uB97C \uB204\uB978 \uAC8C\uC2DC\uBB3C"),
-                    likedData === null || likedData[0] === '없음' || likedData.length === 0
-                        ? React.createElement("p", { className: "font-medium text-base mt-4" }, "\uC88B\uC544\uC694\uB97C \uB204\uB978 \uAC8C\uC2DC\uBB3C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4")
-                        : likedData.map(function (item, idx) {
-                            return React.createElement("p", { className: "font-medium text-base mt-4", key: idx }, item);
-                        })),
-                isMyProfile === true
-                    ?
-                        // 차단 유저 목록
-                        React.createElement(ProfileWrap_1["default"], { category: "\uCC28\uB2E8\uC720\uC800 \uBAA9\uB85D", description: "\uB300\uCDA9 \uC788\uC744\uB54C \uC774\uAC70\uB123\uC744\uB4EF" })
-                    : null))));
+    return (React.createElement(React.Fragment, null,
+        React.createElement(Header_1["default"], null),
+        React.createElement("div", { className: "w-140 min-h-screen bg-white p-3" },
+            React.createElement("div", { className: "flex flex-col justify-center items-stretch" },
+                React.createElement("div", { className: "flex flex-col justify-center items-stretch text-center pt-8 pb-6 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow" },
+                    React.createElement("div", { id: "profileImg", className: "mx-auto w-24 h-24 overflow-hidden rounded-lg" }, profileData.image.length !== 0 ? (React.createElement("img", { src: profileData.image[0], alt: (profileData === null || profileData === void 0 ? void 0 : profileData.fullName) + "\uB2D8\uC758 \uD504\uB85C\uD544 \uC0AC\uC9C4", className: "object-cover w-full h-full" })) : (React.createElement("img", { src: "/src/assets/defaultProfileImg.svg", alt: (profileData === null || profileData === void 0 ? void 0 : profileData.fullName) + "\uB2D8\uC758 \uD504\uB85C\uD544 \uC0AC\uC9C4", className: "object-cover w-full h-full" }))),
+                    React.createElement("div", { className: "mt-2" },
+                        React.createElement("p", { className: "text-3xl font-bold" }, !profileData.fullName || profileData.fullName === ""
+                            ? "닉네임"
+                            : profileData === null || profileData === void 0 ? void 0 : profileData.fullName)),
+                    React.createElement("div", { className: "mt-6" },
+                        React.createElement("p", { className: "text-base font-normal" },
+                            React.createElement("span", { className: "font-bold" }, "0"),
+                            "\uD68C \uC624\uB298\uC758 \uAC19\uC774 \uC6B4\uB3D9 \uC644\uB8CC!"))),
+                React.createElement("div", { className: "profile__bottom flex flex-col justify-center items-stretch gap-5 mt-6" },
+                    React.createElement(ProfileWrap_1["default"], { category: "\uC18C\uAC1C\uAE00", description: !(profileData === null || profileData === void 0 ? void 0 : profileData.description)
+                            ? "아직 작성하지 않았어요"
+                            : profileData.description }),
+                    React.createElement(ProfileWrap_1["default"], { category: "\uC9C0\uC5ED", description: !(profileData === null || profileData === void 0 ? void 0 : profileData.location)
+                            ? "아직 작성하지 않았어요"
+                            : profileData.location }),
+                    React.createElement("div", { className: "py-4 px-5 bg-gray-100 hover:bg-gray-200 rounded-lg drop-shadow" },
+                        React.createElement("p", { className: "font-bold text-base" }, "\uC88B\uC544\uC694\uB97C \uB204\uB978 \uAC8C\uC2DC\uBB3C"),
+                        likedData === null ||
+                            likedData[0] === "없음" ||
+                            likedData.length === 0 ? (React.createElement("p", { className: "font-medium text-base mt-4" }, "\uC88B\uC544\uC694\uB97C \uB204\uB978 \uAC8C\uC2DC\uBB3C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4")) : (likedData.map(function (item, idx) {
+                            return (React.createElement("p", { className: "font-medium text-base mt-4", key: idx }, item));
+                        }))),
+                    isMyProfile === true ? (
+                    // 차단 유저 목록
+                    React.createElement(ProfileWrap_1["default"], { category: "\uCC28\uB2E8\uC720\uC800 \uBAA9\uB85D", description: "\uB300\uCDA9 \uC788\uC744\uB54C \uC774\uAC70\uB123\uC744\uB4EF" })) : null)))));
 };
 exports["default"] = ProfileTemplate;

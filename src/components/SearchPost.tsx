@@ -38,7 +38,6 @@ const SearchPost = (props) => {
                   {value.meetingSpot.split(",")[0] || "장소 없음"}{" "}
                   {/* 첫 번째 값(장소)만 표시하기 */}
                   <span className="mx-3 opacity-5">|</span>
-                  {value.currentMember || 0}명 / {value.meetingCapacity || 0}명
                 </div>
               </button>
             </Link>

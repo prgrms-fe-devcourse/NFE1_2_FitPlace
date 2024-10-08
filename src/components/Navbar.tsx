@@ -62,7 +62,7 @@ const Navbar = () => {
               />
             </button>
           </Link>
-          <Link to="/profile">
+          <Link to="/profile/:id">
             <button className="group mt-3">
               <img
                 src={MyIcon}

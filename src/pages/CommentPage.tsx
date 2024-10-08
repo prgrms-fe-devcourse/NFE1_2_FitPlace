@@ -4,6 +4,7 @@ import Button from "../components/Button";
 import { json, useParams } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
+import Header from "../components/Header";
 
 // Comment 타입 정의
 interface Comment {
@@ -72,6 +73,7 @@ const CommentPage = (): JSX.Element => {
 
   return (
     <>
+      <Header />
       <div className="relative bg-white w-140 mx-auto min-h-screen flex flex-col">
         <div className="flex-grow p-3">
           {ParsingData.currentMember === ParsingData.meetingCapacity ? (

@@ -83,7 +83,7 @@ var ProfileDesc = function () {
             switch (_a.label) {
                 case 0:
                     if (!(textValue.length < 20 || textValue.length > 300)) return [3 /*break*/, 1];
-                    return [2 /*return*/, alert('소개글은 20자에서 300자 사이여야 합니다.')];
+                    return [2 /*return*/, alert("소개글은 20자에서 300자 사이여야 합니다.")];
                 case 1:
                     putData = __assign({}, myData);
                     putData.description = textValue;

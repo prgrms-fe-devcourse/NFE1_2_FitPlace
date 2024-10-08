@@ -107,9 +107,6 @@ var NotionFix = function () {
         Get_post_info();
     }, []);
     react_1.useEffect(function () {
-        console.log(original_data);
-    }, [original_data]);
-    react_1.useEffect(function () {
         setFormData(function (prev) { return (__assign(__assign({}, prev), { title: original_data === null || original_data === void 0 ? void 0 : original_data.title, channel: original_data === null || original_data === void 0 ? void 0 : original_data.channel, currentMember: original_data === null || original_data === void 0 ? void 0 : original_data.currentMember, meetingCapacity: original_data === null || original_data === void 0 ? void 0 : original_data.meetingCapacity, meetingTime: original_data === null || original_data === void 0 ? void 0 : original_data.meetingTime, meetingSpot: original_data === null || original_data === void 0 ? void 0 : original_data.meetingSpot, meetingInfo: original_data === null || original_data === void 0 ? void 0 : original_data.meetingInfo })); });
         setImageUrls((original_data === null || original_data === void 0 ? void 0 : original_data.image) || []); // 기존 이미지 URL로 초기화
     }, [original_data]);
@@ -228,7 +225,8 @@ var NotionFix = function () {
                         meetingTime: meetingTime,
                         meetingSpot: formData.meetingSpot,
                         channel: formData.channel,
-                        image: imagesToSubmit
+                        image: imagesToSubmit,
+                        meetingInfo: formData.meetingInfo
                     };
                     submitData = new FormData();
                     submitData.append("title", JSON.stringify(customJsonData));
