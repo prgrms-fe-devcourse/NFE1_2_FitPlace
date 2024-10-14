@@ -22,6 +22,7 @@ import { Cookies } from "react-cookie";
 import { initializeToken, isLogin } from "./data/store";
 import { useDispatch } from "react-redux";
 import NotionFix from "./pages/NotionFix";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -57,6 +58,7 @@ const App = () => {
         <Route path="/notion/:id/comments" element={<CommentPage />} />
       </Routes>
       <Navbar />
+      <ReactQueryDevtools initialIsOpen={true} position="bottom-right" />
     </div>
   );
 };

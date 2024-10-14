@@ -7,7 +7,7 @@ import Header from "../components/Header";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { useQueries } from "react-query";
+import { useQueries, useQuery } from "react-query";
 
 interface Posttype {
   likes: [];
@@ -30,50 +30,46 @@ const Mainpage = () => {
   const userData = useSelector(
     (state: { currentUser: object }) => state.currentUser
   );
-  const [channel, setChannel] = useState<Channeltype[]>([]);
-  const [post, setPost] = useState<Posttype[]>([]);
 
-  const Popular_Channel = async () => {
-    try {
-      const response = await axios.get(
-        "https://kdt.frontend.5th.programmers.co.kr:5009/channels"
-      );
-      setChannel(response.data);
-    } catch (error) {
-      console.log(error);
-    }
+  const FetchChannel = async () => {
+    const response = await axios.get(
+      "https://kdt.frontend.5th.programmers.co.kr:5009/channels"
+    );
+    console.log("채널 데이터 가져옴");
+    return response.data;
   };
 
-  const Popular_post = async () => {
-    try {
-      const response = await axios.get(
-        "https://kdt.frontend.5th.programmers.co.kr:5009/posts"
-      );
-      setPost(response.data);
-      console.log("데이터 불러오기 성공");
-    } catch (error) {
-      console.log(error);
-    }
+  const FetchPost = async () => {
+    const response = await axios.get(
+      "https://kdt.frontend.5th.programmers.co.kr:5009/posts"
+    );
+    console.log("포스트 데이터 가져옴");
+    return response.data;
   };
 
-  useEffect(() => {
-    Popular_Channel();
-    Popular_post();
-  }, []);
+  const {
+    isLoading: isChannelLoading,
+    data: channelData,
+    isError: isChannelError,
+  } = useQuery("get-channel", FetchChannel);
 
-  const Sort_Channel = channel;
+  const {
+    isLoading: isPostLoading,
+    data: PostData,
+    isError: isPostError,
+  } = useQuery("get-post", FetchPost);
 
-  const Sort_Post = post
-    .sort((a, b) => b.likes.length - a.likes.length)
-    .slice(0, 10);
+  if (isChannelLoading || isPostLoading) {
+    return <div>Loading...</div>;
+  }
 
-  useEffect(() => {
-    console.log(channel);
-  }, [channel]);
+  if (isChannelError || isPostError) {
+    return <div>Error 발생</div>;
+  }
 
-  useEffect(() => {
-    console.log(post);
-  }, [post]);
+  const Sort_Channel = channelData || [];
+
+  const Sort_Post = PostData || [];
 
   return (
     <>

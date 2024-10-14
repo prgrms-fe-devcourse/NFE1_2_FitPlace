@@ -44,63 +44,43 @@ var Header_1 = require("../components/Header");
 var react_router_dom_1 = require("react-router-dom");
 var react_redux_1 = require("react-redux");
 var axios_1 = require("axios");
+var react_query_1 = require("react-query");
 var Mainpage = function () {
     var userData = react_redux_1.useSelector(function (state) { return state.currentUser; });
-    var _a = react_1.useState([]), channel = _a[0], setChannel = _a[1];
-    var _b = react_1.useState([]), post = _b[0], setPost = _b[1];
-    var Popular_Channel = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response, error_1;
+    var FetchChannel = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/channels")];
+                case 0: return [4 /*yield*/, axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/channels")];
                 case 1:
                     response = _a.sent();
-                    setChannel(response.data);
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_1 = _a.sent();
-                    console.log(error_1);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    console.log("채널 데이터 가져옴");
+                    return [2 /*return*/, response.data];
             }
         });
     }); };
-    var Popular_post = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response, error_2;
+    var FetchPost = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/posts")];
+                case 0: return [4 /*yield*/, axios_1["default"].get("https://kdt.frontend.5th.programmers.co.kr:5009/posts")];
                 case 1:
                     response = _a.sent();
-                    setPost(response.data);
-                    console.log("데이터 불러오기 성공");
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_2 = _a.sent();
-                    console.log(error_2);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    console.log("포스트 데이터 가져옴");
+                    return [2 /*return*/, response.data];
             }
         });
     }); };
-    react_1.useEffect(function () {
-        Popular_Channel();
-        Popular_post();
-    }, []);
-    var Sort_Channel = channel;
-    var Sort_Post = post
-        .sort(function (a, b) { return b.likes.length - a.likes.length; })
-        .slice(0, 10);
-    react_1.useEffect(function () {
-        console.log(channel);
-    }, [channel]);
-    react_1.useEffect(function () {
-        console.log(post);
-    }, [post]);
+    var _a = react_query_1.useQuery("get-channel", FetchChannel), isChannelLoading = _a.isLoading, channelData = _a.data, isChannelError = _a.isError;
+    var _b = react_query_1.useQuery("get-post", FetchPost), isPostLoading = _b.isLoading, PostData = _b.data, isPostError = _b.isError;
+    if (isChannelLoading || isPostLoading) {
+        return react_1["default"].createElement("div", null, "Loading...");
+    }
+    if (isChannelError || isPostError) {
+        return react_1["default"].createElement("div", null, "Error \uBC1C\uC0DD");
+    }
+    var Sort_Channel = channelData || [];
+    var Sort_Post = PostData || [];
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "w-140 min-h-screen bg-white p-3" },

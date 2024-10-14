@@ -21,7 +21,7 @@ var Health_post = function (_a) {
         // title이 유효한 JSON인지 확인 후 파싱
         if (isValidJson(title)) {
             titleObject = JSON.parse(title);
-            console.log("Parsing successful:", titleObject);
+            // console.log("Parsing successful:", titleObject);
         }
         else {
             // title이 JSON이 아니면 그대로 사용
@@ -41,18 +41,16 @@ var Health_post = function (_a) {
             react_1["default"].createElement("p", { className: "font-bold text-lg mb-3" }, titleObject.title || "제목 없음"),
             react_1["default"].createElement("div", { className: "mb-2 text-sm flex" },
                 titleObject.currentMember &&
-                    titleObject.currentMember.length ===
-                        titleObject.meetingCapacity ? (react_1["default"].createElement("p", { className: "text-rose-600\t font-bold" }, "\uBAA8\uC9D1 \uB9C8\uAC10")) : (react_1["default"].createElement("p", { className: "text-lime-400 font-bold" }, "\uBAA8\uC9D1 \uC911")),
+                    titleObject.currentMember.length === titleObject.meetingCapacity ? (react_1["default"].createElement("p", { className: "text-rose-600\t font-bold" }, "\uBAA8\uC9D1 \uB9C8\uAC10")) : (react_1["default"].createElement("p", { className: "text-lime-400 font-bold" }, "\uBAA8\uC9D1 \uC911")),
                 react_1["default"].createElement("span", { className: "mx-3 opacity-5" }, "|"),
                 titleObject.meetingTime || "기간 없음"),
             react_1["default"].createElement("div", { className: "text-sm flex" },
                 meetingSpot,
                 " ",
                 react_1["default"].createElement("span", { className: "mx-3 opacity-5" }, "|"),
-                titleObject.currentMember
-                    ? titleObject.currentMember.length
-                    : 0,
-                "\uBA85 / ",
+                titleObject.currentMember ? titleObject.currentMember.length : 0,
+                "\uBA85 /",
+                " ",
                 titleObject.meetingCapacity || 0,
                 "\uBA85",
                 react_1["default"].createElement("span", { className: "mx-3 opacity-5" }, "|"),
