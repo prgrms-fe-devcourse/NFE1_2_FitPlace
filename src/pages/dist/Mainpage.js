@@ -77,6 +77,7 @@ var Mainpage = function () {
                 case 1:
                     response = _a.sent();
                     setPost(response.data);
+                    console.log("데이터 불러오기 성공");
                     return [3 /*break*/, 3];
                 case 2:
                     error_2 = _a.sent();
@@ -95,11 +96,11 @@ var Mainpage = function () {
         .sort(function (a, b) { return b.likes.length - a.likes.length; })
         .slice(0, 10);
     react_1.useEffect(function () {
-        console.log("post:", Sort_Post);
-    }, [Sort_Post]);
+        console.log(channel);
+    }, [channel]);
     react_1.useEffect(function () {
-        console.log("channel", Sort_Channel);
-    }, [Sort_Channel]);
+        console.log(post);
+    }, [post]);
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(Header_1["default"], null),
         react_1["default"].createElement("div", { className: "w-140 min-h-screen bg-white p-3" },
